@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: jeansloop-mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_prod_data:/data/db
+    networks:
+      - jeansloop-network
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: jeansloop-api
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - MONGO_URI=mongodb://mongodb:27017/mern-ecommerce
+      - STORAGE_TYPE=LOCAL
+      - BACKEND_URL=https://api.yourdomain.com
+    volumes:
+      - ./apps/api/public/uploads:/app/apps/api/public/uploads
+    depends_on:
+      - mongodb
+    networks:
+      - jeansloop-network
+
+  storefront:
+    build:
+      context: .
+      dockerfile: apps/storefront/Dockerfile
+    container_name: jeansloop-storefront
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=https://api.yourdomain.com/api/v1
+    depends_on:
+      - api
+    networks:
+      - jeansloop-network
+
+  admin:
+    build:
+      context: .
+      dockerfile: apps/admin/Dockerfile
+    container_name: jeansloop-admin
+    restart: always
+    ports:
+      - "3001:3001"
+    environment:
+      - NEXT_PUBLIC_API_URL=https://api.yourdomain.com/api/v1
+    depends_on:
+      - api
+    networks:
+      - jeansloop-network
+
+networks:
+  jeansloop-network:
+    driver: bridge
+
+volumes:
+  mongodb_prod_data:
