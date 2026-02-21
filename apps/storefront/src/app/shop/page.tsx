@@ -2,14 +2,14 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ProductCard } from '@/components/product/ProductCard';
 import { productsApi } from '@/lib/api';
 import { ChevronRight, Filter, X, SlidersHorizontal, ArrowUpDown } from 'lucide-react';
 
-export default function ShopPage() {
+function ShopContent() {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -286,5 +286,23 @@ export default function ShopPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function ShopPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-white py-12 lg:py-20">
+                <div className="container mx-auto px-4">
+                    <div className="flex items-center justify-center py-40">
+                        <div className="text-xs font-black uppercase tracking-[0.3em] animate-pulse">
+                            Loading Shop...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }>
+            <ShopContent />
+        </Suspense>
     );
 }
