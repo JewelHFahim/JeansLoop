@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { Category } from '../models/Category';
 import { CategorySchema } from '@repo/shared';
 
-export const getCategories = async (req: Request, res: Response) => {
+export const getCategories = async (_req: Request, res: Response) => {
     try {
         const categories = await Category.find().sort({ createdAt: -1 });
         res.status(200).json(categories);

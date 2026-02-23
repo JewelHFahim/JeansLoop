@@ -5,7 +5,7 @@ import { CouponSchema } from '@repo/shared';
 // @desc    Get all coupons
 // @route   GET /api/v1/coupons
 // @access  Private/Admin
-export const getCoupons = async (req: Request, res: Response) => {
+export const getCoupons = async (_req: Request, res: Response) => {
     try {
         const coupons = await Coupon.find().sort({ createdAt: -1 });
         res.json(coupons);

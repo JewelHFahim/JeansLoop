@@ -6,7 +6,7 @@ import { User } from '../models/User';
 // @desc    Get dashboard stats
 // @route   GET /api/v1/stats
 // @access  Private/Admin
-export const getDashboardStats = async (req: Request, res: Response) => {
+export const getDashboardStats = async (_req: Request, res: Response) => {
     const totalProducts = await Product.countDocuments();
     const totalUsers = await User.countDocuments();
     const totalOrders = await Order.countDocuments();

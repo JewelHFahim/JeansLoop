@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import bcrypt from 'bcryptjs'; // Needed? Model handles hashing but compare is in model
+
 import { User } from '../models/User';
 import { generateAccessToken, generateRefreshToken, sendRefreshToken } from '../utils/jwt';
 import { UserSchema } from '@repo/shared'; // validation schema
@@ -82,7 +82,7 @@ export const loginUser = async (req: Request, res: Response) => {
     }
 };
 
-export const logoutUser = (req: Request, res: Response) => {
+export const logoutUser = (_req: Request, res: Response) => {
     res.cookie('refresh_token', '', {
         httpOnly: true,
         expires: new Date(0),
