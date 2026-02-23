@@ -80,8 +80,7 @@ mongoose.connect(MONGO_URI)
     .catch((err: Error) => console.error('❌ MongoDB Connection Error:', err));
 
 // Static Folder
-const __dirname = path.resolve();
-app.use('/uploads', express.static(path.join(__dirname, 'apps/api/public/uploads')));
+app.use('/uploads', express.static(path.join(path.resolve(), 'apps/api/public/uploads')));
 
 // Routes
 app.get('/health', (_req, res) => {
