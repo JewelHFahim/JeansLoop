@@ -19,12 +19,22 @@ import couponRoutes from './routes/couponRoutes';
 import { errorHandler } from './middlewares/errorMiddleware';
 import { validateEnv } from './utils/env';
 
+// Global Error Handlers
+process.on('unhandledRejection', (err) => {
+    console.error('Unhandled Rejection at:', err);
+});
+process.on('uncaughtException', (err) => {
+    console.error('Uncaught Exception thrown:', err);
+});
+
 dotenv.config();
 
 // Validate Environment
 validateEnv();
 
 const app = express();
+app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
+console.log('--- API Startup Sequence (V1.1) ---');
 const PORT = process.env.PORT || 5000;
 
 // Rate Limiting
@@ -69,7 +79,6 @@ app.use(cors({
     },
     credentials: true
 }));
-app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
 // Database Connection
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/mern-ecommerce';

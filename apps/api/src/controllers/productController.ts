@@ -15,6 +15,7 @@ export const getProducts = async (req: Request, res: Response) => {
         const sort = req.query.sort || 'newest';
 
         const query: any = {};
+        console.log('[DEBUG] Querying products with:', JSON.stringify(req.query));
 
         if (req.query.keyword) {
             query.name = {
@@ -40,11 +41,17 @@ export const getProducts = async (req: Request, res: Response) => {
         else if (sort === 'price-desc') sortObj = { price: -1 };
         else if (sort === 'oldest') sortObj = { createdAt: 1 };
 
+        console.log('[DEBUG] Final DB Query:', JSON.stringify(query));
+
         const count = await Product.countDocuments(query);
+        console.log('[DEBUG] Count result:', count);
+
         const products = await Product.find(query)
             .sort(sortObj)
             .limit(pageSize)
             .skip(pageSize * (page - 1));
+
+        console.log('[DEBUG] Products found:', products.length);
 
         res.json({
             products,
