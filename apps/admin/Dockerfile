@@ -32,4 +32,4 @@ EXPOSE 3001
 ENV PORT=3001
 
 # Next.js standalone server
-CMD ["node", "server.js"]
+CMD ["node", "apps/admin/server.js"]

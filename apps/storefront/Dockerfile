@@ -32,4 +32,4 @@ EXPOSE 3000
 ENV PORT=3000
 
 # Next.js standalone server
-CMD ["node", "server.js"]
+CMD ["node", "apps/storefront/server.js"]
