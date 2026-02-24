@@ -66,7 +66,10 @@ export const uploadFile = async (req: Request, res: Response) => {
                 throw new Error('File upload failed');
             }
 
-            const backendUrl = process.env.BACKEND_URL || `http://localhost:${process.env.PORT || 5000}`;
+            const host = req.get('host');
+            const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+            const fallbackUrl = host ? `${protocol}://${host}` : `http://localhost:${process.env.PORT || 5000}`;
+            const backendUrl = process.env.BACKEND_URL || fallbackUrl;
             const fileUrl = `${backendUrl}/uploads/${filename}`;
             res.json({
                 message: 'Image uploaded',
