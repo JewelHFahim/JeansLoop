@@ -30,7 +30,8 @@ COPY --from=builder /app/packages/shared/package.json ./packages/shared/package.
 COPY --from=builder /app/packages/shared/dist ./packages/shared/dist
 
 # Production dependencies only
-RUN npm install --omit=dev
+# We install with the root package-lock to ensure all hoisted dependencies are present
+RUN npm install --omit=dev --workspace=@repo/api --include-workspace-root
 
 EXPOSE 5000
 
