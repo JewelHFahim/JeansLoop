@@ -65,16 +65,22 @@ app.use(helmet({ crossOriginResourcePolicy: false })); // Allow loading images
 
 const allowedOrigins = process.env.ALLOWED_ORIGINS
     ? process.env.ALLOWED_ORIGINS.split(',')
-    : ['http://localhost:3000', 'http://localhost:3001'];
+    : [
+        'http://localhost:3000',
+        'http://localhost:3001',
+        'http://176.57.189.196:3000',
+        'http://176.57.189.196:3001'
+    ];
 
 app.use(cors({
     origin: (origin, callback) => {
         // Allow requests with no origin (like mobile apps or curl)
         if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
+        if (allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
             callback(null, true);
         } else {
-            callback(new Error('Not allowed by CORS'));
+            console.error(`CORS Blocked: Origin ${origin} not in allowed list:`, allowedOrigins);
+            callback(new Error(`CORS Error: Origin ${origin} not allowed`));
         }
     },
     credentials: true
