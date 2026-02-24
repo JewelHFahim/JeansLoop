@@ -9,7 +9,7 @@ COPY packages/shared/package.json ./packages/shared/
 
 # Install dependencies
 RUN npm install
-RUN npm install --os=linux --cpu=x64 --libc=musl lightningcss-linux-x64-musl
+RUN npm install --os=linux --cpu=x64 --libc=musl lightningcss-linux-x64-musl @tailwindcss/oxide-linux-x64-musl
 COPY apps/admin ./apps/admin
 COPY packages/shared ./packages/shared
 
