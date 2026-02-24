@@ -34,8 +34,7 @@ validateEnv();
 
 const app = express();
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
-console.log('--- API Startup Sequence (V1.2 - CORS FIX) ---');
-console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('--- API Server Ready ---');
 const PORT = process.env.PORT || 5000;
 
 // Rate Limiting
@@ -75,25 +74,19 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
 
 app.use(cors({
     origin: (origin, callback) => {
-        console.log(`[CORS TRACE] Request from Origin: ${origin}`);
-
         // Allow requests with no origin (like mobile apps or curl)
-        if (!origin) {
-            console.log('[CORS TRACE] No origin, allowing.');
-            return callback(null, true);
+        if (!origin) return callback(null, true);
+
+        // Allow if origin matches our production IP or localhost
+        const isAllowed = allowedOrigins.includes(origin) ||
+            origin.includes('176.57.189.196') ||
+            process.env.NODE_ENV !== 'production';
+
+        if (isAllowed) {
+            callback(null, true);
+        } else {
+            callback(new Error(`CORS_NOT_ALLOWED: ${origin}`));
         }
-
-        // Extremely permissive check for the production IP
-        const isProdIP = origin.includes('176.57.189.196');
-        const isLocal = origin.includes('localhost') || origin.includes('127.0.0.1');
-
-        if (isProdIP || isLocal || process.env.NODE_ENV !== 'production') {
-            console.log(`[CORS TRACE] Origin ${origin} matches allowed patterns. Allowing.`);
-            return callback(null, true);
-        }
-
-        console.error(`[CORS TRACE] REJECTED | Origin: ${origin} | Allowed List:`, allowedOrigins);
-        callback(new Error(`CORS_NOT_ALLOWED: ${origin}`));
     },
     credentials: true
 }));
