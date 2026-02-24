@@ -9,8 +9,9 @@ import { useAuthStore } from '@/store/auth';
 
 export function Navbar() {
     const [mounted, setMounted] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const totalItems = useCartStore((state) => state.getTotalItems());
-    const { isAuthenticated, logout } = useAuthStore();
+    const { isAuthenticated, user, logout } = useAuthStore();
 
     useEffect(() => {
         setMounted(true);
@@ -86,11 +87,51 @@ export function Navbar() {
                             </Link>
                         </>
                     )}
-                    <Button variant="ghost" size="icon" className="md:hidden text-black hover:bg-black/5 rounded-full transition-all">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="md:hidden text-black hover:bg-black/5 rounded-full transition-all"
+                        onClick={() => setIsMenuOpen(!isMenuOpen)}
+                    >
                         <Menu className="h-6 w-6" />
                     </Button>
                 </div>
             </div>
+
+            {/* Mobile Menu Drawer */}
+            {isMenuOpen && (
+                <div className="fixed inset-0 z-50 md:hidden">
+                    <div className="fixed inset-0 bg-black/50" onClick={() => setIsMenuOpen(false)} />
+                    <div className="fixed inset-y-0 right-0 w-64 bg-white p-6 shadow-xl transition-transform">
+                        <div className="flex flex-col gap-6">
+                            <div className="flex justify-between items-center border-b pb-4">
+                                <span className="font-bold">Menu</span>
+                                <button onClick={() => setIsMenuOpen(false)} className="text-2xl">&times;</button>
+                            </div>
+                            <nav className="flex flex-col gap-4">
+                                <Link href="/shop" className="text-lg font-medium" onClick={() => setIsMenuOpen(false)}>Shop All</Link>
+                                <Link href="/shop?category=JEANS" className="text-lg font-medium" onClick={() => setIsMenuOpen(false)}>Jeans</Link>
+                                <Link href="/shop?category=TWILL" className="text-lg font-medium" onClick={() => setIsMenuOpen(false)}>Twill</Link>
+                                <Link href="/shop?category=TROUSER" className="text-lg font-medium" onClick={() => setIsMenuOpen(false)}>Trouser</Link>
+                                <hr />
+                                {isAuthenticated ? (
+                                    <>
+                                        <Link href="/account" className="text-lg font-medium" onClick={() => setIsMenuOpen(false)}>My Account</Link>
+                                        <button
+                                            className="text-left text-lg font-medium text-red-600"
+                                            onClick={() => { logout(); setIsMenuOpen(false); }}
+                                        >
+                                            Logout
+                                        </button>
+                                    </>
+                                ) : (
+                                    <Link href="/auth/login" className="text-lg font-medium" onClick={() => setIsMenuOpen(false)}>Sign In</Link>
+                                )}
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            )}
         </nav>
     );
 }

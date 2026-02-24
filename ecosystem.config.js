@@ -18,7 +18,8 @@ module.exports = {
       args: 'run start',
       env: {
         NODE_ENV: 'production',
-        PORT: 3001
+        PORT: 3001,
+        NEXT_PUBLIC_API_URL: 'http://176.57.189.196:5000/api/v1'
       }
     },
     {
@@ -28,7 +29,8 @@ module.exports = {
       args: 'run start',
       env: {
         NODE_ENV: 'production',
-        PORT: 3000
+        PORT: 3000,
+        NEXT_PUBLIC_API_URL: 'http://176.57.189.196:5000/api/v1'
       }
     }
   ]
