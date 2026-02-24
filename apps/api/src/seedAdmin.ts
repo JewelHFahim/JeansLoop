@@ -4,7 +4,7 @@ import { User } from './models/User';
 
 dotenv.config();
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/jeansloop';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/mern-ecommerce';
 
 const seedAdmin = async () => {
     try {
