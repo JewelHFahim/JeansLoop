@@ -69,9 +69,7 @@ app.use(cors({
     },
     credentials: true
 }));
-if (process.env.NODE_ENV !== 'production') {
-    app.use(morgan('dev'));
-}
+app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
 // Database Connection
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/mern-ecommerce';
