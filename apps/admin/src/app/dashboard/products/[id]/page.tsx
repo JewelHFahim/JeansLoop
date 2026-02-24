@@ -162,7 +162,7 @@ export default function EditProductPage() {
                 <div className="flex gap-3">
                     {product && (
                         <a
-                            href={`http://localhost:3000/product/${product.slug}`}
+                            href={`${process.env.NEXT_PUBLIC_STOREFRONT_URL || 'http://localhost:3000'}/product/${product.slug}`}
                             target="_blank"
                             rel="noopener noreferrer"
                         >

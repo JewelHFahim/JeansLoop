@@ -164,7 +164,7 @@ export default function ProductsPage() {
                                             <td className="p-4 border-b border-gray-100 text-right">
                                                 <div className="flex justify-end gap-3 opacity-60 group-hover:opacity-100 transition-opacity">
                                                     <a
-                                                        href={`http://localhost:3000/product/${product.slug}`}
+                                                        href={`${process.env.NEXT_PUBLIC_STOREFRONT_URL || 'http://localhost:3000'}/product/${product.slug}`}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
                                                     >

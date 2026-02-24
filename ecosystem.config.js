@@ -19,7 +19,8 @@ module.exports = {
       env: {
         NODE_ENV: 'production',
         PORT: 3001,
-        NEXT_PUBLIC_API_URL: 'http://176.57.189.196:5000/api/v1'
+        NEXT_PUBLIC_API_URL: 'http://176.57.189.196:5000/api/v1',
+        NEXT_PUBLIC_STOREFRONT_URL: 'http://176.57.189.196:3000'
       }
     },
     {
