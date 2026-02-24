@@ -6,50 +6,56 @@ import { ProductSchema } from '@repo/shared';
 // @route   GET /api/v1/products
 // @access  Public
 export const getProducts = async (req: Request, res: Response) => {
-    const pageSize = Number(req.query.limit) || 12;
-    const page = Number(req.query.page) || 1;
-    const category = req.query.category;
-    const minPrice = Number(req.query.minPrice);
-    const maxPrice = Number(req.query.maxPrice);
-    const sort = req.query.sort || 'newest';
+    try {
+        const pageSize = Number(req.query.limit) || 12;
+        const page = Number(req.query.page) || 1;
+        const category = req.query.category;
+        const minPrice = Number(req.query.minPrice);
+        const maxPrice = Number(req.query.maxPrice);
+        const sort = req.query.sort || 'newest';
 
-    const query: any = {};
+        const query: any = {};
 
-    if (req.query.keyword) {
-        query.name = {
-            $regex: req.query.keyword,
-            $options: 'i',
-        };
+        if (req.query.keyword) {
+            query.name = {
+                $regex: req.query.keyword,
+                $options: 'i',
+            };
+        }
+
+        if (category) {
+            // Using case-insensitive regex for category
+            query.category = { $regex: new RegExp(`^${category}$`, 'i') };
+        }
+
+        if (!isNaN(minPrice) || !isNaN(maxPrice)) {
+            query.price = {};
+            if (!isNaN(minPrice)) query.price.$gte = minPrice;
+            if (!isNaN(maxPrice)) query.price.$lte = maxPrice;
+        }
+
+        // Define sort object
+        let sortObj: any = { createdAt: -1 };
+        if (sort === 'price-asc') sortObj = { price: 1 };
+        else if (sort === 'price-desc') sortObj = { price: -1 };
+        else if (sort === 'oldest') sortObj = { createdAt: 1 };
+
+        const count = await Product.countDocuments(query);
+        const products = await Product.find(query)
+            .sort(sortObj)
+            .limit(pageSize)
+            .skip(pageSize * (page - 1));
+
+        res.json({
+            products,
+            page,
+            pages: Math.ceil(count / pageSize) || 1,
+            total: count
+        });
+    } catch (error: any) {
+        console.error('Error in getProducts:', error);
+        res.status(500).json({ message: error.message });
     }
-
-    if (category) {
-        query.category = { $regex: new RegExp(`^${category}$`, 'i') };
-    }
-
-    if (!isNaN(minPrice) || !isNaN(maxPrice)) {
-        query.price = {};
-        if (!isNaN(minPrice)) query.price.$gte = minPrice;
-        if (!isNaN(maxPrice)) query.price.$lte = maxPrice;
-    }
-
-    // Define sort object
-    let sortObj: any = { createdAt: -1 };
-    if (sort === 'price-asc') sortObj = { price: 1 };
-    else if (sort === 'price-desc') sortObj = { price: -1 };
-    else if (sort === 'oldest') sortObj = { createdAt: 1 };
-
-    const count = await Product.countDocuments(query);
-    const products = await Product.find(query)
-        .sort(sortObj)
-        .limit(pageSize)
-        .skip(pageSize * (page - 1));
-
-    res.json({
-        products,
-        page,
-        pages: Math.ceil(count / pageSize),
-        total: count
-    });
 };
 
 // @desc    Fetch single product by slug
