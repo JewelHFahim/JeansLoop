@@ -34,7 +34,8 @@ validateEnv();
 
 const app = express();
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
-console.log('--- API Startup Sequence (V1.1) ---');
+console.log('--- API Startup Sequence (V1.2 - CORS FIX) ---');
+console.log('NODE_ENV:', process.env.NODE_ENV);
 const PORT = process.env.PORT || 5000;
 
 // Rate Limiting
@@ -76,11 +77,17 @@ app.use(cors({
     origin: (origin, callback) => {
         // Allow requests with no origin (like mobile apps or curl)
         if (!origin) return callback(null, true);
-        if (allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
+
+        // Allow if origin matches our production IP or localhost
+        const isAllowed = allowedOrigins.includes(origin) ||
+            (origin.includes('176.57.189.196')) ||
+            process.env.NODE_ENV !== 'production';
+
+        if (isAllowed) {
             callback(null, true);
         } else {
-            console.error(`CORS Blocked: Origin ${origin} not in allowed list:`, allowedOrigins);
-            callback(new Error(`CORS Error: Origin ${origin} not allowed`));
+            console.error(`CORS REJECTED | Origin: ${origin} | Allowed:`, allowedOrigins);
+            callback(new Error(`CORS_NOT_ALLOWED: ${origin}`));
         }
     },
     credentials: true
