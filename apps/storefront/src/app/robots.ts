@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
             allow: '/',
             disallow: ['/account/', '/checkout/', '/auth/'],
         },
-        sitemap: 'https://jeansloop.com/sitemap.xml',
+        sitemap: 'https://thefirecutter.store/sitemap.xml',
     }
 }

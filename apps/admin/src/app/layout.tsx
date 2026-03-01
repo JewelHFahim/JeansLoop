@@ -10,7 +10,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Admin Dashboard - Men's Clothing Store",
+  title: "Fire Cutter Admin Dashboard",
   description: "Admin dashboard for managing the e-commerce platform",
 };
 

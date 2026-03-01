@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-    const baseUrl = 'https://jeansloop.com'
+    const baseUrl = 'https://thefirecutter.store'
 
     // Static routes
     const routes = [

@@ -110,7 +110,7 @@ export default function LoginPage() {
 
                     <div className="mt-12 pt-8 border-t border-gray-100 text-center">
                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                            New to JeansLoop?{' '}
+                            New to Fire Cutter?{' '}
                             <Link href="/auth/register" className="text-black hover:underline underline-offset-4">
                                 Create an account
                             </Link>

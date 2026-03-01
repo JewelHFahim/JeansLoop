@@ -69,7 +69,7 @@ export default function ContactPage() {
                                         <div>
                                             <h3 className="text-xs font-black uppercase tracking-widest mb-1">Digital Signal</h3>
                                             <p className="text-[11px] text-gray-500 font-bold leading-relaxed">
-                                                support@jeansloop.com<br />24/7 Response Objective
+                                                support@thefirecutter.store<br />24/7 Response Objective
                                             </p>
                                         </div>
                                     </div>

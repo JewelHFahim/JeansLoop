@@ -11,7 +11,7 @@ export function Footer() {
 
                     {/* Brand & About */}
                     <div>
-                        <h3 className="mb-4 text-2xl font-bold text-white">MenStyle</h3>
+                        <h3 className="mb-4 text-2xl font-bold text-white">Fire Cutter</h3>
                         <p className="mb-4 text-sm leading-relaxed">
                             Premium menswear designed for the modern gentleman. Quality, comfort, and style in every stitch.
                         </p>
@@ -60,7 +60,7 @@ export function Footer() {
                             </li>
                             <li className="flex items-center gap-3">
                                 <Mail className="h-5 w-5 shrink-0" />
-                                <span>support@menstyle.com</span>
+                                <span>support@thefirecutter.store</span>
                             </li>
                         </ul>
                     </div>
@@ -68,7 +68,7 @@ export function Footer() {
                 </div>
 
                 <div className="mt-12 border-t border-gray-800 pt-8 text-center text-sm">
-                    <p>&copy; {new Date().getFullYear()} MenStyle. All rights reserved.</p>
+                    <p>&copy; {new Date().getFullYear()} Fire Cutter. All rights reserved.</p>
                 </div>
             </div>
         </footer>

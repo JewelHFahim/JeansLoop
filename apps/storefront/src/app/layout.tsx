@@ -13,14 +13,14 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "JeansLoop | Premium Men's Denim & Clothing",
-    template: "%s | JeansLoop"
+    default: "Fire Cutter | Premium Men's Collections",
+    template: "%s | Fire Cutter"
   },
-  description: "Shop the finest collection of premium men's denim, twill trousers, and essential clothing at JeansLoop. Quality meets style.",
-  keywords: ["men's clothing", "denim jeans", "twill trousers", "men's fashion", "premium clothing"],
-  authors: [{ name: "JeansLoop Team" }],
-  creator: "JeansLoop",
-  publisher: "JeansLoop",
+  description: "Shop the finest collection of premium men's clothing at Fire Cutter. Quality meets style.",
+  keywords: ["men's clothing", "premium clothing", "export collections", "fashion"],
+  authors: [{ name: "Fire Cutter Team" }],
+  creator: "Fire Cutter",
+  publisher: "Fire Cutter",
   formatDetection: {
     email: false,
     address: false,
@@ -29,25 +29,25 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://jeansloop.com",
-    siteName: "JeansLoop",
-    title: "JeansLoop | Premium Men's Denim & Clothing",
-    description: "Shop the finest collection of premium men's denim and essential clothing.",
+    url: "https://thefirecutter.store",
+    siteName: "Fire Cutter",
+    title: "Fire Cutter | Premium Men's Collections",
+    description: "Shop the finest collection of premium men's clothing at Fire Cutter.",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "JeansLoop Premium Clothing",
+        alt: "Fire Cutter Premium Clothing",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "JeansLoop | Premium Men's Denim & Clothing",
-    description: "Shop the finest collection of premium men's denim and essential clothing.",
+    title: "Fire Cutter | Premium Men's Collections",
+    description: "Shop the finest collection of premium men's clothing at Fire Cutter.",
     images: ["/og-image.jpg"],
-    creator: "@jeansloop",
+    creator: "@firecutter",
   },
   robots: {
     index: true,
