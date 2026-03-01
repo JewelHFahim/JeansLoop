@@ -77,14 +77,16 @@ app.use(cors({
         // Allow requests with no origin (like mobile apps or curl)
         if (!origin) return callback(null, true);
 
-        // Allow if origin matches our production IP or localhost
+        // Allow if origin matches our production domain or IP
         const isAllowed = allowedOrigins.includes(origin) ||
+            origin.includes('thefirecutter.store') ||
             origin.includes('176.57.189.196') ||
             process.env.NODE_ENV !== 'production';
 
         if (isAllowed) {
             callback(null, true);
         } else {
+            console.error(`CORS Blocked: Origin ${origin} not in allowed list:`, allowedOrigins);
             callback(new Error(`CORS_NOT_ALLOWED: ${origin}`));
         }
     },
