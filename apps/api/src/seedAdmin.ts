@@ -11,7 +11,7 @@ const seedAdmin = async () => {
         await mongoose.connect(MONGO_URI);
         console.log('MongoDB Connected to:', MONGO_URI);
 
-        const adminEmail = 'admin@jeansloop.com';
+        const adminEmail = 'admin@thefirecutter.store';
         const existingAdmin = await User.findOne({ email: adminEmail });
 
         if (existingAdmin) {
@@ -24,7 +24,7 @@ const seedAdmin = async () => {
                 role: 'ADMIN'
             });
             console.log('Admin account created successfully:');
-            console.log('Email: admin@jeansloop.com');
+            console.log('Email: admin@thefirecutter.store');
             console.log('Password: admin123');
         }
 
