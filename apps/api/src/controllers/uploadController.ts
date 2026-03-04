@@ -47,8 +47,7 @@ export const uploadFile = async (req: Request, res: Response) => {
             res.status(500);
             throw new Error('Cloudinary upload failed');
         }
-
-        // Local Storage
+    } else { // Local Storage
         const rootDir = path.resolve();
         const uploadDir = rootDir.endsWith(path.join('apps', 'api'))
             ? path.join(rootDir, 'public', 'uploads')
@@ -61,22 +60,24 @@ export const uploadFile = async (req: Request, res: Response) => {
         const filename = `${Date.now()}-${req.file.originalname.replace(/ /g, '_')}`;
         const filePath = path.join(uploadDir, filename);
 
-        fs.writeFile(filePath, req.file.buffer, (err) => {
-            if (err) {
-                res.status(500);
-                throw new Error('File upload failed');
-            }
+        try {
+            await fs.promises.writeFile(filePath, req.file.buffer);
 
             const host = req.get('host');
             const protocol = req.headers['x-forwarded-proto'] || req.protocol;
             const fallbackUrl = host ? `${protocol}://${host}` : `http://localhost:${process.env.PORT || 5000}`;
             const backendUrl = process.env.BACKEND_URL || fallbackUrl;
             const fileUrl = `${backendUrl}/uploads/${filename}`;
+
             res.json({
                 message: 'Image uploaded',
                 image: fileUrl,
                 url: fileUrl,
             });
-        });
+        } catch (err) {
+            console.error('File write error:', err);
+            res.status(500);
+            throw new Error('File upload failed');
+        }
     }
 };
