@@ -86,7 +86,7 @@ export default function CheckoutPage() {
         e.preventDefault();
 
         if (!termsAccepted) {
-            alert('Please agree to the Terms & Conditions');
+            toast.warning('Please agree to the Terms & Conditions');
             return;
         }
 
@@ -96,14 +96,14 @@ export default function CheckoutPage() {
             // 1. Handle Registration if not authenticated
             if (!isAuthenticated) {
                 if (!password) {
-                    alert("Please create a password to register and complete your order.");
+                    toast.error("Please create a password to register and complete your order.");
                     setLoading(false);
                     return;
                 }
 
                 // Validate password length
                 if (password.length < 8) {
-                    alert("Password must be at least 8 characters long.");
+                    toast.error("Password must be at least 8 characters long.");
                     setLoading(false);
                     return;
                 }
@@ -121,7 +121,7 @@ export default function CheckoutPage() {
                     }
                 } catch (regError: any) {
                     const errorMessage = regError.response?.data?.message || 'Registration failed';
-                    alert(errorMessage);
+                    toast.error(errorMessage);
                     setLoading(false);
                     return;
                 }
@@ -516,9 +516,9 @@ export default function CheckoutPage() {
                                 </div>
 
                                 {/* Confirm Button */}
-                                <Button 
-                                    className="w-full bg-black hover:bg-gray-900 h-14 text-xl font-bold text-white transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-xl rounded-xl" 
-                                    disabled={loading} 
+                                <Button
+                                    className="w-full bg-black hover:bg-gray-900 h-14 text-xl font-bold text-white transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-xl rounded-xl"
+                                    disabled={loading}
                                     type="submit"
                                 >
                                     {loading ? 'Processing...' : `Confirm Order ৳${total.toFixed(0)}`}
@@ -538,9 +538,9 @@ export default function CheckoutPage() {
                 {/* Mobile Sticky Bar (Optional) */}
                 <div className="fixed bottom-0 left-0 right-0 p-4 bg-gray-900 text-white lg:hidden z-50 flex items-center justify-between">
                     <span className="font-bold">Total ৳{total.toFixed(0)}</span>
-                    <Button 
-                        className="bg-white text-black hover:bg-gray-100 font-bold px-8 h-12 rounded-lg transition-all active:scale-95" 
-                        onClick={handleSubmit} 
+                    <Button
+                        className="bg-white text-black hover:bg-gray-100 font-bold px-8 h-12 rounded-lg transition-all active:scale-95"
+                        onClick={handleSubmit}
                         disabled={loading}
                     >
                         Confirm Order

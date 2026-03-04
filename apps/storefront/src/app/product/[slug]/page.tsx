@@ -4,6 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from 'sonner';
 import { productsApi } from '@/lib/api';
 import { useCartStore } from '@/store/cart';
 import { ShoppingCart } from 'lucide-react';
@@ -32,12 +34,12 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     }, [product]);
 
     const handleAddToCart = () => {
-        if (!selectedVariant) {
-            alert('Please select a size and color');
+        if (product.variants.length > 0 && !selectedVariant) { // Modified condition to use selectedVariant
+            toast.error('Please select a size and color');
             return;
         }
 
-        addItem({
+        const item = { // Define item before passing to addItem
             productId: product._id,
             variantSku: selectedVariant.sku,
             name: product.name,
@@ -46,9 +48,9 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             image: product.images?.[0],
             size: selectedVariant.size,
             color: selectedVariant.color,
-        });
-
-        alert('Added to cart!');
+        };
+        addItem(item);
+        toast.success('Added to cart!');
     };
 
     if (isLoading) return <div className="container mx-auto px-4 py-8">Loading...</div>;
