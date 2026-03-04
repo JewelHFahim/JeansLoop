@@ -40,10 +40,19 @@ const PORT = process.env.PORT || 5000;
 // Rate Limiting
 const globalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // limit each IP to 100 requests per windowMs
-    message: 'Too many requests from this IP, please try again after 15 minutes',
+    max: 1000, // limit each IP to 1000 requests per windowMs (browsing)
+    message: 'High traffic detected from this IP. Please wait a moment before trying again.',
     standardHeaders: true,
     legacyHeaders: false,
+});
+
+const mutationLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 "write" attempts per 15 mins
+    message: 'Too many action attempts. Please wait a moment before trying again.',
+    standardHeaders: true,
+    legacyHeaders: false,
+    skip: (req) => req.method === 'GET', // Only limit POST, PUT, DELETE, etc.
 });
 
 const authLimiter = rateLimit({
@@ -57,7 +66,8 @@ const authLimiter = rateLimit({
 // Middleware
 app.set('trust proxy', 1); // Trust first proxy (e.g. Vercel, Heroku, Nginx)
 app.use(compression()); // Compress all responses
-app.use(globalLimiter); // Apply global rate limiting
+app.use(globalLimiter); // Apply global rate limiting (mostly GETs)
+app.use(mutationLimiter); // Apply stricter limit to POST/PUT/DELETE
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -101,8 +111,8 @@ mongoose.connect(MONGO_URI)
 
 // Static Folder
 const rootDir = path.resolve();
-const uploadPath = rootDir.endsWith(path.join('apps', 'api')) 
-    ? path.join(rootDir, 'public', 'uploads') 
+const uploadPath = rootDir.endsWith(path.join('apps', 'api'))
+    ? path.join(rootDir, 'public', 'uploads')
     : path.join(rootDir, 'apps', 'api', 'public', 'uploads');
 
 app.use('/uploads', express.static(uploadPath));

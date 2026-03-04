@@ -26,15 +26,15 @@ type Tab = 'dashboard' | 'orders' | 'profile' | 'settings';
 
 export default function AccountPage() {
     const router = useRouter();
-    const { user, isAuthenticated, logout } = useAuthStore();
+    const { user, isAuthenticated, isInitialized, logout } = useAuthStore();
     const [activeTab, setActiveTab] = useState<Tab>('dashboard');
 
-    // Redirect if not authenticated
+    // Redirect if not authenticated, but only after initialization
     useEffect(() => {
-        if (!isAuthenticated) {
+        if (isInitialized && !isAuthenticated) {
             router.push('/auth/login');
         }
-    }, [isAuthenticated, router]);
+    }, [isAuthenticated, isInitialized, router]);
 
     const { data: orders, isLoading: isLoadingOrders } = useQuery({
         queryKey: ['my-orders'],
@@ -57,6 +57,7 @@ export default function AccountPage() {
         enabled: isAuthenticated,
     });
 
+    if (!isInitialized) return <div className="min-h-screen flex items-center justify-center font-black uppercase tracking-widest animate-pulse">Initializing Security Protocol...</div>;
     if (!isAuthenticated) return null;
 
     const navItems = [
@@ -188,8 +189,8 @@ function DashboardView({ user, orders }: any) {
                                             <p className="text-xs text-gray-600">{new Date(order.createdAt).toLocaleDateString()}</p>
                                         </div>
                                         <span className={`text-[10px] font-black px-2 py-1 uppercase tracking-widest ${order.status === 'DELIVERED' ? 'bg-green-100 text-green-700' :
-                                                order.status === 'CANCELLED' || order.status === 'RETURNED' ? 'bg-red-100 text-red-700' :
-                                                    'bg-gray-200 text-black'
+                                            order.status === 'CANCELLED' || order.status === 'RETURNED' ? 'bg-red-100 text-red-700' :
+                                                'bg-gray-200 text-black'
                                             }`}>
                                             {order.status === 'COURIERED' ? 'IN TRANSIT' : order.status}
                                         </span>
@@ -243,8 +244,8 @@ function OrdersView({ orders, isLoading, router }: any) {
                                     <div className="md:col-span-1">
                                         <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Status</p>
                                         <span className={`inline-block text-[9px] font-black px-3 py-1 uppercase tracking-[0.2em] border ${order.status === 'DELIVERED' ? 'bg-black text-white border-black' :
-                                                order.status === 'CANCELLED' || order.status === 'RETURNED' ? 'bg-red-600 text-white border-red-700' :
-                                                    'bg-gray-100 text-black border-gray-200'
+                                            order.status === 'CANCELLED' || order.status === 'RETURNED' ? 'bg-red-600 text-white border-red-700' :
+                                                'bg-gray-100 text-black border-gray-200'
                                             }`}>
                                             {order.status === 'COURIERED' ? 'COURIERED / IN TRANSIT' : order.status}
                                         </span>
