@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { Order } from '../models/Order';
+import { Product } from '../models/Product';
 
 // @desc    Create new order
 // @route   POST /api/v1/orders
@@ -136,6 +137,55 @@ export const updateOrderToPaid = async (req: Request, res: Response) => {
     }
 };
 
+// @desc    Update order status with stock management
+// @route   PUT /api/v1/orders/:id/status
+// @access  Private/Admin
+export const updateOrderStatus = async (req: Request, res: Response) => {
+    const { status } = req.body;
+    const order = await Order.findById(req.params.id);
+
+    if (order) {
+        order.status = status;
+
+        // Custom logic for isPaid/isDelivered based on status
+        if (status === 'DELIVERED') {
+            order.isDelivered = true;
+            order.deliveredAt = new Date();
+            order.isPaid = true; // Assume paid if delivered (especially for COD)
+        }
+
+        // --- Stock Management Logic ---
+
+        // 1. Deduct Stock: When status moves to ACCEPTED (and hasn't been adjusted yet)
+        if (status === 'ACCEPTED' && order.stockStatus === 'PENDING') {
+            for (const item of order.items) {
+                await Product.updateOne(
+                    { _id: item.productId, 'variants.sku': item.variantSku },
+                    { $inc: { 'variants.$.stock': -item.quantity } }
+                );
+            }
+            order.stockStatus = 'ADJUSTED';
+        }
+
+        // 2. Restore Stock: When status moves to CANCELLED or RETURNED (and was previously adjusted)
+        if ((status === 'CANCELLED' || status === 'RETURNED') && order.stockStatus === 'ADJUSTED') {
+            for (const item of order.items) {
+                await Product.updateOne(
+                    { _id: item.productId, 'variants.sku': item.variantSku },
+                    { $inc: { 'variants.$.stock': item.quantity } }
+                );
+            }
+            order.stockStatus = 'RESTORED';
+        }
+
+        const updatedOrder = await order.save();
+        res.json(updatedOrder);
+    } else {
+        res.status(404);
+        throw new Error('Order not found');
+    }
+};
+
 // @desc    Update order to delivered
 // @route   PUT /api/v1/orders/:id/deliver
 // @access  Private/Admin
@@ -146,6 +196,18 @@ export const updateOrderToDelivered = async (req: Request, res: Response) => {
         order.isDelivered = true;
         order.deliveredAt = new Date();
         order.status = 'DELIVERED';
+        order.isPaid = true;
+
+        // Ensure stock is adjusted if it skipped ACCEPTED status
+        if (order.stockStatus === 'PENDING') {
+            for (const item of order.items) {
+                await Product.updateOne(
+                    { _id: item.productId, 'variants.sku': item.variantSku },
+                    { $inc: { 'variants.$.stock': -item.quantity } }
+                );
+            }
+            order.stockStatus = 'ADJUSTED';
+        }
 
         const updatedOrder = await order.save();
         res.json(updatedOrder);

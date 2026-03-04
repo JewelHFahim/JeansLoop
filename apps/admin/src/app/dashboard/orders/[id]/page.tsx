@@ -27,8 +27,8 @@ export default function OrderDetailsPage() {
         },
     });
 
-    const deliverMutation = useMutation({
-        mutationFn: () => ordersApi.markAsDelivered(id as string),
+    const statusMutation = useMutation({
+        mutationFn: (status: string) => ordersApi.updateStatus(id as string, status),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['order', id] });
         },
@@ -39,6 +39,15 @@ export default function OrderDetailsPage() {
     if (!order) return <div className="p-8 text-gray-500 font-black uppercase">Order Not Found in Registry</div>;
 
     const subtotal = order.items?.reduce((acc: number, item: any) => acc + (item.price * item.quantity), 0) || 0;
+
+    const statuses = [
+        { value: 'PENDING', label: 'Pending' },
+        { value: 'ACCEPTED', label: 'Accepted' },
+        { value: 'COURIERED', label: 'Couriered / In Transit' },
+        { value: 'DELIVERED', label: 'Delivered' },
+        { value: 'CANCELLED', label: 'Cancelled' },
+        { value: 'RETURNED', label: 'Return' },
+    ];
 
     return (
         <div className="space-y-6 max-w-5xl mx-auto pb-20">
@@ -55,25 +64,18 @@ export default function OrderDetailsPage() {
                         <p className="text-[10px] font-black text-black uppercase tracking-[0.2em] mt-1">Registry ID: {order._id}</p>
                     </div>
                 </div>
-                <div className="flex gap-3">
-                    {!order.isPaid && (
-                        <Button
-                            onClick={() => payMutation.mutate()}
-                            disabled={payMutation.isPending}
-                            className="rounded-none bg-black text-white h-10 px-6 font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-all shadow-[6px_6px_0px_0px_rgba(0,0,0,0.2)]"
-                        >
-                            Execute / Mark as Paid
-                        </Button>
-                    )}
-                    {order.isPaid && !order.isDelivered && (
-                        <Button
-                            onClick={() => deliverMutation.mutate()}
-                            disabled={deliverMutation.isPending}
-                            className="rounded-none bg-black text-white h-10 px-6 font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-all shadow-[6px_6px_0px_0px_rgba(0,0,0,0.2)]"
-                        >
-                            Execute / Mark Delivered
-                        </Button>
-                    )}
+                <div className="flex items-center gap-3">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-500 mr-2">Update Stage:</span>
+                    <select
+                        value={order.status}
+                        onChange={(e) => statusMutation.mutate(e.target.value)}
+                        disabled={statusMutation.isPending}
+                        className="rounded-none border-2 border-black h-11 px-6 font-black uppercase tracking-widest text-[11px] bg-white transition-all shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] focus:translate-x-[2px] focus:translate-y-[2px] focus:shadow-none outline-none cursor-pointer disabled:opacity-50"
+                    >
+                        {statuses.map((s) => (
+                            <option key={s.value} value={s.value}>{s.label}</option>
+                        ))}
+                    </select>
                 </div>
             </div>
 
@@ -140,13 +142,23 @@ export default function OrderDetailsPage() {
                                     )}
                                 </div>
                                 <div className="flex items-center justify-between">
+                                    <span className="text-[11px] font-black uppercase text-gray-500">Current Phase:</span>
+                                    <span className={`font-black text-[11px] italic uppercase ${order.status === 'DELIVERED' ? 'text-green-600' :
+                                            order.status === 'CANCELLED' || order.status === 'RETURNED' ? 'text-red-600' :
+                                                order.status === 'ACCEPTED' || order.status === 'COURIERED' ? 'text-blue-600' :
+                                                    'text-amber-500'
+                                        }`}>
+                                        {statuses.find(s => s.value === order.status)?.label || order.status}
+                                    </span>
+                                </div>
+                                <div className="flex items-center justify-between border-t border-gray-100 pt-2">
                                     <span className="text-[11px] font-black uppercase text-gray-500">Logistics:</span>
                                     {order.isDelivered ? (
-                                        <span className="flex items-center gap-2 text-black font-black text-[11px] italic">
-                                            <Truck className="w-4 h-4" /> DELIVERED ({new Date(order.deliveredAt).toLocaleDateString()})
+                                        <span className="flex items-center gap-2 text-black font-black text-[11px] italic uppercase">
+                                            <CheckCircle className="w-4 h-4 text-green-600" /> Dispatch Finalized
                                         </span>
                                     ) : (
-                                        <span className="text-gray-500 font-black text-[11px] italic">AWAITING DISPATCH</span>
+                                        <span className="text-gray-500 font-black text-[11px] italic uppercase tracking-wider">In Process / Queue</span>
                                     )}
                                 </div>
                             </div>

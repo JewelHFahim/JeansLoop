@@ -85,7 +85,8 @@ export default function OrdersPage() {
                                 <th className="p-4 text-left border-b-2 border-gray-100">Customer</th>
                                 <th className="p-4 text-left border-b-2 border-gray-100">Method</th>
                                 <th className="p-4 text-left border-b-2 border-gray-100">Amount</th>
-                                <th className="p-4 text-left border-b-2 border-gray-100">Payment Status</th>
+                                <th className="p-4 text-left border-b-2 border-gray-100">Status</th>
+                                <th className="p-4 text-left border-b-2 border-gray-100">Payment</th>
                                 <th className="p-4 text-right border-b-2 border-gray-100">Operations</th>
                             </tr>
                         </thead>
@@ -152,14 +153,19 @@ export default function OrdersPage() {
                                             ৳{order.totalAmount?.toLocaleString()}
                                         </td>
                                         <td className="p-4 border-b border-gray-100">
+                                            <span className={`inline-block px-2 py-0.5 text-[8px] font-black tracking-widest italic rounded-none border-2 ${order.status === 'DELIVERED' ? 'bg-green-500 text-white border-green-600' :
+                                                    order.status === 'CANCELLED' || order.status === 'RETURNED' ? 'bg-red-500 text-white border-red-600' :
+                                                        order.status === 'ACCEPTED' || order.status === 'COURIERED' ? 'bg-blue-500 text-white border-blue-600' :
+                                                            'bg-amber-400 text-black border-amber-500'
+                                                }`}>
+                                                {order.status === 'COURIERED' ? 'IN TRANSIT' : order.status}
+                                            </span>
+                                        </td>
+                                        <td className="p-4 border-b border-gray-100">
                                             {order.isPaid ? (
-                                                <span className="inline-block bg-green-500 text-white px-3 py-1 text-[9px] font-black tracking-[0.2em] italic rounded-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]">
-                                                    PAID
-                                                </span>
+                                                <span className="text-[10px] font-black text-green-600 italic">PAID</span>
                                             ) : (
-                                                <span className="inline-block bg-amber-400 text-black px-3 py-1 text-[9px] font-black tracking-[0.2em] italic rounded-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]">
-                                                    PENDING
-                                                </span>
+                                                <span className="text-[10px] font-black text-amber-500 italic">PENDING</span>
                                             )}
                                         </td>
                                         <td className="p-4 border-b border-gray-100 text-right">

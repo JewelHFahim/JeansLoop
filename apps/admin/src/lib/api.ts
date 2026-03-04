@@ -43,6 +43,7 @@ export const ordersApi = {
     getMyOrders: () => apiClient.get('/orders/myorders'),
     markAsPaid: (id: string) => apiClient.put(`/orders/${id}/pay`),
     markAsDelivered: (id: string) => apiClient.put(`/orders/${id}/deliver`),
+    updateStatus: (id: string, status: string) => apiClient.put(`/orders/${id}/status`, { status }),
 };
 
 // Users API

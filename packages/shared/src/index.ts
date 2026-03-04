@@ -73,7 +73,7 @@ export const OrderItemSchema = z.object({
 });
 export type OrderItem = z.infer<typeof OrderItemSchema>;
 
-export const OrderStatusSchema = z.enum(["PENDING", "PAID", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED", "RETURNED"]);
+export const OrderStatusSchema = z.enum(["PENDING", "ACCEPTED", "COURIERED", "DELIVERED", "CANCELLED", "RETURNED"]);
 export type OrderStatus = z.infer<typeof OrderStatusSchema>;
 
 export const OrderSchema = z.object({
@@ -102,6 +102,7 @@ export const OrderSchema = z.object({
     paidAt: z.date().optional(),
     isDelivered: z.boolean().default(false),
     deliveredAt: z.date().optional(),
+    stockStatus: z.enum(['PENDING', 'ADJUSTED', 'RESTORED']).default('PENDING'),
     createdAt: z.date().optional(),
     updatedAt: z.date().optional(),
 });

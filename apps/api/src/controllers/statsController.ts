@@ -13,6 +13,9 @@ export const getDashboardStats = async (_req: Request, res: Response) => {
 
     const sales = await Order.aggregate([
         {
+            $match: { status: 'DELIVERED' }
+        },
+        {
             $group: {
                 _id: null,
                 totalSales: { $sum: '$totalAmount' }

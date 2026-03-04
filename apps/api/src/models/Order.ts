@@ -39,6 +39,7 @@ const OrderSchema = new Schema({
     paidAt: { type: Date },
     isDelivered: { type: Boolean, default: false },
     deliveredAt: { type: Date },
+    stockStatus: { type: String, enum: ['PENDING', 'ADJUSTED', 'RESTORED'], default: 'PENDING' },
 }, { timestamps: true });
 
 export const Order = mongoose.model<IOrder & Document>('Order', OrderSchema);
