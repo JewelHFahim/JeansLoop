@@ -48,10 +48,11 @@ export const uploadFile = async (req: Request, res: Response) => {
             throw new Error('Cloudinary upload failed');
         }
 
-    } else {
         // Local Storage
-        const __dirname = path.resolve();
-        const uploadDir = path.join(__dirname, 'apps/api/public/uploads');
+        const rootDir = path.resolve();
+        const uploadDir = rootDir.endsWith(path.join('apps', 'api'))
+            ? path.join(rootDir, 'public', 'uploads')
+            : path.join(rootDir, 'apps', 'api', 'public', 'uploads');
 
         if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });

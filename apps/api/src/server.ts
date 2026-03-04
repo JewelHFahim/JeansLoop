@@ -100,7 +100,12 @@ mongoose.connect(MONGO_URI)
     .catch((err: Error) => console.error('❌ MongoDB Connection Error:', err));
 
 // Static Folder
-app.use('/uploads', express.static(path.join(path.resolve(), 'apps/api/public/uploads')));
+const rootDir = path.resolve();
+const uploadPath = rootDir.endsWith(path.join('apps', 'api')) 
+    ? path.join(rootDir, 'public', 'uploads') 
+    : path.join(rootDir, 'apps', 'api', 'public', 'uploads');
+
+app.use('/uploads', express.static(uploadPath));
 
 // Routes
 app.get('/health', (_req, res) => {
