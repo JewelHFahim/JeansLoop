@@ -107,3 +107,23 @@ export const OrderSchema = z.object({
     updatedAt: z.date().optional(),
 });
 export type Order = z.infer<typeof OrderSchema>;
+
+export const SliderSchema = z.object({
+    id: z.string().optional(),
+    image: z.string().url("Must be a valid URL"),
+    title: z.string().min(1, "Title is required"),
+    subtitle: z.string().min(1, "Subtitle is required"),
+    primaryCta: z.object({
+        text: z.string(),
+        href: z.string(),
+    }).optional().nullable(),
+    secondaryCta: z.object({
+        text: z.string(),
+        href: z.string(),
+    }).optional().nullable(),
+    isActive: z.boolean().default(true),
+    order: z.number().int().default(0),
+    createdAt: z.date().optional(),
+    updatedAt: z.date().optional(),
+});
+export type Slider = z.infer<typeof SliderSchema>;

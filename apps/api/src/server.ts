@@ -117,6 +117,8 @@ const uploadPath = rootDir.endsWith(path.join('apps', 'api'))
 
 app.use('/uploads', express.static(uploadPath));
 
+import sliderRoutes from './routes/slider.routes';
+
 // Routes
 app.get('/health', (_req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
@@ -130,6 +132,7 @@ app.use('/api/v1/stats', statsRoutes);
 app.use('/api/v1/categories', categoryRoutes);
 app.use('/api/v1/coupons', couponRoutes);
 app.use('/api/v1/upload', uploadRoutes);
+app.use('/api/v1/sliders', sliderRoutes);
 
 // Error Handler
 app.use(errorHandler);

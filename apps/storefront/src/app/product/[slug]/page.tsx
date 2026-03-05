@@ -155,33 +155,33 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                         )}
 
                         {/* Quantity & Action */}
-                        <div className="mt-auto space-y-8">
-                            <div className="flex items-center gap-8">
-                                <div className="space-y-4">
+                        <div className="mt-auto space-y-6 sm:space-y-8">
+                            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 sm:gap-8">
+                                <div className="space-y-3 sm:space-y-4">
                                     <label className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 block">Quantity</label>
-                                    <div className="flex items-center border-2 border-black inline-flex bg-white">
+                                    <div className="flex items-center border-2 border-black bg-white inline-flex">
                                         <button
                                             onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                                            className="w-12 h-12 flex items-center justify-center font-black text-xl hover:bg-gray-100 transition-colors text-black"
+                                            className="w-12 h-14 sm:h-12 flex items-center justify-center font-black text-xl hover:bg-gray-100 transition-colors text-black"
                                         >
                                             -
                                         </button>
-                                        <span className="w-14 h-12 flex items-center justify-center font-black text-lg bg-black text-white border-x-2 border-black">
+                                        <span className="w-14 h-14 sm:h-12 flex items-center justify-center font-black text-lg bg-black text-white border-x-2 border-black">
                                             {quantity}
                                         </span>
                                         <button
                                             onClick={() => setQuantity((q) => q + 1)}
-                                            className="w-12 h-12 flex items-center justify-center font-black text-xl hover:bg-gray-100 transition-colors text-black"
+                                            className="w-12 h-14 sm:h-12 flex items-center justify-center font-black text-xl hover:bg-gray-100 transition-colors text-black"
                                         >
                                             +
                                         </button>
                                     </div>
                                 </div>
 
-                                <div className="flex-1 pt-10">
+                                <div className="flex-1 sm:pt-9">
                                     <Button
                                         size="lg"
-                                        className="w-full h-16 rounded-none bg-black text-white font-black uppercase tracking-[0.2em] text-xs hover:scale-[1.02] active:scale-95 transition-all shadow-2xl group"
+                                        className="w-full h-14 sm:h-16 rounded-none bg-black text-white font-black uppercase tracking-[0.2em] text-xs hover:scale-[1.02] active:scale-95 transition-all shadow-2xl group flex items-center justify-center"
                                         onClick={handleAddToCart}
                                     >
                                         <ShoppingCart className="mr-3 h-5 w-5 transition-transform group-hover:-rotate-12" />

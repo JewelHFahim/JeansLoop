@@ -66,3 +66,13 @@ export const usersApi = {
 export const couponsApi = {
     validate: (code: string, amount: number) => apiClient.post('/coupons/validate', { code, amount }),
 };
+
+// Sliders API
+export const slidersApi = {
+    getActive: () => apiClient.get('/sliders/active'),
+};
+
+// Categories API
+export const categoriesApi = {
+    getAll: () => apiClient.get('/categories'),
+};

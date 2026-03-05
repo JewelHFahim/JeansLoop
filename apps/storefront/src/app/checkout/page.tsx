@@ -224,9 +224,9 @@ export default function CheckoutPage() {
     const total = subtotal + shipping - discount;
 
     return (
-        <div className="min-h-screen bg-white py-12 lg:py-20">
-            <div className="container mx-auto px-4">
-                <form onSubmit={handleSubmit} className="grid gap-8 lg:grid-cols-3">
+        <div className="min-h-screen bg-white py-8 pb-28 lg:py-20 lg:pb-20">
+            <div className="container mx-auto px-4 sm:px-6">
+                <form id="checkout-form" onSubmit={handleSubmit} className="grid gap-6 lg:gap-8 lg:grid-cols-3">
 
                     {/* Left Column: Forms */}
                     <div className="lg:col-span-2 space-y-6">
@@ -467,7 +467,7 @@ export default function CheckoutPage() {
 
                                         {/* bKash Payment Details */}
                                         {paymentMethod === 'bkash' && (
-                                            <div className="ml-7 mt-3 space-y-3 rounded-lg border border-pink-200 bg-pink-50/30 p-4">
+                                            <div className="md:ml-7 mt-3 space-y-3 rounded-lg border border-pink-200 bg-pink-50/30 p-4">
                                                 <div className="rounded-md bg-white p-3 border border-pink-300">
                                                     <p className="text-xs text-gray-600 mb-1">Send money to this number:</p>
                                                     <p className="text-lg font-bold text-pink-600">{BKASH_MERCHANT_NUMBER}</p>
@@ -516,13 +516,15 @@ export default function CheckoutPage() {
                                 </div>
 
                                 {/* Confirm Button */}
-                                <Button
-                                    className="w-full bg-black hover:bg-gray-900 h-14 text-xl font-bold text-white transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-xl rounded-xl"
-                                    disabled={loading}
-                                    type="submit"
-                                >
-                                    {loading ? 'Processing...' : `Confirm Order ৳${total.toFixed(0)}`}
-                                </Button>
+                                <div className="hidden lg:block">
+                                    <Button
+                                        className="w-full bg-black hover:bg-gray-900 h-14 text-xl font-bold text-white transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-xl rounded-xl"
+                                        disabled={loading}
+                                        type="submit"
+                                    >
+                                        {loading ? 'Processing...' : `Confirm Order ৳${total.toFixed(0)}`}
+                                    </Button>
+                                </div>
 
                                 {/* Badges */}
                                 <div className="flex justify-between text-[10px] text-gray-500 pt-2">
@@ -535,15 +537,19 @@ export default function CheckoutPage() {
                     </div>
                 </form>
 
-                {/* Mobile Sticky Bar (Optional) */}
-                <div className="fixed bottom-0 left-0 right-0 p-4 bg-gray-900 text-white lg:hidden z-50 flex items-center justify-between">
-                    <span className="font-bold">Total ৳{total.toFixed(0)}</span>
+                {/* Mobile Sticky Bar */}
+                <div className="fixed bottom-0 left-0 right-0 p-4 px-6 bg-white border-t border-gray-200 shadow-[0_-10px_30px_-10px_rgba(0,0,0,0.1)] lg:hidden z-50 flex items-center justify-between">
+                    <div className="flex flex-col">
+                        <span className="text-[10px] text-gray-500 font-bold tracking-widest uppercase">Total Payment</span>
+                        <span className="font-black text-xl text-black leading-none mt-1">৳{total.toFixed(0)}</span>
+                    </div>
                     <Button
-                        className="bg-white text-black hover:bg-gray-100 font-bold px-8 h-12 rounded-lg transition-all active:scale-95"
-                        onClick={handleSubmit}
+                        form="checkout-form"
+                        type="submit"
+                        className="bg-black text-white hover:bg-gray-900 font-black uppercase tracking-widest px-8 h-12 rounded-xl transition-all active:scale-95 shadow-md flex-shrink-0"
                         disabled={loading}
                     >
-                        Confirm Order
+                        {loading ? 'Processing...' : 'Place Order'}
                     </Button>
                 </div>
             </div>

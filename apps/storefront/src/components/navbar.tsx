@@ -40,33 +40,33 @@ export function Navbar() {
                     </Link>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 sm:gap-2">
                     {mounted ? (
                         <>
                             {isAuthenticated ? (
                                 <>
                                     <Link href="/account">
                                         <Button variant="ghost" size="icon" title="Account" className="text-black hover:bg-black/5 rounded-full transition-all hover:scale-110">
-                                            <User className="h-5 w-5" />
+                                            <User className="h-5 w-5 sm:h-5 sm:w-5" />
                                         </Button>
                                     </Link>
-                                    <Button variant="ghost" size="sm" onClick={logout} className="text-black font-bold uppercase tracking-widest text-[10px] hover:bg-black hover:text-white rounded-none border border-black px-4 transition-all">
+                                    <Button variant="ghost" size="sm" onClick={logout} className="hidden sm:flex text-black font-bold uppercase tracking-widest text-[10px] hover:bg-black hover:text-white rounded-none border border-black px-4 transition-all">
                                         Logout
                                     </Button>
                                 </>
                             ) : (
-                                <Link href="/auth/login">
+                                <Link href="/auth/login" className="hidden sm:block">
                                     <Button variant="ghost" size="sm" className="text-black font-bold uppercase tracking-widest text-[10px] hover:bg-black hover:text-white rounded-none border border-black px-4 transition-all">
                                         Sign In
                                     </Button>
                                 </Link>
                             )}
 
-                            <Link href="/cart" className="relative ml-2">
+                            <Link href="/cart" className="relative ml-1 sm:ml-2">
                                 <Button variant="ghost" size="icon" className="text-black hover:bg-black/5 rounded-full transition-all hover:scale-110">
-                                    <ShoppingCart className="h-5 w-5" />
+                                    <ShoppingCart className="h-5 w-5 sm:h-5 sm:w-5" />
                                     {totalItems > 0 && (
-                                        <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-black text-[10px] font-black text-white border-2 border-white shadow-sm">
+                                        <span className="absolute -right-1 -top-1 flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-black text-[9px] sm:text-[10px] font-black text-white border-2 border-white shadow-sm">
                                             {totalItems}
                                         </span>
                                     )}
@@ -75,14 +75,14 @@ export function Navbar() {
                         </>
                     ) : (
                         <>
-                            <Link href="/auth/login">
+                            <Link href="/auth/login" className="hidden sm:block">
                                 <Button variant="ghost" size="sm" className="text-black font-bold">
                                     Sign In
                                 </Button>
                             </Link>
-                            <Link href="/cart" className="relative ml-2">
+                            <Link href="/cart" className="relative ml-1 sm:ml-2">
                                 <Button variant="ghost" size="icon" className="text-black">
-                                    <ShoppingCart className="h-5 w-5" />
+                                    <ShoppingCart className="h-5 w-5 sm:h-5 sm:w-5" />
                                 </Button>
                             </Link>
                         </>
@@ -93,7 +93,7 @@ export function Navbar() {
                         className="md:hidden text-black hover:bg-black/5 rounded-full transition-all"
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
                     >
-                        <Menu className="h-6 w-6" />
+                        <Menu className="h-5 w-5 sm:h-6 sm:w-6" />
                     </Button>
                 </div>
             </div>

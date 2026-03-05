@@ -86,3 +86,12 @@ export const uploadApi = {
         return apiClient.post('/upload', formData);
     },
 };
+
+// Sliders API
+export const slidersApi = {
+    getAll: () => apiClient.get('/sliders'),
+    getById: (id: string) => apiClient.get(`/sliders/${id}`),
+    create: (data: any) => apiClient.post('/sliders', data),
+    update: (id: string, data: any) => apiClient.put(`/sliders/${id}`, data),
+    delete: (id: string) => apiClient.delete(`/sliders/${id}`),
+};
