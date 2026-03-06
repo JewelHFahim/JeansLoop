@@ -16,8 +16,8 @@ module.exports = {
     {
       name: 'jeansloop-admin',
       cwd: './apps/admin',
-      script: 'npm',
-      args: 'run start',
+      script: 'node',
+      args: '.next/standalone/apps/admin/server.js',
       env: {
         NODE_ENV: 'production',
         PORT: 3001,
@@ -28,8 +28,8 @@ module.exports = {
     {
       name: 'jeansloop-storefront',
       cwd: './apps/storefront',
-      script: 'npm',
-      args: 'run start',
+      script: 'node',
+      args: '.next/standalone/apps/storefront/server.js',
       env: {
         NODE_ENV: 'production',
         PORT: 3000,
