@@ -14,7 +14,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: '**.yourdomain.com',
+        hostname: 'thefirecutter.store',
+      },
+      {
+        protocol: 'https',
+        hostname: 'api.thefirecutter.store',
       }
     ],
   },
