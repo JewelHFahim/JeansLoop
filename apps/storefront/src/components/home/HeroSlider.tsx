@@ -28,10 +28,10 @@ const defaultSlides = [
   },
   {
     id: 3,
-    image: 'https://images.unsplash.com/photo-1473966968600-fa804b86862b?q=80&w=2000&auto=format&fit=crop',
-    title: 'Classic \n Twill',
-    subtitle: 'Versatile and refined cotton twill. The essential choice for a sophisticated casual look that stays crisp all day.',
-    primaryCta: { text: 'Shop Twill', href: '/shop?category=TWILL' },
+    image: '/sliders/slider1.jpg',
+    title: 'Classic \n Denim',
+    subtitle: 'Versatile and refined cotton denim. The essential choice for a sophisticated casual look that stays crisp all day.',
+    primaryCta: { text: 'Shop Denim', href: '/shop?category=DENIM' },
     secondaryCta: null,
   },
 ];
