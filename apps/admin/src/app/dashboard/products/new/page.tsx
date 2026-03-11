@@ -26,6 +26,7 @@ export default function NewProductPage() {
         name: '',
         slug: '',
         description: '',
+        highlights: [] as string[],
         price: 0,
         category: '',
         isDraft: true,
@@ -183,6 +184,52 @@ export default function NewProductPage() {
                                     className="w-full rounded-none border-2 border-black p-3 text-xs font-bold uppercase placeholder:text-gray-300 focus-visible:outline-none bg-white transition-all min-h-[120px]"
                                     placeholder="Enter detailed hardware specifications..."
                                 />
+                            </div>
+
+                            {/* Highlights / Bullet Points */}
+                            <div className="space-y-3">
+                                <div className="flex items-center justify-between">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Product Highlights / Points</label>
+                                    <Button
+                                        type="button"
+                                        onClick={() => setForm({ ...form, highlights: [...form.highlights, ''] })}
+                                        className="h-7 rounded-none bg-black text-white px-3 text-[8px] font-black uppercase tracking-widest hover:scale-105 transition-all"
+                                    >
+                                        <Plus className="h-3 w-3 mr-1" /> Add Point
+                                    </Button>
+                                </div>
+                                <div className="space-y-2">
+                                    {form.highlights.map((point, idx) => (
+                                        <div key={idx} className="flex gap-2">
+                                            <Input
+                                                value={point}
+                                                onChange={(e) => {
+                                                    const newHighlights = [...form.highlights];
+                                                    newHighlights[idx] = e.target.value;
+                                                    setForm({ ...form, highlights: newHighlights });
+                                                }}
+                                                placeholder={`Highlight Point #${idx + 1}`}
+                                                className="rounded-none border-2 border-black font-bold placeholder:text-gray-300 focus-visible:ring-0 bg-white transition-all text-xs"
+                                            />
+                                            <Button
+                                                type="button"
+                                                onClick={() => {
+                                                    const newHighlights = form.highlights.filter((_, i) => i !== idx);
+                                                    setForm({ ...form, highlights: newHighlights });
+                                                }}
+                                                variant="outline"
+                                                className="rounded-none border-2 border-red-600 text-red-600 h-10 w-10 p-0 hover:bg-red-600 hover:text-white transition-all shrink-0"
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                    ))}
+                                    {form.highlights.length === 0 && (
+                                        <div className="text-[10px] font-bold uppercase italic text-gray-400 border-2 border-dashed border-gray-200 p-4 text-center">
+                                            No highlights added. Click "Add Point" to add bullet points.
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
