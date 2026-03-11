@@ -139,6 +139,7 @@ export const updateProduct = async (req: Request, res: Response) => {
             product.name = parsed.name;
             product.slug = parsed.slug;
             product.description = parsed.description;
+            product.highlights = parsed.highlights;
             product.price = parsed.price;
             product.category = parsed.category;
             product.images = parsed.images;

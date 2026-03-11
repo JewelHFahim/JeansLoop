@@ -116,6 +116,17 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                             <p className="text-gray-800 font-medium leading-relaxed text-sm lg:text-base">
                                 {product.description}
                             </p>
+
+                            {product.highlights && product.highlights.length > 0 && (
+                                <ul className="mt-4 space-y-2">
+                                    {product.highlights.map((point: string, i: number) => (
+                                        <li key={i} className="flex items-start gap-2 text-sm text-gray-800 font-medium">
+                                            <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-black shrink-0" />
+                                            {point}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                         </div>
 
                         {/* Variant Selection */}
