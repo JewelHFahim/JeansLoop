@@ -18,6 +18,14 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'api.thefirecutter.store',
+      },
+      {
+        protocol: 'http',
+        hostname: '176.57.189.196',
+      },
+      {
+        protocol: 'https',
+        hostname: '176.57.189.196',
       }
     ],
   },

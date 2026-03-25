@@ -16,6 +16,24 @@ import { toast } from 'sonner';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
 
+const BANGLADESH_DISTRICTS = [
+    "Bagerhat", "Bandarban", "Barguna", "Barishal", "Bhola", "Bogura", "Brahmanbaria", "Chandpur", 
+    "Chapai Nawabganj", "Chattogram", "Chuadanga", "Cox's Bazar", "Cumilla", "Dhaka", "Dinajpur", 
+    "Faridpur", "Feni", "Gaibandha", "Gazipur", "Gopalganj", "Habiganj", "Jamalpur", "Jashore", 
+    "Jhalokati", "Jhenaidah", "Joypurhat", "Khagrachhari", "Khulna", "Kishoreganj", "Kurigram", 
+    "Kushtia", "Lakshmipur", "Lalmonirhat", "Madaripur", "Magura", "Manikganj", "Meherpur", 
+    "Moulvibazar", "Munshiganj", "Mymensingh", "Naogaon", "Narail", "Narayanganj", "Narsingdi", 
+    "Natore", "Netrokona", "Nilphamari", "Noakhali", "Pabna", "Panchagarh", "Patuakhali", "Pirojpur", 
+    "Rajbari", "Rajshahi", "Rangamati", "Rangpur", "Satkhira", "Shariatpur", "Sherpur", "Sirajganj", 
+    "Sunamganj", "Sylhet", "Tangail", "Thakurgaon"
+].sort();
+
+const calculateShipping = (city: string) => {
+    return (city === 'Dhaka' || city === 'Gazipur' || city === 'Narayanganj') ? 70 : 140;
+};
+
+
+
 export default function CheckoutPage() {
     const router = useRouter();
     const { items, getTotalPrice, clearCart } = useCartStore();
@@ -49,7 +67,8 @@ export default function CheckoutPage() {
     // bKash payment details
     const [bkashSenderNumber, setBkashSenderNumber] = useState('');
     const [bkashTransactionId, setBkashTransactionId] = useState('');
-    const BKASH_MERCHANT_NUMBER = '01XXXXXXXXX'; // Replace with actual merchant number
+    const BKASH_MERCHANT_NUMBER = process.env.NEXT_PUBLIC_BKASH_NUMBER || '01911209322';
+
 
     // Coupon state
     const [couponCode, setCouponCode] = useState('');
@@ -129,9 +148,10 @@ export default function CheckoutPage() {
 
             // 2. Prepare Order Data
             const subtotal = getTotalPrice();
-            const shipping = formData.city === 'Dhaka' ? 70 : 140;
+            const shipping = calculateShipping(formData.city);
             const discount = appliedCoupon?.discountAmount || 0;
             const total = subtotal + shipping - discount;
+
             // I'll stick to image logic: Subtotal + Shipping.
 
             const orderData = {
@@ -219,9 +239,10 @@ export default function CheckoutPage() {
     if (!mounted) return null;
 
     const subtotal = getTotalPrice();
-    const shipping = formData.city === 'Dhaka' ? 70 : 140;
+    const shipping = calculateShipping(formData.city);
     const discount = appliedCoupon?.discountAmount || 0;
     const total = subtotal + shipping - discount;
+
 
     return (
         <div className="min-h-screen bg-white py-8 pb-28 lg:py-20 lg:pb-20">
@@ -314,11 +335,12 @@ export default function CheckoutPage() {
                                             <SelectTrigger className="bg-white">
                                                 <SelectValue placeholder="Select City" />
                                             </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="Dhaka">Dhaka</SelectItem>
-                                                <SelectItem value="Chittagong">Chittagong</SelectItem>
-                                                <SelectItem value="Sylhet">Sylhet</SelectItem>
-                                                {/* Add more cities */}
+                                            <SelectContent className="max-h-80 overflow-y-auto">
+                                                {BANGLADESH_DISTRICTS.map((district) => (
+                                                    <SelectItem key={district} value={district}>
+                                                        {district}
+                                                    </SelectItem>
+                                                ))}
                                             </SelectContent>
                                         </Select>
                                         {!formData.city && <input tabIndex={-1} autoComplete="off" style={{ opacity: 0, height: 0 }} required={!formData.city} />}
@@ -356,7 +378,7 @@ export default function CheckoutPage() {
                                 <div className="space-y-4 max-h-60 overflow-y-auto pr-2 scrollbar-thin">
                                     {items.map((item) => (
                                         <div key={item.variantSku} className="flex gap-3">
-                                            <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded border bg-gray-100">
+                                            <div className="h-12 w-12 shrink-0 overflow-hidden rounded border bg-gray-100">
                                                 {item.image ? (
                                                     <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
                                                 ) : (
@@ -546,7 +568,7 @@ export default function CheckoutPage() {
                     <Button
                         form="checkout-form"
                         type="submit"
-                        className="bg-black text-white hover:bg-gray-900 font-black uppercase tracking-widest px-8 h-12 rounded-xl transition-all active:scale-95 shadow-md flex-shrink-0"
+                        className="bg-black text-white hover:bg-gray-900 font-black uppercase tracking-widest px-8 h-12 rounded-xl transition-all active:scale-95 shadow-md shrink-0"
                         disabled={loading}
                     >
                         {loading ? 'Processing...' : 'Place Order'}
