@@ -155,9 +155,9 @@ export function SocksPromotionSection({
 
                                         {/* Last item 'View More' overlay */}
                                         {index === products.slice(0, 8).length - 1 && (
-                                            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/95 text-white transition-opacity duration-500 hover:bg-black">
-                                                <span className="text-2xl font-black uppercase tracking-tighter">View</span>
-                                                <span className="text-2xl font-black uppercase tracking-tighter">More</span>
+                                            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/50 text-white transition-opacity duration-500 hover:bg-black/60">
+                                                <span className="text-lg font-black uppercase tracking-tighter">View</span>
+                                                <span className="text-lg font-black uppercase tracking-tighter">More</span>
                                                 <div className="mt-4 h-px w-12 bg-white/30"></div>
                                                 <ArrowRight className="mt-4 h-6 w-6" />
                                             </div>

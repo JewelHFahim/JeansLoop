@@ -20,9 +20,9 @@ export function Navbar() {
     return (
         <nav className="sticky top-0 z-50 border-b bg-white shadow-sm">
             <div className="container mx-auto flex h-16 items-center justify-between px-4">
-                <Link href="/" className="text-2xl font-bold text-black flex flex-col items-center">
+                <Link href="/" className="text-2xl font-bold text-black flex flex-col items-start leading-tight">
                     Fire Cutter
-                    <span className='text-xs font-thin tracking-widest text-slate-500'>Export Collections</span>
+                    <span className='text-[10px] font-medium tracking-[0.3em] text-slate-400 uppercase'>Export Collections</span>
                 </Link>
 
                 <div className="hidden items-center gap-6 md:flex">
