@@ -35,7 +35,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
     const handleAddToCart = () => {
         if (product.variants.length > 0 && !selectedVariant) { // Modified condition to use selectedVariant
-            toast.error('Please select a size and color');
+            toast.error('Please select a size');
             return;
         }
 
@@ -63,7 +63,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 <div className="grid gap-16 lg:grid-cols-2">
                     {/* Product Images */}
                     <div className="space-y-4">
-                        <div className="aspect-[4/5] overflow-hidden bg-gray-50 border border-gray-100 group">
+                        <div className="aspect-4/5 overflow-hidden bg-gray-50 border border-gray-100 group">
                             {activeImage ? (
                                 <img
                                     src={activeImage}
@@ -92,13 +92,18 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
                     {/* Product Info */}
                     <div className="flex flex-col">
-                        <div className="border-b-2 border-black pb-8 mb-10">
+                        <div className="border-b-2 border-black pb-4 mb-6">
                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-4">
                                 Premium Collection / {product.category}
                             </p>
-                            <h1 className="text-4xl font-black tracking-tighter uppercase italic leading-none text-black mb-6">
+                            <h1 className="text-4xl font-black tracking-tighter uppercase italic leading-none text-black mb-2">
                                 {product.name}
                             </h1>
+                            {product.variants?.[0]?.color && (
+                                <p className="text-sm font-black text-gray-500 uppercase tracking-widest mb-6 block">
+                                    COLOR: <span className="text-black">{product.variants[0].color}</span>
+                                </p>
+                            )}
                             <div className="flex items-center gap-4">
                                 <p className="text-2xl font-black text-black">
                                     ৳{(selectedVariant?.price || product.price).toFixed(0)}
@@ -113,7 +118,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
                         <div className="mb-10">
                             <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 mb-4">Description</h3>
-                            <p className="text-gray-800 font-medium leading-relaxed text-sm lg:text-base">
+                            <p className="text-gray-800 font-medium leading-relaxed text-sm lg:text-base whitespace-pre-line">
                                 {product.description}
                             </p>
 
@@ -129,27 +134,56 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                             )}
                         </div>
 
+                        {/* Size Chart */}
+                        {product.sizeChart && product.sizeChart.length > 0 && (
+                            <div className="mb-10">
+                                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 mb-4 block">Measurement / Size Chart</h3>
+                                <div className="border-2 border-black overflow-x-auto bg-white">
+                                    <table className="w-full text-left text-sm font-medium">
+                                        <thead className="bg-gray-50 border-b-2 border-black">
+                                            <tr>
+                                                <th className="px-4 py-3 font-black uppercase tracking-widest text-[10px] border-r-2 border-black">Waist</th>
+                                                <th className="px-4 py-3 font-black uppercase tracking-widest text-[10px] border-r-2 border-black">Thigh</th>
+                                                <th className="px-4 py-3 font-black uppercase tracking-widest text-[10px] border-r-2 border-black">Leg Opening</th>
+                                                <th className="px-4 py-3 font-black uppercase tracking-widest text-[10px]">Long</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y-2 divide-black">
+                                            {product.sizeChart.map((row: any, i: number) => (
+                                                <tr key={i} className="hover:bg-gray-50 transition-colors">
+                                                    <td className="px-4 py-3 border-r-2 border-black">{row.waist}</td>
+                                                    <td className="px-4 py-3 border-r-2 border-black">{row.thigh}</td>
+                                                    <td className="px-4 py-3 border-r-2 border-black">{row.legOpening}</td>
+                                                    <td className="px-4 py-3">{row.long}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+
                         {/* Variant Selection */}
                         {product.variants && product.variants.length > 0 && (
                             <div className="mb-10 space-y-6">
                                 <div>
-                                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 mb-4 block">Select Size & Color</label>
-                                    <div className="grid gap-3 sm:grid-cols-2">
+                                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 mb-4 block">Select Size</label>
+                                    <div className="grid gap-3 grid-cols-3 sm:grid-cols-4 lg:grid-cols-5">
                                         {product.variants.map((variant: any, idx: number) => (
                                             <button
                                                 key={`${variant.sku}-${idx}`}
                                                 onClick={() => setSelectedVariant(variant)}
                                                 disabled={variant.stock === 0}
-                                                className={`flex items-center justify-between px-6 py-4 text-[11px] font-black uppercase tracking-widest border-2 transition-all ${selectedVariant?.sku === variant.sku && selectedVariant?.size === variant.size && selectedVariant?.color === variant.color
-                                                    ? 'bg-black text-white border-black shadow-xl -translate-y-1'
+                                                className={`flex flex-col items-center justify-center p-3 text-[11px] font-black uppercase tracking-widest border-2 transition-all ${selectedVariant?.sku === variant.sku && selectedVariant?.size === variant.size
+                                                    ? 'bg-black text-white border-black'
                                                     : 'bg-white text-black border-gray-100 hover:border-black'
-                                                    } ${variant.stock === 0 ? 'opacity-20 cursor-not-allowed grayscale' : 'cursor-pointer hover:shadow-lg'}`}
+                                                    } ${variant.stock === 0 ? 'opacity-20 cursor-not-allowed grayscale' : 'cursor-pointer'}`}
                                             >
-                                                <span>{variant.size} - {variant.color}</span>
+                                                <span>{variant.size}</span>
                                                 {variant.stock === 0 ? (
-                                                    <span className="text-[8px] bg-red-500 text-white px-2 py-0.5 ml-2">SOLD OUT</span>
+                                                    <span className="text-[8px] bg-red-500 text-white px-2 py-0.5 mt-1">SOLD OUT</span>
                                                 ) : variant.stock < 5 ? (
-                                                    <span className="text-[8px] bg-black text-white px-2 py-0.5 ml-2">LOW STOCK</span>
+                                                    <span className="text-[8px] bg-black text-white px-2 py-0.5 mt-1">LOW STOCK</span>
                                                 ) : null}
                                             </button>
                                         ))}
@@ -170,7 +204,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 sm:gap-8">
                                 <div className="space-y-3 sm:space-y-4">
                                     <label className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 block">Quantity</label>
-                                    <div className="flex items-center border-2 border-black bg-white inline-flex">
+                                    <div className="inline-flex items-center border-2 border-black bg-white">
                                         <button
                                             onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                                             className="w-12 h-14 sm:h-12 flex items-center justify-center font-black text-xl hover:bg-gray-100 transition-colors text-black"

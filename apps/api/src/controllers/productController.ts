@@ -144,6 +144,7 @@ export const updateProduct = async (req: Request, res: Response) => {
             product.category = parsed.category;
             product.images = parsed.images;
             product.variants = parsed.variants;
+            product.sizeChart = parsed.sizeChart;
             product.isDraft = parsed.isDraft;
 
             const updatedProduct = await product.save();

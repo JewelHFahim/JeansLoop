@@ -28,12 +28,15 @@ export default function NewProductPage() {
         description: '',
         highlights: [] as string[],
         price: 0,
+        masterSku: '',
+        masterColor: '',
         category: '',
         isDraft: true,
         images: [] as string[],
         variants: [
             { sku: '', size: '', color: '', price: 0, stock: 0 }
-        ]
+        ],
+        sizeChart: [] as { waist: string, thigh: string, legOpening: string, long: string }[]
     });
 
     const createMutation = useMutation({
@@ -93,29 +96,56 @@ export default function NewProductPage() {
         setForm({ ...form, variants: newVariants });
     };
 
+    const addSizeChartRow = () => {
+        setForm({
+            ...form,
+            sizeChart: [...form.sizeChart, { waist: '', thigh: '', legOpening: '', long: '' }]
+        });
+    };
+
+    const removeSizeChartRow = (index: number) => {
+        const newSizeChart = [...form.sizeChart];
+        newSizeChart.splice(index, 1);
+        setForm({ ...form, sizeChart: newSizeChart });
+    };
+
+    const updateSizeChartRow = (index: number, field: string, value: string) => {
+        const newSizeChart = [...form.sizeChart];
+        (newSizeChart[index] as any)[field] = value;
+        setForm({ ...form, sizeChart: newSizeChart });
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         // Sanitize images to prevent Zod null errors
         const sanitizedImages = form.images.filter(img => img !== null && img !== undefined);
 
-        if (!form.name || !form.slug || !form.category) {
-            alert('Incomplete Data: Core Identity Fields Required');
+        if (!form.name || !form.slug || !form.category || !form.masterSku || !form.masterColor) {
+            alert('Incomplete Data: Core Identity Fields (including SKU and Color) Required');
             return;
         }
 
         // Validate variants
         for (let i = 0; i < form.variants.length; i++) {
             const variant = form.variants[i];
-            if (!variant.sku || !variant.size || !variant.color) {
-                alert(`Incomplete Variant Data (Index ${i + 1}): SKU, Size, and Color are mandatory for initialization.`);
+            if (!variant.size) {
+                alert(`Incomplete Variant Data (Index ${i + 1}): Size is mandatory.`);
                 return;
             }
         }
 
+        const submitVariants = form.variants.map(v => ({
+            ...v,
+            sku: form.masterSku,
+            color: form.masterColor,
+            price: form.price
+        }));
+
         const submitData = {
             ...form,
-            images: sanitizedImages
+            images: sanitizedImages,
+            variants: submitVariants
         };
 
         createMutation.mutate(submitData);
@@ -250,11 +280,8 @@ export default function NewProductPage() {
                             <table className="w-full text-left border-separate border-spacing-y-2">
                                 <thead>
                                     <tr className="text-[9px] font-black uppercase tracking-widest text-gray-500">
-                                        <th className="px-2 pb-2">SKU</th>
-                                        <th className="px-2 pb-2">Size</th>
-                                        <th className="px-2 pb-2">Color</th>
-                                        <th className="px-2 pb-2">Price</th>
-                                        <th className="px-2 pb-2">Stock</th>
+                                        <th className="px-2 pb-2 w-1/2">Size</th>
+                                        <th className="px-2 pb-2 w-1/2">Stock Limit</th>
                                         <th className="px-2 pb-2"></th>
                                     </tr>
                                 </thead>
@@ -263,34 +290,10 @@ export default function NewProductPage() {
                                         <tr key={idx}>
                                             <td className="p-1">
                                                 <input
-                                                    value={variant.sku}
-                                                    onChange={(e) => updateVariant(idx, 'sku', e.target.value)}
-                                                    className="w-full bg-white border-2 border-black p-2 text-[10px] font-black uppercase outline-none focus:ring-0"
-                                                    placeholder="SKU"
-                                                />
-                                            </td>
-                                            <td className="p-1">
-                                                <input
                                                     value={variant.size}
                                                     onChange={(e) => updateVariant(idx, 'size', e.target.value)}
                                                     className="w-full bg-white border-2 border-black p-2 text-[10px] font-black uppercase outline-none focus:ring-0"
-                                                    placeholder="L"
-                                                />
-                                            </td>
-                                            <td className="p-1">
-                                                <input
-                                                    value={variant.color}
-                                                    onChange={(e) => updateVariant(idx, 'color', e.target.value)}
-                                                    className="w-full bg-white border-2 border-black p-2 text-[10px] font-black uppercase outline-none focus:ring-0"
-                                                    placeholder="BLACK"
-                                                />
-                                            </td>
-                                            <td className="p-1">
-                                                <input
-                                                    type="number"
-                                                    value={variant.price}
-                                                    onChange={(e) => updateVariant(idx, 'price', Number(e.target.value))}
-                                                    className="w-full bg-white border-2 border-black p-2 text-[10px] font-black outline-none focus:ring-0"
+                                                    placeholder="EX: 32 / M"
                                                 />
                                             </td>
                                             <td className="p-1">
@@ -314,6 +317,87 @@ export default function NewProductPage() {
                                             </td>
                                         </tr>
                                     ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    {/* Size Chart Module */}
+                    <div className="border-4 border-black bg-white shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] flex flex-col">
+                        <div className="bg-gray-50 border-b-4 border-black p-4 flex justify-between items-center">
+                            <h2 className="text-xs font-black uppercase tracking-[0.2em] italic">Measurement / Size Chart</h2>
+                            <Button
+                                type="button"
+                                onClick={addSizeChartRow}
+                                className="h-8 rounded-none bg-black text-white px-4 text-[9px] font-black uppercase tracking-widest hover:scale-105 transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]"
+                            >
+                                <Plus className="h-3 w-3 mr-1.5" /> Execute / Add Row
+                            </Button>
+                        </div>
+                        <div className="p-6 overflow-x-auto">
+                            <table className="w-full text-left border-separate border-spacing-y-2">
+                                <thead>
+                                    <tr className="text-[9px] font-black uppercase tracking-widest text-gray-500">
+                                        <th className="px-2 pb-2">Waist</th>
+                                        <th className="px-2 pb-2">Thigh</th>
+                                        <th className="px-2 pb-2">Leg Opening</th>
+                                        <th className="px-2 pb-2">Long</th>
+                                        <th className="px-2 pb-2"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {form.sizeChart.map((row, idx) => (
+                                        <tr key={idx}>
+                                            <td className="p-1">
+                                                <input
+                                                    value={row.waist}
+                                                    onChange={(e) => updateSizeChartRow(idx, 'waist', e.target.value)}
+                                                    className="w-full bg-white border-2 border-black p-2 text-[10px] font-black uppercase outline-none focus:ring-0"
+                                                    placeholder="32"
+                                                />
+                                            </td>
+                                            <td className="p-1">
+                                                <input
+                                                    value={row.thigh}
+                                                    onChange={(e) => updateSizeChartRow(idx, 'thigh', e.target.value)}
+                                                    className="w-full bg-white border-2 border-black p-2 text-[10px] font-black uppercase outline-none focus:ring-0"
+                                                    placeholder="22"
+                                                />
+                                            </td>
+                                            <td className="p-1">
+                                                <input
+                                                    value={row.legOpening}
+                                                    onChange={(e) => updateSizeChartRow(idx, 'legOpening', e.target.value)}
+                                                    className="w-full bg-white border-2 border-black p-2 text-[10px] font-black uppercase outline-none focus:ring-0"
+                                                    placeholder="14"
+                                                />
+                                            </td>
+                                            <td className="p-1">
+                                                <input
+                                                    value={row.long}
+                                                    onChange={(e) => updateSizeChartRow(idx, 'long', e.target.value)}
+                                                    className="w-full bg-white border-2 border-black p-2 text-[10px] font-black uppercase outline-none focus:ring-0"
+                                                    placeholder="40"
+                                                />
+                                            </td>
+                                            <td className="p-1">
+                                                <Button
+                                                    onClick={() => removeSizeChartRow(idx)}
+                                                    variant="outline"
+                                                    className="h-9 w-9 p-0 rounded-none border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-all shadow-[3px_3px_0px_0px_rgba(220,38,38,0.1)]"
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                </Button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {form.sizeChart.length === 0 && (
+                                        <tr>
+                                            <td colSpan={5} className="p-4 text-center text-[10px] font-bold uppercase italic text-gray-400 border-2 border-dashed border-gray-200">
+                                                No measurements added. Click "Execute / Add Row" to add size chart data.
+                                            </td>
+                                        </tr>
+                                    )}
                                 </tbody>
                             </table>
                         </div>
@@ -373,15 +457,33 @@ export default function NewProductPage() {
                         </div>
                         <div className="p-6 space-y-6">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Base Price (BDT)</label>
-                                <Input
-                                    type="number"
-                                    value={form.price}
-                                    onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
-                                    className="rounded-none border-2 border-black font-black text-lg h-12 bg-white"
-                                />
-                            </div>
-                            <div className="space-y-2">
+                                 <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Base Price (BDT)</label>
+                                 <Input
+                                     type="number"
+                                     value={form.price}
+                                     onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
+                                     className="rounded-none border-2 border-black font-black text-lg h-12 bg-white"
+                                 />
+                             </div>
+                             <div className="space-y-2">
+                                 <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Master SKU</label>
+                                 <Input
+                                     value={form.masterSku}
+                                     onChange={(e) => setForm({ ...form, masterSku: e.target.value })}
+                                     placeholder="EX: INDIGO-01"
+                                     className="rounded-none border-2 border-black font-black uppercase bg-white focus-visible:ring-0"
+                                 />
+                             </div>
+                             <div className="space-y-2">
+                                 <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Master Color</label>
+                                 <Input
+                                     value={form.masterColor}
+                                     onChange={(e) => setForm({ ...form, masterColor: e.target.value })}
+                                     placeholder="EX: DARK INDIGO"
+                                     className="rounded-none border-2 border-black font-black uppercase bg-white focus-visible:ring-0"
+                                 />
+                             </div>
+                             <div className="space-y-2">
                                 <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Domain / Category</label>
                                 <select
                                     value={form.category}

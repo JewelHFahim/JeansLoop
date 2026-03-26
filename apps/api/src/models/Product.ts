@@ -1,6 +1,13 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import { Product as IProduct } from '@repo/shared';
 
+const SizeChartRowSchema = new Schema({
+    waist: { type: String, required: true },
+    thigh: { type: String, required: true },
+    legOpening: { type: String, required: true },
+    long: { type: String, required: true },
+}, { _id: false });
+
 const ProductVariantSchema = new Schema({
     sku: { type: String, required: true },
     size: { type: String, required: true },
@@ -18,6 +25,7 @@ const ProductSchema = new Schema({
     category: { type: String, required: true },
     images: [{ type: String }],
     variants: [ProductVariantSchema],
+    sizeChart: [SizeChartRowSchema],
     isDraft: { type: Boolean, default: false },
 }, { timestamps: true });
 

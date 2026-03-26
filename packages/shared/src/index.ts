@@ -15,6 +15,14 @@ export const UserSchema = z.object({
 });
 export type User = z.infer<typeof UserSchema>;
 
+export const SizeChartRowSchema = z.object({
+    waist: z.string(),
+    thigh: z.string(),
+    legOpening: z.string(),
+    long: z.string(),
+});
+export type SizeChartRow = z.infer<typeof SizeChartRowSchema>;
+
 export const ProductVariantSchema = z.object({
     sku: z.string().min(1, "SKU is required"),
     size: z.string(),
@@ -34,6 +42,7 @@ export const ProductSchema = z.object({
     category: z.string(),
     images: z.array(z.string()),
     variants: z.array(ProductVariantSchema),
+    sizeChart: z.array(SizeChartRowSchema).optional().default([]),
     isDraft: z.boolean().default(false),
     createdAt: z.date().optional(),
     updatedAt: z.date().optional(),
