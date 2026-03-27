@@ -1,13 +1,14 @@
 'use client';
 
-import { useQuery, keepPreviousData } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ordersApi } from '@/lib/api';
-import { ShoppingCart, Eye, User, Search, Loader2 } from 'lucide-react';
+import { ShoppingCart, Eye, User, Search, Loader2, FileText } from 'lucide-react';
 import Link from 'next/link';
 
 export default function OrdersPage() {
+    const queryClient = useQueryClient();
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
     const [searchQuery, setSearchQuery] = useState('');
@@ -25,7 +26,23 @@ export default function OrdersPage() {
         placeholderData: keepPreviousData,
     });
 
+    const statusMutation = useMutation({
+        mutationFn: ({ id, status }: { id: string; status: string }) => ordersApi.updateStatus(id, status),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['orders'] });
+        },
+    });
+
     const totalPages = data?.pages || 1;
+
+    const statuses = [
+        { value: 'PENDING', label: 'Pending' },
+        { value: 'ACCEPTED', label: 'Accepted' },
+        { value: 'COURIERED', label: 'In Transit' },
+        { value: 'DELIVERED', label: 'Delivered' },
+        { value: 'CANCELLED', label: 'Cancelled' },
+        { value: 'RETURNED', label: 'Returned' },
+    ];
 
     return (
         <div className="space-y-4">
@@ -153,13 +170,20 @@ export default function OrdersPage() {
                                             ৳{order.totalAmount?.toLocaleString()}
                                         </td>
                                         <td className="p-4 border-b border-gray-100">
-                                            <span className={`inline-block px-2 py-0.5 text-[8px] font-black tracking-widest italic rounded-none border-2 ${order.status === 'DELIVERED' ? 'bg-green-500 text-white border-green-600' :
-                                                    order.status === 'CANCELLED' || order.status === 'RETURNED' ? 'bg-red-500 text-white border-red-600' :
-                                                        order.status === 'ACCEPTED' || order.status === 'COURIERED' ? 'bg-blue-500 text-white border-blue-600' :
-                                                            'bg-amber-400 text-black border-amber-500'
-                                                }`}>
-                                                {order.status === 'COURIERED' ? 'IN TRANSIT' : order.status}
-                                            </span>
+                                            <select
+                                                value={order.status}
+                                                onChange={(e) => statusMutation.mutate({ id: order._id, status: e.target.value })}
+                                                disabled={statusMutation.isPending && statusMutation.variables?.id === order._id}
+                                                className={`text-[8px] font-black tracking-widest px-2 py-1 outline-none border-2 transition-all cursor-pointer rounded-none disabled:opacity-50 ${order.status === 'DELIVERED' ? 'bg-green-50 text-green-700 border-green-200' :
+                                                        order.status === 'CANCELLED' || order.status === 'RETURNED' ? 'bg-red-50 text-red-700 border-red-200' :
+                                                            order.status === 'ACCEPTED' || order.status === 'COURIERED' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                                                                'bg-amber-50 text-amber-700 border-amber-200'
+                                                    }`}
+                                            >
+                                                {statuses.map((s) => (
+                                                    <option key={s.value} value={s.value} className="bg-white text-black font-black uppercase text-[10px]">{s.label}</option>
+                                                ))}
+                                            </select>
                                         </td>
                                         <td className="p-4 border-b border-gray-100">
                                             {order.isPaid ? (
@@ -169,12 +193,19 @@ export default function OrdersPage() {
                                             )}
                                         </td>
                                         <td className="p-4 border-b border-gray-100 text-right">
-                                            <Link href={`/dashboard/orders/${order._id}`}>
-                                                <Button variant="outline" size="sm" className="rounded-none border-2 border-black h-10 px-4 hover:bg-black hover:text-white transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] group/btn">
-                                                    <Eye className="h-4 w-4 mr-2 group-hover/btn:scale-110" />
-                                                    <span className="text-[9px] font-black uppercase tracking-widest">Details</span>
-                                                </Button>
-                                            </Link>
+                                            <div className="flex justify-end gap-2">
+                                                <Link href={`/dashboard/orders/${order._id}`}>
+                                                    <Button variant="outline" size="sm" className="rounded-none border-2 border-black h-10 w-10 p-0 hover:bg-black hover:text-white transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] group/btn">
+                                                        <Eye className="h-4 w-4 group-hover/btn:scale-110" />
+                                                    </Button>
+                                                </Link>
+                                                <Link href={`/dashboard/orders/${order._id}/invoice`}>
+                                                    <Button variant="outline" size="sm" className="rounded-none border-2 border-emerald-600 text-emerald-600 h-10 px-4 hover:bg-emerald-600 hover:text-white transition-all shadow-[4px_4px_0px_0px_rgba(22,163,74,0.1)] group/btn">
+                                                        <FileText className="h-4 w-4 mr-2 group-hover/btn:scale-110" />
+                                                        <span className="text-[9px] font-black uppercase tracking-widest">Invoice</span>
+                                                    </Button>
+                                                </Link>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))

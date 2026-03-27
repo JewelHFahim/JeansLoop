@@ -78,3 +78,8 @@ export const slidersApi = {
 export const categoriesApi = {
     getAll: () => apiClient.get('/categories'),
 };
+
+// Site Settings API
+export const settingsApi = {
+    get: () => apiClient.get('/settings'),
+};

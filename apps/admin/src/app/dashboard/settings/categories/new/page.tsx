@@ -19,6 +19,7 @@ export default function NewCategoryPage() {
         slug: '',
         description: '',
         image: '',
+        order: 0,
     });
 
     const createMutation = useMutation({
@@ -110,6 +111,16 @@ export default function NewCategoryPage() {
                                     onChange={(e) => setForm({ ...form, slug: e.target.value })}
                                     placeholder="techwear-series"
                                     className="rounded-none border-2 border-black font-mono text-[11px] placeholder:text-gray-300 focus-visible:ring-0 bg-white transition-all text-black"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Display Order</label>
+                                <Input
+                                    type="number"
+                                    value={form.order}
+                                    onChange={(e) => setForm({ ...form, order: parseInt(e.target.value) || 0 })}
+                                    placeholder="0"
+                                    className="rounded-none border-2 border-black font-bold focus-visible:ring-0 bg-white transition-all text-black"
                                 />
                             </div>
                             <div className="space-y-2">

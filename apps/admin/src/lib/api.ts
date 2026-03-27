@@ -95,3 +95,9 @@ export const slidersApi = {
     update: (id: string, data: any) => apiClient.put(`/sliders/${id}`, data),
     delete: (id: string) => apiClient.delete(`/sliders/${id}`),
 };
+
+// Site Settings API
+export const settingsApi = {
+    get: () => apiClient.get('/settings'),
+    update: (data: any) => apiClient.put('/settings', data),
+};

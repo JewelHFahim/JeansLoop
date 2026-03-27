@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ordersApi } from '@/lib/api';
-import { ChevronLeft, Package, User, MapPin, CreditCard, Clock, CheckCircle, Truck } from 'lucide-react';
+import { ChevronLeft, Package, User, MapPin, CreditCard, Clock, CheckCircle, Truck, FileText } from 'lucide-react';
 import Link from 'next/link';
 
 export default function OrderDetailsPage() {
@@ -77,6 +77,12 @@ export default function OrderDetailsPage() {
                         ))}
                     </select>
                 </div>
+                <Link href={`/dashboard/orders/${order._id}/invoice`}>
+                    <Button className="rounded-none bg-emerald-600 text-white h-11 px-6 font-black uppercase tracking-widest text-[11px] hover:bg-emerald-700 transition-all shadow-[6px_6px_0px_0px_rgba(22,163,74,0.2)]">
+                        <FileText className="mr-2 h-4 w-4" />
+                        Print / Invoice
+                    </Button>
+                </Link>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -103,7 +109,7 @@ export default function OrderDetailsPage() {
                                             <td className="py-2 border-b border-gray-100">
                                                 <div className="flex items-center gap-3">
                                                     {item.image && (
-                                                        <div className="w-12 h-12 border-2 border-black flex-shrink-0">
+                                                        <div className="w-12 h-12 border-2 border-black shrink-0">
                                                             <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                                                         </div>
                                                     )}

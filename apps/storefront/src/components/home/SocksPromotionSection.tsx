@@ -5,65 +5,6 @@ import { ArrowRight, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
-// Mock data for the socks products
-const MOCK_SOCKS = [
-    {
-        id: '1',
-        name: 'Classic Black Anti-Bacterial',
-        price: 160,
-        comparePrice: 250,
-        image: 'https://images.unsplash.com/photo-1586350977771-b3b0abd50c82?q=80&w=1000&auto=format&fit=crop',
-    },
-    {
-        id: '2',
-        name: 'Sport Performance Red',
-        price: 160,
-        comparePrice: 250,
-        image: 'https://images.unsplash.com/photo-1595393019330-c3d32785d688?q=80&w=1000&auto=format&fit=crop',
-    },
-    {
-        id: '3',
-        name: 'Grey Melange Comfort',
-        price: 220,
-        comparePrice: 290,
-        image: 'https://images.unsplash.com/photo-1596483369282-5e45fe2b780f?q=80&w=1000&auto=format&fit=crop',
-    },
-    {
-        id: '4',
-        name: 'Striped Business Casual',
-        price: 160,
-        comparePrice: 290,
-        image: 'https://images.unsplash.com/photo-1582966772680-860e372bb558?q=80&w=1000&auto=format&fit=crop',
-    },
-    {
-        id: '5',
-        name: 'Ankle Athletic Grey',
-        price: 160,
-        comparePrice: 290,
-        image: 'https://images.unsplash.com/photo-1620799140408-ed5341cd2431?q=80&w=1000&auto=format&fit=crop',
-    },
-    {
-        id: '6',
-        name: 'Navy Blue Premium',
-        price: 185,
-        comparePrice: 250,
-        image: 'https://images.unsplash.com/photo-1620799139834-6b8f844fbe61?q=80&w=1000&auto=format&fit=crop',
-    },
-    {
-        id: '7',
-        name: 'Winter Wool Blend',
-        price: 160,
-        comparePrice: 290,
-        image: 'https://images.unsplash.com/photo-1582966772680-860e372bb558?q=80&w=1000&auto=format&fit=crop',
-    },
-    {
-        id: '8',
-        name: 'Urban Streetwear Sock',
-        price: 150,
-        comparePrice: 220,
-        image: 'https://images.unsplash.com/photo-1586350977771-b3b0abd50c82?q=80&w=1000&auto=format&fit=crop', // Reusing image for now
-    },
-];
 
 interface SocksPromotionSectionProps {
     category: string;

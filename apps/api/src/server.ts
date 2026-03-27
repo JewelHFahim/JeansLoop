@@ -16,6 +16,7 @@ import userRoutes from './routes/userRoutes';
 import statsRoutes from './routes/statsRoutes';
 import categoryRoutes from './routes/categoryRoutes';
 import couponRoutes from './routes/couponRoutes';
+import siteSettingsRoutes from './routes/siteSettingsRoutes';
 import { errorHandler } from './middlewares/errorMiddleware';
 import { validateEnv } from './utils/env';
 
@@ -133,6 +134,7 @@ app.use('/api/v1/categories', categoryRoutes);
 app.use('/api/v1/coupons', couponRoutes);
 app.use('/api/v1/upload', uploadRoutes);
 app.use('/api/v1/sliders', sliderRoutes);
+app.use('/api/v1/settings', siteSettingsRoutes);
 
 // Error Handler
 app.use(errorHandler);

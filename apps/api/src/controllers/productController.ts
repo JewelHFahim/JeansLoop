@@ -12,20 +12,31 @@ export const getProducts = async (req: Request, res: Response) => {
         const category = req.query.category;
         const minPrice = Number(req.query.minPrice);
         const maxPrice = Number(req.query.maxPrice);
+        const size = req.query.size;
+        const waist = req.query.waist;
         const sort = req.query.sort || 'newest';
 
         const query: any = {};
 
         if (req.query.keyword) {
-            query.name = {
-                $regex: req.query.keyword,
-                $options: 'i',
-            };
+            query.$or = [
+                { name: { $regex: req.query.keyword, $options: 'i' } },
+                { 'variants.size': { $regex: req.query.keyword, $options: 'i' } },
+                { 'sizeChart.waist': { $regex: req.query.keyword, $options: 'i' } }
+            ];
         }
 
         if (category) {
             // Using case-insensitive regex for category
             query.category = { $regex: new RegExp(`^${category}$`, 'i') };
+        }
+
+        if (size) {
+            query['variants.size'] = size;
+        }
+
+        if (waist) {
+            query['sizeChart.waist'] = waist;
         }
 
         if (!isNaN(minPrice) || !isNaN(maxPrice)) {

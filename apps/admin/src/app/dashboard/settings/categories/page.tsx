@@ -80,8 +80,9 @@ export default function CategoriesPage() {
                         <thead>
                             <tr className="text-[10px] font-black uppercase tracking-widest text-black">
                                 <th className="p-4 text-left border-b-2 border-gray-100">Domain / Identifier</th>
-                                <th className="p-4 text-left border-b-2 border-gray-100">Slug</th>
-                                <th className="p-4 text-left border-b-2 border-gray-100">Description</th>
+                                <th className="p-4 text-left border-b-2 border-gray-100 italic">Slug</th>
+                                <th className="p-4 text-center border-b-2 border-gray-100 italic">Order</th>
+                                <th className="p-4 text-left border-b-2 border-gray-100 italic">Description</th>
                                 <th className="p-4 text-right border-b-2 border-gray-100">Operations</th>
                             </tr>
                         </thead>
@@ -120,6 +121,11 @@ export default function CategoriesPage() {
                                         </td>
                                         <td className="p-4 border-b border-gray-100 font-mono text-[10px] text-gray-600 italic">
                                             {category.slug}
+                                        </td>
+                                        <td className="p-4 border-b border-gray-100 text-center">
+                                            <span className="bg-black text-white text-[10px] font-black px-2 py-0.5 rounded-sm shadow-[2px_2px_0px_0px_rgba(0,0,0,0.1)]">
+                                                {category.order || 0}
+                                            </span>
                                         </td>
                                         <td className="p-4 border-b border-gray-100 max-w-xs truncate text-[10px] text-gray-500">
                                             {category.description || 'No Protocol Established'}

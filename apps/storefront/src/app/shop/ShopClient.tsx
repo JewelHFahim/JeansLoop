@@ -6,8 +6,8 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ProductCard } from '@/components/product/ProductCard';
-import { productsApi } from '@/lib/api';
-import { X, SlidersHorizontal, ArrowUpDown } from 'lucide-react';
+import { productsApi, categoriesApi } from '@/lib/api';
+import { X, SlidersHorizontal, ArrowUpDown, Loader2 } from 'lucide-react';
 
 export function ShopClient() {
     const router = useRouter();
@@ -19,6 +19,7 @@ export function ShopClient() {
     const sort = searchParams.get('sort') || 'newest';
     const minPrice = searchParams.get('minPrice') || '';
     const maxPrice = searchParams.get('maxPrice') || '';
+    const size = searchParams.get('size') || '';
     const page = Number(searchParams.get('page')) || 1;
 
     // Local UI state
@@ -32,7 +33,7 @@ export function ShopClient() {
     }, [minPrice, maxPrice]);
 
     const { data, isLoading } = useQuery({
-        queryKey: ['products', category, sort, minPrice, maxPrice, page],
+        queryKey: ['products', category, sort, minPrice, maxPrice, page, size],
         queryFn: async () => {
             const response = await productsApi.getAll({
                 page,
@@ -41,10 +42,21 @@ export function ShopClient() {
                 sort,
                 minPrice: minPrice || undefined,
                 maxPrice: maxPrice || undefined,
+                size: size || undefined,
             });
             return response.data;
         },
     });
+
+    const { data: categoriesResponse, isLoading: isCategoriesLoading } = useQuery({
+        queryKey: ['categories'],
+        queryFn: async () => {
+            const response = await categoriesApi.getAll();
+            return response.data;
+        },
+    });
+
+    const categories = categoriesResponse || [];
 
     const updateFilters = (updates: Record<string, string | number | undefined>) => {
         const params = new URLSearchParams(searchParams.toString());
@@ -63,7 +75,7 @@ export function ShopClient() {
         router.push(`${pathname}?${params.toString()}`);
     };
 
-    const categories = ['JEANS', 'TWILL', 'TROUSER', 'SOCKS', 'SHIRT', 'T-SHIRT'];
+    const sizes = ['28', '30', '32', '34', '36', '38', 'S', 'M', 'L', 'XL', 'XXL'];
 
     const handlePriceApply = (e: React.FormEvent) => {
         e.preventDefault();
@@ -147,22 +159,28 @@ export function ShopClient() {
                             {/* Category Filter */}
                             <div className="space-y-6">
                                 <h3 className="text-xs font-black uppercase tracking-[0.3em] text-gray-900 border-b border-gray-100 pb-3">Categories</h3>
-                                <div className="flex flex-col gap-1">
+                                <div className="grid grid-cols-2 gap-2">
                                     <button
                                         onClick={() => { updateFilters({ category: '' }); setIsSidebarOpen(false); }}
-                                        className={`text-[11px] font-bold uppercase tracking-widest px-4 py-3 transition-all text-left ${!category ? 'bg-black text-white' : 'hover:bg-gray-50'}`}
+                                        className={`text-[10px] font-black uppercase tracking-widest px-3 py-2.5 transition-all text-center border-2 border-dashed ${!category ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-100 hover:border-black hover:bg-gray-50'}`}
                                     >
-                                        All Products
+                                        ALL ASSETS
                                     </button>
-                                    {categories.map((cat) => (
-                                        <button
-                                            key={cat}
-                                            onClick={() => { updateFilters({ category: cat }); setIsSidebarOpen(false); }}
-                                            className={`text-[11px] font-bold uppercase tracking-widest px-4 py-3 transition-all text-left ${category === cat ? 'bg-black text-white' : 'hover:bg-gray-50'}`}
-                                        >
-                                            {cat}
-                                        </button>
-                                    ))}
+                                    {isCategoriesLoading ? (
+                                        <div className="flex items-center justify-center p-2">
+                                            <Loader2 className="h-4 w-4 animate-spin text-gray-300" />
+                                        </div>
+                                    ) : (
+                                        categories.map((cat: any) => (
+                                            <button
+                                                key={cat._id}
+                                                onClick={() => { updateFilters({ category: cat.slug }); setIsSidebarOpen(false); }}
+                                                className={`text-[10px] font-black uppercase tracking-widest px-3 py-2.5 transition-all text-center border-2 ${category?.toUpperCase() === cat.slug?.toUpperCase() ? 'bg-black text-white border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]' : 'bg-white text-black border-gray-100 hover:border-black hover:bg-gray-50'}`}
+                                            >
+                                                {cat.name}
+                                            </button>
+                                        ))
+                                    )}
                                 </div>
                             </div>
 
@@ -197,10 +215,26 @@ export function ShopClient() {
                                     </Button>
                                 </form>
                             </div>
+
+                            {/* Size Filter */}
+                            <div className="space-y-6">
+                                <h3 className="text-xs font-black uppercase tracking-[0.3em] text-gray-900 border-b border-gray-100 pb-3">Available Sizes</h3>
+                                <div className="flex flex-wrap gap-2">
+                                    {sizes.map((s) => (
+                                        <button
+                                            key={s}
+                                            onClick={() => { updateFilters({ size: size === s ? '' : s }); setIsSidebarOpen(false); }}
+                                            className={`min-w-[44px] h-[44px] flex items-center justify-center text-[11px] font-black border-2 transition-all ${size === s ? 'bg-black text-white border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]' : 'bg-white text-black border-gray-100 hover:border-black'}`}
+                                        >
+                                            {s}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
 
                         {/* Footer in Drawer Overlay */}
-                        {(category || minPrice || maxPrice) && (
+                        {(category || minPrice || maxPrice || size) && (
                             <div className="absolute bottom-0 left-0 right-0 p-8 border-t border-gray-100 bg-gray-50/50">
                                 <Button
                                     variant="outline"

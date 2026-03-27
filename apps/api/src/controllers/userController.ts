@@ -25,29 +25,40 @@ export const getUserProfile = async (req: Request, res: Response) => {
 // @route   PUT /api/v1/users/profile
 // @access  Private
 export const updateUserProfile = async (req: Request, res: Response) => {
-    const user = await User.findById((req as any).user.userId);
+    // If updating password, explicitly select the password field (it's select: false)
+    const userQuery = req.body.password
+        ? User.findById((req as any).user.userId).select('+password')
+        : User.findById((req as any).user.userId);
 
-    if (user) {
-        user.name = req.body.name || user.name;
-        user.phone = req.body.phone || user.phone;
-        // user.email = req.body.email || user.email; // Should verify email change?
-        if (req.body.password) {
-            user.password = req.body.password;
-        }
+    const user = await userQuery;
 
-        const updatedUser = await user.save();
-
-        res.json({
-            _id: updatedUser._id,
-            name: updatedUser.name,
-            email: updatedUser.email,
-            phone: updatedUser.phone,
-            role: updatedUser.role,
-        });
-    } else {
-        res.status(404);
-        throw new Error('User not found');
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
     }
+
+    user.name = req.body.name || user.name;
+    user.phone = req.body.phone || user.phone;
+
+    if (req.body.password) {
+        if (!req.body.currentPassword) {
+            return res.status(400).json({ message: 'Current password is required to set a new password.' });
+        }
+        const isMatch = await user.comparePassword(req.body.currentPassword);
+        if (!isMatch) {
+            return res.status(400).json({ message: 'Current password is incorrect.' });
+        }
+        user.password = req.body.password;
+    }
+
+    const updatedUser = await user.save();
+
+    return res.json({
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        phone: updatedUser.phone,
+        role: updatedUser.role,
+    });
 };
 
 // @desc    Get all users with order stats

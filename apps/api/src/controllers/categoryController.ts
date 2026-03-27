@@ -4,7 +4,7 @@ import { CategorySchema } from '@repo/shared';
 
 export const getCategories = async (_req: Request, res: Response) => {
     try {
-        const categories = await Category.find().sort({ createdAt: -1 });
+        const categories = await Category.find().sort({ order: 1, createdAt: -1 });
         res.status(200).json(categories);
     } catch (error: any) {
         res.status(500).json({ message: error.message });

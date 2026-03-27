@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ShoppingCart, User, Menu } from 'lucide-react';
+import { ShoppingCart, User, Menu, Loader2, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCartStore } from '@/store/cart';
 import { useAuthStore } from '@/store/auth';
+import { useQuery } from '@tanstack/react-query';
+import { categoriesApi, settingsApi } from '@/lib/api';
 
 export function Navbar() {
     const [mounted, setMounted] = useState(false);
@@ -17,26 +19,60 @@ export function Navbar() {
         setMounted(true);
     }, []);
 
+    const { data: categories, isLoading: categoriesLoading } = useQuery({
+        queryKey: ['categories'],
+        queryFn: async () => {
+            const response = await categoriesApi.getAll();
+            return response.data;
+        },
+    });
+
+    const { data: settings } = useQuery({
+        queryKey: ['site-settings'],
+        queryFn: async () => {
+            const response = await settingsApi.get();
+            return response.data;
+        },
+    });
+
     return (
         <nav className="sticky top-0 z-50 border-b bg-white shadow-sm">
             <div className="container mx-auto flex h-16 items-center justify-between px-4">
-                <Link href="/" className="text-2xl font-bold text-black flex flex-col items-start leading-tight">
-                    Fire Cutter
-                    <span className='text-[10px] font-medium tracking-[0.3em] text-slate-400 uppercase'>Export Collections</span>
+                <Link href="/" className="flex flex-col items-start justify-center group gap-0.5">
+                    {settings?.logo ? (
+                        <div className="h-8 w-auto">
+                            <img src={settings.logo} alt={settings.title} className="h-full w-auto object-contain" />
+                        </div>
+                    ) : (
+                        <>
+                            <div className="text-2xl font-black tracking-tighter uppercase leading-none text-black">
+                                {settings?.title || 'JeansLoop'}
+                            </div>
+                            <span className='hidden sm:block text-[8px] font-medium italic tracking-[0.3em] text-slate-400 uppercase leading-none mt-1'>
+                                {settings?.tagline || 'Premium Denim'}
+                            </span>
+                        </>
+                    )}
                 </Link>
 
                 <div className="hidden items-center gap-6 md:flex">
-                    <Link href="/shop" className="text-black hover:text-gray-600">
-                        Shop
-                    </Link>
-                    <Link href="/shop?category=JEANS" className="text-black hover:text-gray-600">
-                        Jeans
-                    </Link>
-                    <Link href="/shop?category=TWILL" className="text-black hover:text-gray-600">
-                        Twill
-                    </Link>
-                    <Link href="/shop?category=TROUSER" className="text-black hover:text-gray-600">
-                        Trouser
+
+                    {categoriesLoading ? (
+                        <Loader2 className="h-3 w-3 animate-spin text-gray-400" />
+                    ) : (
+                        categories?.slice(0, 5).map((category: any) => (
+                            <Link
+                                key={category._id}
+                                href={`/shop?category=${category.slug}`}
+                                className="text-black font-bold uppercase tracking-widest text-[12px] hover:text-gray-600 transition-colors"
+                            >
+                                {category.name}
+                            </Link>
+                        ))
+                    )}
+
+                    <Link href="/shop" className="text-black font-bold uppercase tracking-widest text-[12px] hover:text-gray-600 transition-colors">
+                        Shop All
                     </Link>
                 </div>
 
@@ -50,14 +86,20 @@ export function Navbar() {
                                             <User className="h-5 w-5 sm:h-5 sm:w-5" />
                                         </Button>
                                     </Link>
-                                    <Button variant="ghost" size="sm" onClick={logout} className="hidden sm:flex text-black font-bold uppercase tracking-widest text-[10px] hover:bg-black hover:text-white rounded-none border border-black px-4 transition-all">
-                                        Logout
+                                    <Button 
+                                        variant="ghost" 
+                                        size="icon" 
+                                        title="Logout"
+                                        onClick={logout} 
+                                        className="hidden sm:flex text-black hover:bg-red-50 hover:text-red-600 rounded-full transition-all hover:scale-110"
+                                    >
+                                        <LogOut className="h-5 w-5" />
                                     </Button>
                                 </>
                             ) : (
                                 <Link href="/auth/login" className="hidden sm:block">
-                                    <Button variant="ghost" size="sm" className="text-black font-bold uppercase tracking-widest text-[10px] hover:bg-black hover:text-white rounded-none border border-black px-4 transition-all">
-                                        Sign In
+                                    <Button variant="ghost" size="icon" title="Sign In" className="text-black hover:bg-black/5 rounded-full transition-all hover:scale-110">
+                                        <User className="h-5 w-5 sm:h-5 sm:w-5" />
                                     </Button>
                                 </Link>
                             )}
@@ -76,12 +118,12 @@ export function Navbar() {
                     ) : (
                         <>
                             <Link href="/auth/login" className="hidden sm:block">
-                                <Button variant="ghost" size="sm" className="text-black font-bold">
-                                    Sign In
+                                <Button variant="ghost" size="icon" className="text-black rounded-full">
+                                    <User className="h-5 w-5 sm:h-5 sm:w-5" />
                                 </Button>
                             </Link>
                             <Link href="/cart" className="relative ml-1 sm:ml-2">
-                                <Button variant="ghost" size="icon" className="text-black">
+                                <Button variant="ghost" size="icon" className="text-black rounded-full">
                                     <ShoppingCart className="h-5 w-5 sm:h-5 sm:w-5" />
                                 </Button>
                             </Link>
@@ -109,10 +151,17 @@ export function Navbar() {
                                 <button onClick={() => setIsMenuOpen(false)} className="text-2xl">&times;</button>
                             </div>
                             <nav className="flex flex-col gap-4">
-                                <Link href="/shop" className="text-lg font-medium" onClick={() => setIsMenuOpen(false)}>Shop All</Link>
-                                <Link href="/shop?category=JEANS" className="text-lg font-medium" onClick={() => setIsMenuOpen(false)}>Jeans</Link>
-                                <Link href="/shop?category=TWILL" className="text-lg font-medium" onClick={() => setIsMenuOpen(false)}>Twill</Link>
-                                <Link href="/shop?category=TROUSER" className="text-lg font-medium" onClick={() => setIsMenuOpen(false)}>Trouser</Link>
+                                <Link href="/shop" className="text-lg font-bold uppercase tracking-widest italic" onClick={() => setIsMenuOpen(false)}>Shop All</Link>
+                                {categories?.map((category: any) => (
+                                    <Link
+                                        key={category._id}
+                                        href={`/shop?category=${category.slug}`}
+                                        className="text-lg font-bold uppercase tracking-widest italic"
+                                        onClick={() => setIsMenuOpen(false)}
+                                    >
+                                        {category.name}
+                                    </Link>
+                                ))}
                                 <hr />
                                 {isAuthenticated ? (
                                     <>

@@ -55,6 +55,7 @@ export const CategorySchema = z.object({
     slug: z.string(),
     description: z.string().optional(),
     image: z.string().optional(),
+    order: z.number().int().default(0),
     createdAt: z.date().optional(),
     updatedAt: z.date().optional(),
 });
@@ -137,3 +138,26 @@ export const SliderSchema = z.object({
     updatedAt: z.date().optional(),
 });
 export type Slider = z.infer<typeof SliderSchema>;
+
+export const SiteSettingsSchema = z.object({
+    id: z.string().optional(),
+    logo: z.string().optional(),
+    title: z.string().min(1, "Site title is required"),
+    tagline: z.string().optional(),
+    email: z.string().email("Invalid email format").optional().or(z.literal('')),
+    phone: z.string().optional(),
+    address: z.string().optional(),
+    locationMapUrl: z.string().optional(),
+    socialLinks: z.object({
+        facebook: z.string().optional(),
+        instagram: z.string().optional(),
+        youtube: z.string().optional(),
+        whatsapp: z.string().optional(),
+        tiktok: z.string().optional(),
+    }).optional(),
+    businessHours: z.string().optional(),
+    announcement: z.string().optional(),
+    createdAt: z.date().optional(),
+    updatedAt: z.date().optional(),
+});
+export type SiteSettings = z.infer<typeof SiteSettingsSchema>;

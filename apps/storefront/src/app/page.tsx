@@ -2,10 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
 import { productsApi, categoriesApi } from '@/lib/api';
-import { ArrowRight } from 'lucide-react';
-import { CategoryPromoSection } from '@/components/home/CategoryPromoSection';
 import { SocksPromotionSection } from '@/components/home/SocksPromotionSection';
 
 import { HeroSlider } from '@/components/home/HeroSlider';
@@ -41,14 +38,14 @@ export default function HomePage() {
           <div className="max-w-4xl mx-auto bg-white/70 backdrop-blur-2xl border border-white/50 rounded-3xl py-4 px-8 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] ring-1 ring-black/5">
             <div className="flex justify-between items-center gap-2">
               {categories.slice(0, 6).map((c: any) => {
-                const fallbackImage = "https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?q=30&w=150&auto=format&fit=crop";
+                const fallbackImage = "/images/banners/Category_Banner_1.avif";
                 return (
                   <Link key={c._id || c.name} href={`/shop?category=${c.slug || c.name}`} className="group flex flex-col items-center gap-2">
                     <div className="w-[64px] h-[64px] rounded-full p-[3px] bg-white shadow-sm border border-gray-100 transition-all duration-300 group-hover:-translate-y-1.5 group-hover:shadow-md overflow-hidden flex items-center justify-center relative ring-2 ring-transparent group-hover:ring-black/5">
-                      <img 
-                        src={c.image || fallbackImage} 
-                        alt={c.name} 
-                        className="w-full h-full object-cover rounded-full transition-transform duration-700 group-hover:scale-110" 
+                      <img
+                        src={c.image || fallbackImage}
+                        alt={c.name}
+                        className="w-full h-full object-cover rounded-full transition-transform duration-700 group-hover:scale-110"
                       />
                     </div>
                     <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500 group-hover:text-black transition-colors text-center whitespace-nowrap">
@@ -74,9 +71,7 @@ export default function HomePage() {
           if (catProducts.length === 0) return null;
 
           const bgColor = index % 2 === 0 ? "bg-white" : "bg-gray-50";
-          const fallbackImage = index % 2 === 0
-            ? "https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?q=80&w=1000&auto=format&fit=crop"
-            : "https://images.unsplash.com/photo-1473966968600-fa804b86862b?q=80&w=1000&auto=format&fit=crop";
+          const fallbackImage = index % 2 === 0 ? "/images/banners/Category_Banner_1.avif" : "/images/banners/Category_Banner_1.avif";
 
           return (
             <div key={c._id || index} className={`${bgColor} py-12`}>

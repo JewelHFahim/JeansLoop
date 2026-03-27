@@ -50,13 +50,26 @@ export default function CheckoutPage() {
     const [formData, setFormData] = useState({
         fullName: user?.name || '',
         email: user?.email || '',
-        phone: '',
+        phone: user?.phone || '',
         altPhone: '', // Optional
-        street: '', // Detailed Address
+        street: user?.address || '', // Detailed Address
         city: '',
         country: 'Bangladesh', // Default or hidden
         note: '', // Note for Delivery
     });
+
+    // Pre-fill form when user data becomes available
+    useEffect(() => {
+        if (user) {
+            setFormData(prev => ({
+                ...prev,
+                fullName: prev.fullName || user.name || '',
+                email: prev.email || user.email || '',
+                phone: prev.phone || user.phone || '',
+                street: prev.street || user.address || '',
+            }));
+        }
+    }, [user]);
 
     // For password if registering
     const [password, setPassword] = useState('');

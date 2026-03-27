@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { LayoutDashboard, Package, ShoppingCart, Users, LogOut, Ticket, Image } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, Users, LogOut, Ticket, Image, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function DashboardLayout({
@@ -58,6 +58,7 @@ export default function DashboardLayout({
                         { href: '/dashboard/sliders', label: 'Hero Sliders', icon: Image },
                         { href: '/dashboard/settings/categories', label: 'Categories', icon: LayoutDashboard },
                         { href: '/dashboard/settings/coupons', label: 'Coupons', icon: Ticket },
+                        { href: '/dashboard/settings/site', label: 'Site Settings', icon: Globe },
                     ].map((item) => (
                         <Link href={item.href} key={item.href}>
                             <Button

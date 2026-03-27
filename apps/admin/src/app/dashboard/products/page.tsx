@@ -19,7 +19,7 @@ export default function ProductsPage() {
             const response = await productsApi.getAll({
                 page,
                 limit: 10,
-                keyword: searchQuery || undefined
+                keyword: searchQuery || undefined,
             });
             return response.data;
         },
@@ -54,26 +54,28 @@ export default function ProductsPage() {
                 </Link>
             </div>
 
-            <div className={`border-4 border-black bg-white shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] flex flex-col pt-0 transition-opacity ${isLoading && !isPlaceholderData ? 'opacity-50' : 'opacity-100'}`}>
+            <div className={`border-4 border-black bg-white flex flex-col pt-0 transition-opacity ${isLoading && !isPlaceholderData ? 'opacity-50' : 'opacity-100'}`}>
                 <div className="bg-gray-50 border-b-4 border-black p-4 flex flex-col md:flex-row justify-between items-center gap-4">
                     <h2 className="text-xs font-black uppercase tracking-[0.2em] text-black italic">Active Inventory Registry</h2>
-                    <div className="relative w-full md:w-64">
-                        <input
-                            type="text"
-                            placeholder="SEARCH FOR ASSETS..."
-                            value={searchQuery}
-                            onChange={(e) => {
-                                setSearchQuery(e.target.value);
-                                setPage(1);
-                            }}
-                            className="w-full bg-white border-2 border-black rounded-none text-[10px] font-black px-3 py-2 pl-9 outline-none focus:bg-black focus:text-white transition-all placeholder:text-gray-300"
-                        />
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2">
-                            {isFetching ? (
-                                <Loader2 className="w-3.5 h-3.5 animate-spin text-black group-focus-within:text-white" />
-                            ) : (
-                                <Search className="w-3.5 h-3.5 text-black group-focus-within:text-white" />
-                            )}
+                    <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+                        <div className="relative w-full md:w-64">
+                            <input
+                                type="text"
+                                placeholder="SEARCH FOR ASSETS..."
+                                value={searchQuery}
+                                onChange={(e) => {
+                                    setSearchQuery(e.target.value);
+                                    setPage(1);
+                                }}
+                                className="w-full bg-white border-2 border-black rounded-none text-[10px] font-black px-3 py-2 pl-9 outline-none focus:bg-black focus:text-white transition-all placeholder:text-gray-300"
+                            />
+                            <div className="absolute left-3 top-1/2 -translate-y-1/2">
+                                {isFetching ? (
+                                    <Loader2 className="w-3.5 h-3.5 animate-spin text-black" />
+                                ) : (
+                                    <Search className="w-3.5 h-3.5 text-black" />
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -85,6 +87,7 @@ export default function ProductsPage() {
                                 <th className="p-4 text-left border-b-2 border-gray-100">Identifier / Name</th>
                                 <th className="p-4 text-left border-b-2 border-gray-100">Category</th>
                                 <th className="p-4 text-left border-b-2 border-gray-100">Price</th>
+                                <th className="p-4 text-left border-b-2 border-gray-100 italic">Sizes</th>
                                 <th className="p-4 text-left border-b-2 border-gray-100">Stock Units</th>
                                 <th className="p-4 text-left border-b-2 border-gray-100">Status</th>
                                 <th className="p-4 text-right border-b-2 border-gray-100">Operations</th>
@@ -144,6 +147,15 @@ export default function ProductsPage() {
                                                 </span>
                                             </td>
                                             <td className="p-4 border-b border-gray-100 font-black text-sm text-emerald-600">৳{product.price?.toLocaleString()}</td>
+                                            <td className="p-4 border-b border-gray-100">
+                                                <div className="flex flex-wrap gap-1">
+                                                    {[...new Set(product.variants?.map((v: any) => v.size))].map((s: any) => (
+                                                        <span key={s} className="bg-gray-100 text-black text-[9px] font-black px-1.5 py-0.5 border border-black/10">
+                                                            {s}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </td>
                                             <td className="p-4 border-b border-gray-100">
                                                 <span className="flex items-center gap-2 text-black">
                                                     <div className="w-1.5 h-1.5 rounded-full bg-black"></div>
