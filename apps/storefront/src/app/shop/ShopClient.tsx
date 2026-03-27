@@ -75,7 +75,7 @@ export function ShopClient() {
         router.push(`${pathname}?${params.toString()}`);
     };
 
-    const sizes = ['28', '30', '32', '34', '36', '38', 'S', 'M', 'L', 'XL', 'XXL'];
+    const sizes = ['28', '30', '32', '34', '36', '38', '40', '42', '44', '46', '48', '50', '52'];
 
     const handlePriceApply = (e: React.FormEvent) => {
         e.preventDefault();
