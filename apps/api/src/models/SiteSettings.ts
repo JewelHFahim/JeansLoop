@@ -8,7 +8,7 @@ const siteSettingsSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
-        default: 'JeansLoop'
+        default: 'Fire Cutter'
     },
     tagline: {
         type: String,

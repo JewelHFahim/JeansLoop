@@ -891,7 +891,7 @@ function SecurityView() {
             </Card>
 
             <div className="bg-gray-50 p-6 border border-gray-100 italic text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] leading-relaxed">
-                By managing these settings, you ensure the integrity of your personal information and transaction history within the JeansLoop portal.
+                By managing these settings, you ensure the integrity of your personal information and transaction history within the Fire Cutter portal.
             </div>
         </div>
     );

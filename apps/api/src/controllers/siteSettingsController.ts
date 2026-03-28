@@ -11,7 +11,7 @@ export const getSettings = async (_req: Request, res: Response) => {
         if (!settings) {
             // Create default settings if not exists
             settings = await SiteSettings.create({
-                title: 'JeansLoop',
+                title: 'Fire Cutter',
                 email: 'support@jeansloop.com',
             });
         }

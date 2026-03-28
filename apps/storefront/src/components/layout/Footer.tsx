@@ -14,7 +14,7 @@ export function Footer() {
         },
     });
 
-    const siteTitle = settings?.title || 'JeansLoop';
+    const siteTitle = settings?.title || 'Fire Cutter';
 
     return (
         <footer className="bg-black text-gray-300">
@@ -109,7 +109,7 @@ export function Footer() {
                 </div>
 
                 <div className="mt-16 border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-black uppercase tracking-widest text-gray-500">
-                    <p>&copy; {new Date().getFullYear()} {siteTitle} Hub. Digital Architecture by JeansLoop.</p>
+                    <p>&copy; {new Date().getFullYear()} {siteTitle} Hub. Digital Architecture by Fire Cutter.</p>
                     <div className="flex gap-6">
                         <span>All Rights Reserved</span>
                         <span>Global Dispatch</span>

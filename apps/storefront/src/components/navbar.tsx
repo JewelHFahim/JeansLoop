@@ -40,7 +40,7 @@ export function Navbar() {
                     ) : (
                         <>
                             <div className="text-2xl font-black tracking-tighter uppercase leading-none text-black">
-                                {settings?.title || 'JeansLoop'}
+                                {settings?.title || 'Fire Cutter'}
                             </div>
                             <span className='hidden sm:block text-[8px] font-medium italic tracking-[0.3em] text-slate-400 uppercase leading-none mt-1'>
                                 {settings?.tagline || 'Premium Denim'}
@@ -147,7 +147,7 @@ export function Navbar() {
                         
                         {/* Drawer Header */}
                         <div className="flex justify-between items-center p-4 border-b-4 border-black bg-black text-white">
-                            <span className="text-2xl font-black italic tracking-tighter uppercase leading-none">{settings?.title || 'JeansLoop'}</span>
+                            <span className="text-2xl font-black italic tracking-tighter uppercase leading-none">{settings?.title || 'Fire Cutter'}</span>
                             <button 
                                 onClick={() => setIsMenuOpen(false)} 
                                 className="p-2 hover:bg-white/20 rounded-none transition-colors"

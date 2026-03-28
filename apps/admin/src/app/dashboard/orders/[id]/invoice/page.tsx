@@ -84,7 +84,7 @@ export default function InvoicePage() {
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between gap-8 mb-12 border-b-4 border-black pb-8">
                     <div>
-                        <h1 className="text-4xl font-black italic tracking-tighter uppercase leading-none mb-1">{settings?.title || 'JeansLoop'}</h1>
+                        <h1 className="text-4xl font-black italic tracking-tighter uppercase leading-none mb-1">{settings?.title || 'Fire Cutter'}</h1>
                         <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-500">{settings?.tagline || 'Premium Denim & Apparel'}</p>
                     </div>
                     <div className="text-right">
@@ -102,7 +102,7 @@ export default function InvoicePage() {
                     <div>
                         <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-400 mb-4 border-b border-gray-100 pb-2">From</h3>
                         <div className="space-y-1">
-                            <p className="text-xs font-black uppercase text-black">{settings?.title || 'JeansLoop Warehouse'}</p>
+                            <p className="text-xs font-black uppercase text-black">{settings?.title || 'Fire Cutter Warehouse'}</p>
                             <p className="text-[10px] font-bold text-gray-600">{settings?.address || 'Dhaka, Bangladesh'}</p>
                             <p className="text-[10px] font-bold text-gray-600">{settings?.email || 'support@jeansloop.com'}</p>
                             <p className="text-[10px] font-bold text-gray-600">{settings?.phone || '+880 1XXX XXXXXX'}</p>
@@ -183,7 +183,7 @@ export default function InvoicePage() {
 
                 {/* Message */}
                 <div className="mt-16 text-center">
-                    <p className="text-[10px] font-black uppercase tracking-[0.5em] text-gray-300 italic">Thank you for your business / JeansLoop Registry</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.5em] text-gray-300 italic">Thank you for your business / Fire Cutter Registry</p>
                 </div>
             </div>
         </div>
