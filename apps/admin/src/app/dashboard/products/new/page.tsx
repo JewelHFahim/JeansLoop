@@ -50,7 +50,7 @@ export default function NewProductPage() {
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const name = e.target.value;
-        const slug = name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+        const slug = name.toLowerCase().replace(/ /g, '-').replace(/[^a-zA-Z0-9_-]+/g, '');
         setForm({ ...form, name, slug });
     };
 
@@ -456,6 +456,7 @@ export default function NewProductPage() {
                         <div className="bg-gray-50 border-b-4 border-black p-4">
                             <h2 className="text-xs font-black uppercase tracking-[0.2em] italic">Configuration / Value</h2>
                         </div>
+                        <div className="p-6 space-y-5">
                              <div className="space-y-2">
                                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Current Selling Price (BDT)</label>
                                  <Input

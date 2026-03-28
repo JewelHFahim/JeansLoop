@@ -22,7 +22,7 @@ const ProductSchema = new Schema({
     description: { type: String, required: true },
     highlights: [{ type: String }],
     price: { type: Number, required: true },
-    comparePrice: { type: Number, default: null },
+    comparePrice: { type: Number, default: undefined },
     category: { type: String, required: true },
     images: [{ type: String }],
     variants: [ProductVariantSchema],
@@ -32,8 +32,6 @@ const ProductSchema = new Schema({
 
 ProductSchema.index({ name: 'text', description: 'text' });
 
-export interface IProductDocument extends Omit<IProduct, 'id'>, Document {
-    comparePrice?: number | null;
-}
+export interface IProductDocument extends Omit<IProduct, 'id'>, Document {}
 
 export const Product = mongoose.model<IProductDocument>('Product', ProductSchema);
