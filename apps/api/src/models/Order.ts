@@ -8,6 +8,8 @@ const OrderItemSchemaMongoose = new Schema({
     price: { type: Number, required: true },
     quantity: { type: Number, required: true },
     image: { type: String },
+    size: { type: String },
+    color: { type: String },
 }, { _id: false });
 
 const OrderSchema = new Schema({

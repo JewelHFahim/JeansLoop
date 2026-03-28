@@ -160,7 +160,10 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
         if (status === 'ACCEPTED' && order.stockStatus === 'PENDING') {
             for (const item of order.items) {
                 await Product.updateOne(
-                    { _id: item.productId, 'variants.sku': item.variantSku },
+                    { 
+                        _id: item.productId, 
+                        variants: { $elemMatch: item.size ? { sku: item.variantSku, size: item.size } : { sku: item.variantSku } }
+                    },
                     { $inc: { 'variants.$.stock': -item.quantity } }
                 );
             }
@@ -171,7 +174,10 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
         if ((status === 'CANCELLED' || status === 'RETURNED') && order.stockStatus === 'ADJUSTED') {
             for (const item of order.items) {
                 await Product.updateOne(
-                    { _id: item.productId, 'variants.sku': item.variantSku },
+                    { 
+                        _id: item.productId, 
+                        variants: { $elemMatch: item.size ? { sku: item.variantSku, size: item.size } : { sku: item.variantSku } }
+                    },
                     { $inc: { 'variants.$.stock': item.quantity } }
                 );
             }
@@ -202,7 +208,10 @@ export const updateOrderToDelivered = async (req: Request, res: Response) => {
         if (order.stockStatus === 'PENDING') {
             for (const item of order.items) {
                 await Product.updateOne(
-                    { _id: item.productId, 'variants.sku': item.variantSku },
+                    { 
+                        _id: item.productId, 
+                        variants: { $elemMatch: item.size ? { sku: item.variantSku, size: item.size } : { sku: item.variantSku } }
+                    },
                     { $inc: { 'variants.$.stock': -item.quantity } }
                 );
             }
@@ -211,6 +220,21 @@ export const updateOrderToDelivered = async (req: Request, res: Response) => {
 
         const updatedOrder = await order.save();
         res.json(updatedOrder);
+    } else {
+        res.status(404);
+        throw new Error('Order not found');
+    }
+};
+
+// @desc    Delete order
+// @route   DELETE /api/v1/orders/:id
+// @access  Private/Admin
+export const deleteOrder = async (req: Request, res: Response) => {
+    const order = await Order.findById(req.params.id);
+
+    if (order) {
+        await order.deleteOne();
+        res.json({ message: 'Order removed' });
     } else {
         res.status(404);
         throw new Error('Order not found');

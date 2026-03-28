@@ -30,27 +30,35 @@ export function SocksPromotionSection({
             <div className="flex flex-col gap-8 lg:flex-row items-stretch">
                 {/* Promotional Banner - Left Side (1 col) */}
                 <div className="relative flex w-full flex-col overflow-hidden rounded-none bg-white border border-gray-200 lg:w-1/4 group shadow-sm transition-all hover:shadow-xl">
-                    <div className="absolute inset-0 opacity-[0.03]" style={{
+                    <div className="absolute inset-0 opacity-[0.03] z-0 hidden lg:block" style={{
                         backgroundImage: 'url("https://www.transparenttextures.com/patterns/cubes.png")',
                         backgroundRepeat: 'repeat'
                     }}></div>
 
-                    <div className="relative z-10 flex h-full flex-col p-6 justify-between">
+                    {/* Background Image (Mobile Only) */}
+                    <div className="absolute inset-0 z-0 block lg:hidden">
+                        <img src={bannerImage} alt="Background" className="w-full h-full object-cover opacity-60" />
+                        <div className="absolute inset-0 bg-black/80"></div>
+                    </div>
+
+                    <div className="relative z-10 flex lg:h-full flex-row lg:flex-col p-4 lg:p-6 items-center lg:items-stretch justify-between gap-4 lg:gap-0">
                         {/* Header/Title */}
-                        <div className="shrink-0">
-                            <h3 className="text-[9px] font-black tracking-[0.3em] text-gray-600 uppercase mb-2">Supreme Quality</h3>
-                            <h2 className="text-3xl font-black leading-[0.9] text-black tracking-tighter uppercase italic">
-                                {title} <br />
-                                <span className="text-xs font-bold tracking-widest text-gray-700 block mt-1 not-italic">{subtitle}</span>
-                            </h2>
-                            <div className="mt-4 flex items-center gap-2">
+                        <div className="shrink-0 flex flex-col items-start justify-between">
+                            <div>
+                                <h3 className="hidden lg:block text-[9px] font-black tracking-[0.3em] text-gray-600 uppercase mb-2">Supreme Quality</h3>
+                                <h2 className="text-lg sm:text-xl lg:text-3xl font-black leading-[0.9] text-white lg:text-black tracking-tighter uppercase italic">
+                                    {title}
+                                    <span className="text-[9px] lg:text-xs font-bold tracking-widest text-gray-300 lg:text-gray-700 block mt-1 not-italic">{subtitle}</span>
+                                </h2>
+                            </div>
+                            <div className="hidden lg:flex mt-4 items-center gap-2">
                                 <div className="h-px w-4 bg-black"></div>
                                 <span className="font-black text-black uppercase tracking-widest text-[8px]">Registry / {category}</span>
                             </div>
                         </div>
 
                         {/* Middle Content */}
-                        <div className="flex flex-1 flex-col justify-center my-4">
+                        <div className="hidden lg:flex flex-1 flex-col justify-center my-4">
                             <p className="text-[11px] text-gray-600 font-medium leading-tight mb-4 line-clamp-2">
                                 {description}
                             </p>
@@ -63,11 +71,12 @@ export function SocksPromotionSection({
                             </div>
                         </div>
 
-                        {/* Footer / CTA */}
-                        <div className="shrink-0 mt-2">
+                        <div className="shrink-0 lg:mt-2 w-auto lg:w-full">
                             <Link href={`/shop?category=${category}`}>
-                                <Button className="w-full bg-black hover:bg-gray-800 text-white rounded-none font-black uppercase tracking-widest text-[9px] h-10 transition-all transform hover:scale-105 active:scale-95">
-                                    Shop Collection <ArrowRight className="ml-2 h-3 w-3" />
+                                <Button className="w-auto lg:w-full bg-white/10 backdrop-blur-md lg:bg-black text-white lg:text-white border-2 border-white/30 lg:border-transparent hover:bg-white/20 lg:hover:bg-gray-800 rounded-none font-black uppercase tracking-widest text-[9px] h-8 lg:h-10 px-3 lg:px-0 transition-all transform hover:scale-105 active:scale-95 shadow-[4px_4px_0px_0px_rgba(255,255,255,0.1)] lg:shadow-none hover:shadow-none">
+                                    <span className="block lg:hidden">Shop</span>
+                                    <span className="hidden lg:block">Shop Collection</span> 
+                                    <ArrowRight className="ml-1 lg:ml-2 h-3 w-3" />
                                 </Button>
                             </Link>
                         </div>

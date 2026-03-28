@@ -133,15 +133,15 @@ export function HeroSlider() {
                       `}
                     >
                       {slide.primaryCta && slide.primaryCta.text && slide.primaryCta.href && (
-                        <Link href={slide.primaryCta.href} className="w-full md:w-auto">
-                          <Button className="w-full md:w-auto h-[44px] md:h-14 bg-white px-6 md:px-10 text-[11px] md:text-sm font-bold uppercase tracking-widest text-black hover:bg-gray-200 rounded-full transform transition hover:scale-105 shadow-[0_0_30px_rgba(255,255,255,0.2)] md:shadow-[0_0_40px_rgba(255,255,255,0.3)]">
+                        <Link href={slide.primaryCta.href} className="w-auto md:w-auto">
+                          <Button className="w-auto md:w-auto h-[44px] md:h-14 bg-white/10 backdrop-blur-md md:bg-white border-2 border-white/30 md:border-transparent px-4 md:px-10 text-[11px] md:text-sm font-bold uppercase tracking-widest text-white md:text-black hover:bg-white/20 md:hover:bg-gray-200 rounded-full transform transition hover:scale-105 shadow-[0_0_30px_rgba(255,255,255,0.2)] md:shadow-[0_0_40px_rgba(255,255,255,0.3)]">
                             {slide.primaryCta.text}
                             <ArrowRight className="ml-2 h-3.5 w-3.5 md:h-5 md:w-5" />
                           </Button>
                         </Link>
                       )}
                       {slide.secondaryCta && slide.secondaryCta.text && slide.secondaryCta.href && (
-                        <Link href={slide.secondaryCta.href} className="w-full md:w-auto">
+                        <Link href={slide.secondaryCta.href} className="hidden md:block md:w-auto">
                           <Button variant="outline" className="w-full md:w-auto h-[44px] md:h-14 border-white/40 md:border-white/50 bg-black/20 backdrop-blur-sm px-6 md:px-10 text-[11px] md:text-sm font-bold uppercase tracking-widest text-white hover:bg-white hover:text-black rounded-full transition">
                             {slide.secondaryCta.text}
                           </Button>

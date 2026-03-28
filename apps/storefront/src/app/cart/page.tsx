@@ -53,7 +53,7 @@ export default function CartPage() {
 
                                         {/* Top Section / Image & Details */}
                                         <div className="flex gap-4 sm:gap-8 min-w-0">
-                                            <div className="h-24 w-24 sm:h-32 sm:w-32 flex-shrink-0 overflow-hidden bg-gray-50 border border-gray-100">
+                                            <div className="h-24 w-24 sm:h-32 sm:w-32 shrink-0 overflow-hidden bg-gray-50 border border-gray-100">
                                                 {item.image && (
                                                     <img
                                                         src={item.image}
@@ -92,7 +92,7 @@ export default function CartPage() {
                                             <div className="flex items-center gap-4 sm:gap-6 sm:mt-4 w-full sm:w-auto justify-between sm:justify-end">
                                                 <div className="flex items-center border-2 border-black bg-white h-9 sm:h-10">
                                                     <button
-                                                        onClick={() => updateQuantity(item.variantSku, Math.max(1, item.quantity - 1))}
+                                                        onClick={() => updateQuantity(item.variantSku, item.size, item.color, Math.max(1, item.quantity - 1))}
                                                         className="w-8 sm:w-10 h-full flex items-center justify-center font-black text-lg hover:bg-gray-100 transition-colors text-black"
                                                     >
                                                         -
@@ -101,7 +101,7 @@ export default function CartPage() {
                                                         {item.quantity}
                                                     </span>
                                                     <button
-                                                        onClick={() => updateQuantity(item.variantSku, item.quantity + 1)}
+                                                        onClick={() => updateQuantity(item.variantSku, item.size, item.color, item.quantity + 1)}
                                                         className="w-8 sm:w-10 h-full flex items-center justify-center font-black text-lg hover:bg-gray-100 transition-colors text-black"
                                                     >
                                                         +
@@ -109,7 +109,7 @@ export default function CartPage() {
                                                 </div>
 
                                                 <button
-                                                    onClick={() => removeItem(item.variantSku)}
+                                                    onClick={() => removeItem(item.variantSku, item.size, item.color)}
                                                     className="text-[10px] font-black uppercase tracking-widest text-red-500 hover:text-red-600 transition-colors flex items-center gap-1.5"
                                                 >
                                                     <Trash2 className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
@@ -174,11 +174,11 @@ export default function CartPage() {
 
                             <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-gray-100 space-y-3">
                                 <div className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-green-600 flex items-center gap-2">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-green-600 flex-shrink-0" />
+                                    <div className="w-1.5 h-1.5 rounded-full bg-green-600 shrink-0" />
                                     Secure SSL Encrypted Checkout
                                 </div>
                                 <div className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-2">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-gray-400 flex-shrink-0" />
+                                    <div className="w-1.5 h-1.5 rounded-full bg-gray-400 shrink-0" />
                                     Eligible for 7-day easy returns
                                 </div>
                             </div>

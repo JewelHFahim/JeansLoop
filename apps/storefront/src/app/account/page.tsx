@@ -437,7 +437,10 @@ function OrdersView({ orders, isLoading, router }: any) {
                                                                         </div>
                                                                         <div className="flex-1 min-w-0">
                                                                             <p className="font-black text-[10px] uppercase tracking-tighter text-black truncate">{item.name}</p>
-                                                                            <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">QTY {item.quantity} • ৳{item.price?.toFixed(0)}</p>
+                                                                            <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">
+                                                                                QTY {item.quantity} • ৳{item.price?.toFixed(0)}
+                                                                                {(item.size || item.color) && ` • ${item.size || ''} ${item.color || ''}`.trim()}
+                                                                            </p>
                                                                         </div>
                                                                         <p className="font-black text-[11px] text-black">৳{(item.price * item.quantity).toFixed(0)}</p>
                                                                     </div>

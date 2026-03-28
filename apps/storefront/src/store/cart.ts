@@ -15,8 +15,8 @@ interface CartItem {
 interface CartStore {
     items: CartItem[];
     addItem: (item: CartItem) => void;
-    removeItem: (variantSku: string) => void;
-    updateQuantity: (variantSku: string, quantity: number) => void;
+    removeItem: (variantSku: string, size?: string, color?: string) => void;
+    updateQuantity: (variantSku: string, size: string | undefined, color: string | undefined, quantity: number) => void;
     clearCart: () => void;
     getTotalItems: () => number;
     getTotalPrice: () => number;
@@ -29,12 +29,12 @@ export const useCartStore = create<CartStore>()(
             addItem: (item) =>
                 set((state) => {
                     const existingItem = state.items.find(
-                        (i) => i.variantSku === item.variantSku
+                        (i) => i.variantSku === item.variantSku && i.size === item.size && i.color === item.color
                     );
                     if (existingItem) {
                         return {
                             items: state.items.map((i) =>
-                                i.variantSku === item.variantSku
+                                i.variantSku === item.variantSku && i.size === item.size && i.color === item.color
                                     ? { ...i, quantity: i.quantity + item.quantity }
                                     : i
                             ),
@@ -42,14 +42,14 @@ export const useCartStore = create<CartStore>()(
                     }
                     return { items: [...state.items, item] };
                 }),
-            removeItem: (variantSku) =>
+            removeItem: (variantSku, size, color) =>
                 set((state) => ({
-                    items: state.items.filter((i) => i.variantSku !== variantSku),
+                    items: state.items.filter((i) => !(i.variantSku === variantSku && i.size === size && i.color === color)),
                 })),
-            updateQuantity: (variantSku, quantity) =>
+            updateQuantity: (variantSku, size, color, quantity) =>
                 set((state) => ({
                     items: state.items.map((i) =>
-                        i.variantSku === variantSku ? { ...i, quantity } : i
+                        i.variantSku === variantSku && i.size === size && i.color === color ? { ...i, quantity } : i
                     ),
                 })),
             clearCart: () => set({ items: [] }),

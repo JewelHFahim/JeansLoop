@@ -26,6 +26,11 @@ export function ShopClient() {
     const [localMinPrice, setLocalMinPrice] = useState(minPrice);
     const [localMaxPrice, setLocalMaxPrice] = useState(maxPrice);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     useEffect(() => {
         setLocalMinPrice(minPrice);
@@ -166,7 +171,7 @@ export function ShopClient() {
                                     >
                                         ALL ASSETS
                                     </button>
-                                    {isCategoriesLoading ? (
+                                    {!mounted || isCategoriesLoading ? (
                                         <div className="flex items-center justify-center p-2">
                                             <Loader2 className="h-4 w-4 animate-spin text-gray-300" />
                                         </div>
@@ -250,7 +255,7 @@ export function ShopClient() {
 
                 {/* Product Grid - Extended Width */}
                 <div className="w-full">
-                    {isLoading ? (
+                    {!mounted || isLoading ? (
                         <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                             {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
                                 <div key={i} className="aspect-3/4 bg-white border border-gray-50 animate-pulse" />

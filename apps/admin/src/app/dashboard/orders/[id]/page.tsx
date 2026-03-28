@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ordersApi } from '@/lib/api';
-import { ChevronLeft, Package, User, MapPin, CreditCard, Clock, CheckCircle, Truck, FileText } from 'lucide-react';
+import { ChevronLeft, Package, User, MapPin, CreditCard, Clock, CheckCircle, Truck, FileText, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 
 export default function OrderDetailsPage() {
@@ -33,6 +33,23 @@ export default function OrderDetailsPage() {
             queryClient.invalidateQueries({ queryKey: ['order', id] });
         },
     });
+
+    const deleteMutation = useMutation({
+        mutationFn: () => ordersApi.delete(id as string),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['orders'] });
+            router.push('/dashboard/orders');
+        },
+        onError: (error: any) => {
+            alert('Failed to delete order: ' + (error.response?.data?.message || error.message));
+        }
+    });
+
+    const handleDelete = () => {
+        if (window.confirm('CRITICAL: Are you sure you want to permanently delete this order record? This action cannot be undone.')) {
+            deleteMutation.mutate();
+        }
+    };
 
     if (isLoading) return <div className="p-8 text-xs font-black uppercase animate-pulse">Retrieving Transaction Data...</div>;
     if (error) return <div className="p-8 text-red-600 font-black uppercase">Critical Error: Transaction Record Unreachable</div>;
@@ -77,12 +94,21 @@ export default function OrderDetailsPage() {
                         ))}
                     </select>
                 </div>
-                <Link href={`/dashboard/orders/${order._id}/invoice`}>
-                    <Button className="rounded-none bg-emerald-600 text-white h-11 px-6 font-black uppercase tracking-widest text-[11px] hover:bg-emerald-700 transition-all shadow-[6px_6px_0px_0px_rgba(22,163,74,0.2)]">
-                        <FileText className="mr-2 h-4 w-4" />
-                        Print / Invoice
+                <div className="flex items-center gap-3">
+                    <Link href={`/dashboard/orders/${order._id}/invoice`}>
+                        <Button title="Print / Invoice" className="rounded-none bg-emerald-600 text-white h-11 w-11 p-0 flex items-center justify-center hover:bg-emerald-700 transition-all shadow-[6px_6px_0px_0px_rgba(22,163,74,0.2)]">
+                            <FileText className="h-5 w-5" />
+                        </Button>
+                    </Link>
+                    <Button 
+                        onClick={handleDelete}
+                        disabled={deleteMutation.isPending}
+                        title="Delete Order"
+                        className="rounded-none bg-red-600 text-white h-11 w-11 p-0 flex items-center justify-center hover:bg-red-700 transition-all shadow-[6px_6px_0px_0px_rgba(239,68,68,0.2)]"
+                    >
+                        <Trash2 className="h-5 w-5" />
                     </Button>
-                </Link>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -115,7 +141,9 @@ export default function OrderDetailsPage() {
                                                     )}
                                                     <div className="flex flex-col">
                                                         <span className="text-xs font-black italic text-black uppercase">{item.name}</span>
-                                                        <span className="text-[10px] text-gray-500 font-mono">SKU: {item.variantSku}</span>
+                                                        <span className="text-[10px] text-gray-500 font-mono">
+                                                            SKU: {item.variantSku} {(item.size || item.color) && `| ${item.size || ''} ${item.color || ''}`.trim()}
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </td>
@@ -179,7 +207,9 @@ export default function OrderDetailsPage() {
                             <div className="p-6 space-y-4">
                                 <div className="flex flex-col gap-1">
                                     <span className="text-[11px] font-black uppercase text-gray-500 tracking-widest">Protocol</span>
-                                    <span className="text-sm font-black italic uppercase text-black">
+                                    <span className={`text-sm font-black italic uppercase ${
+                                        order.paymentMethod === 'cod' ? 'text-amber-600' : 'text-pink-600'
+                                    }`}>
                                         {order.paymentMethod === 'cod' ? 'Cash on Delivery' : 'bKash Transaction'}
                                     </span>
                                 </div>

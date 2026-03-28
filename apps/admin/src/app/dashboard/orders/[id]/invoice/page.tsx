@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
-import { ordersApi } from '@/lib/api';
+import { ordersApi, settingsApi } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Printer, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -10,7 +10,7 @@ import Link from 'next/link';
 export default function InvoicePage() {
     const { id } = useParams();
 
-    const { data: order, isLoading } = useQuery({
+    const { data: order, isLoading: isOrderLoading } = useQuery({
         queryKey: ['order', id],
         queryFn: async () => {
             const response = await ordersApi.getById(id as string);
@@ -18,7 +18,15 @@ export default function InvoicePage() {
         },
     });
 
-    if (isLoading) return <div className="p-8 text-xs font-black uppercase">Generating Invoice...</div>;
+    const { data: settings, isLoading: isSettingsLoading } = useQuery({
+        queryKey: ['settings'],
+        queryFn: async () => {
+            const response = await settingsApi.get();
+            return response.data;
+        },
+    });
+
+    if (isOrderLoading || isSettingsLoading) return <div className="p-8 text-xs font-black uppercase animate-pulse">Generating Invoice...</div>;
     if (!order) return <div className="p-8">Order not found</div>;
 
     const subtotal = order.items?.reduce((acc: number, item: any) => acc + (item.price * item.quantity), 0) || 0;
@@ -76,8 +84,8 @@ export default function InvoicePage() {
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between gap-8 mb-12 border-b-4 border-black pb-8">
                     <div>
-                        <h1 className="text-4xl font-black italic tracking-tighter uppercase leading-none mb-1">JeansLoop</h1>
-                        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-500">Premium Denim & Apparel</p>
+                        <h1 className="text-4xl font-black italic tracking-tighter uppercase leading-none mb-1">{settings?.title || 'JeansLoop'}</h1>
+                        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-500">{settings?.tagline || 'Premium Denim & Apparel'}</p>
                     </div>
                     <div className="text-right">
                         <h2 className="text-2xl font-black uppercase italic leading-none mb-2">Invoice</h2>
@@ -94,10 +102,10 @@ export default function InvoicePage() {
                     <div>
                         <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-400 mb-4 border-b border-gray-100 pb-2">From</h3>
                         <div className="space-y-1">
-                            <p className="text-xs font-black uppercase text-black">JeansLoop Warehouse</p>
-                            <p className="text-[10px] font-bold text-gray-600">Dhaka, Bangladesh</p>
-                            <p className="text-[10px] font-bold text-gray-600">support@jeansloop.com</p>
-                            <p className="text-[10px] font-bold text-gray-600">+880 1XXX XXXXXX</p>
+                            <p className="text-xs font-black uppercase text-black">{settings?.title || 'JeansLoop Warehouse'}</p>
+                            <p className="text-[10px] font-bold text-gray-600">{settings?.address || 'Dhaka, Bangladesh'}</p>
+                            <p className="text-[10px] font-bold text-gray-600">{settings?.email || 'support@jeansloop.com'}</p>
+                            <p className="text-[10px] font-bold text-gray-600">{settings?.phone || '+880 1XXX XXXXXX'}</p>
                         </div>
                     </div>
                     <div>
@@ -130,7 +138,9 @@ export default function InvoicePage() {
                                     <td className="py-4">
                                         <div className="flex flex-col">
                                             <span className="text-xs font-black uppercase italic text-black">{item.name}</span>
-                                            <span className="text-[9px] font-bold text-gray-400 font-mono uppercase italic">Variant: {item.variantSku?.split('-').pop()}</span>
+                                            <span className="text-[9px] font-bold text-gray-400 font-mono uppercase italic">
+                                                Variant: {item.variantSku?.split('-').pop()} {(item.size || item.color) && `| ${item.size || ''} ${item.color || ''}`.trim()}
+                                            </span>
                                         </div>
                                     </td>
                                     <td className="py-4 text-center text-xs font-black text-black">{item.quantity}</td>

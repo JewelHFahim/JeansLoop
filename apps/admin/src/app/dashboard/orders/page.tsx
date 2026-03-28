@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tansta
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ordersApi } from '@/lib/api';
-import { ShoppingCart, Eye, User, Search, Loader2, FileText } from 'lucide-react';
+import { ShoppingCart, Eye, User, Search, Loader2, FileText, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 
 export default function OrdersPage() {
@@ -32,6 +32,22 @@ export default function OrdersPage() {
             queryClient.invalidateQueries({ queryKey: ['orders'] });
         },
     });
+
+    const deleteMutation = useMutation({
+        mutationFn: (id: string) => ordersApi.delete(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['orders'] });
+        },
+        onError: (error: any) => {
+            alert('Failed to delete order: ' + (error.response?.data?.message || error.message));
+        }
+    });
+
+    const handleDelete = (id: string) => {
+        if (window.confirm('CRITICAL: Are you sure you want to permanently delete this order record? This action cannot be undone.')) {
+            deleteMutation.mutate(id);
+        }
+    };
 
     const totalPages = data?.pages || 1;
 
@@ -134,7 +150,7 @@ export default function OrdersPage() {
                                             </div>
                                         </td>
                                         <td className="p-4 border-b border-gray-100">
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex items-start gap-2">
                                                 <div className="w-6 h-6 bg-black text-white flex items-center justify-center rounded-none text-[9px]">
                                                     <User className="w-3 h-3" />
                                                 </div>
@@ -149,7 +165,8 @@ export default function OrdersPage() {
                                         </td>
                                         <td className="p-4 border-b border-gray-100">
                                             <div className="flex flex-col">
-                                                <span className="inline-block border-2 border-black px-2 py-0.5 text-[9px] font-black uppercase tracking-widest w-fit">
+                                                <span className={`inline-block border-2 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest w-fit ${order.paymentMethod === 'cod' ? 'border-amber-600 bg-amber-50 text-amber-700' : 'border-pink-600 bg-pink-50 text-pink-700'
+                                                    }`}>
                                                     {order.paymentMethod === 'cod' ? 'CASH' : 'BKASH'}
                                                 </span>
                                                 {order.paymentMethod === 'bkash' && (
@@ -175,9 +192,9 @@ export default function OrdersPage() {
                                                 onChange={(e) => statusMutation.mutate({ id: order._id, status: e.target.value })}
                                                 disabled={statusMutation.isPending && statusMutation.variables?.id === order._id}
                                                 className={`text-[8px] font-black tracking-widest px-2 py-1 outline-none border-2 transition-all cursor-pointer rounded-none disabled:opacity-50 ${order.status === 'DELIVERED' ? 'bg-green-50 text-green-700 border-green-200' :
-                                                        order.status === 'CANCELLED' || order.status === 'RETURNED' ? 'bg-red-50 text-red-700 border-red-200' :
-                                                            order.status === 'ACCEPTED' || order.status === 'COURIERED' ? 'bg-blue-50 text-blue-700 border-blue-200' :
-                                                                'bg-amber-50 text-amber-700 border-amber-200'
+                                                    order.status === 'CANCELLED' || order.status === 'RETURNED' ? 'bg-red-50 text-red-700 border-red-200' :
+                                                        order.status === 'ACCEPTED' || order.status === 'COURIERED' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                                                            'bg-amber-50 text-amber-700 border-amber-200'
                                                     }`}
                                             >
                                                 {statuses.map((s) => (
@@ -193,18 +210,27 @@ export default function OrdersPage() {
                                             )}
                                         </td>
                                         <td className="p-4 border-b border-gray-100 text-right">
-                                            <div className="flex justify-end gap-2">
+                                            <div className="flex justify-end gap-1.5">
                                                 <Link href={`/dashboard/orders/${order._id}`}>
-                                                    <Button variant="outline" size="sm" className="rounded-none border-2 border-black h-10 w-10 p-0 hover:bg-black hover:text-white transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] group/btn">
-                                                        <Eye className="h-4 w-4 group-hover/btn:scale-110" />
+                                                    <Button variant="outline" size="sm" title="View Transaction" className="rounded-none border-2 border-black h-8 w-8 p-0 hover:bg-black hover:text-white transition-all group/btn">
+                                                        <Eye className="h-3.5 w-3.5 group-hover/btn:scale-110" />
                                                     </Button>
                                                 </Link>
                                                 <Link href={`/dashboard/orders/${order._id}/invoice`}>
-                                                    <Button variant="outline" size="sm" className="rounded-none border-2 border-emerald-600 text-emerald-600 h-10 px-4 hover:bg-emerald-600 hover:text-white transition-all shadow-[4px_4px_0px_0px_rgba(22,163,74,0.1)] group/btn">
-                                                        <FileText className="h-4 w-4 mr-2 group-hover/btn:scale-110" />
-                                                        <span className="text-[9px] font-black uppercase tracking-widest">Invoice</span>
+                                                    <Button variant="outline" size="sm" title="View Invoice" className="rounded-none border-2 border-emerald-600 text-emerald-600 h-8 w-8 p-0 hover:bg-emerald-600 hover:text-white transition-all shadow-[2px_2px_0px_0px_rgba(22,163,74,0.2)] group/btn flex items-center justify-center">
+                                                        <FileText className="h-3.5 w-3.5 group-hover/btn:scale-110" />
                                                     </Button>
                                                 </Link>
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={() => handleDelete(order._id)}
+                                                    disabled={deleteMutation.isPending}
+                                                    title="Delete Order"
+                                                    className="rounded-none border-2 border-red-500 text-red-500 h-8 w-8 p-0 hover:bg-red-500 hover:text-white transition-all shadow-[2px_2px_0px_0px_rgba(239,68,68,0.2)] group/btn flex items-center justify-center"
+                                                >
+                                                    <Trash2 className="h-3.5 w-3.5 group-hover/btn:scale-110" />
+                                                </Button>
                                             </div>
                                         </td>
                                     </tr>

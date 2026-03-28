@@ -11,7 +11,7 @@ import { useCartStore } from '@/store/cart';
 import { useAuthStore } from '@/store/auth';
 import { ordersApi, authApi, couponsApi } from '@/lib/api';
 import { loadStripe } from '@stripe/stripe-js';
-import { ShieldCheck, RefreshCw, Truck, Banknote, ShoppingBag } from 'lucide-react';
+import { ShieldCheck, RefreshCw, Truck, Banknote, ShoppingBag, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
@@ -175,6 +175,8 @@ export default function CheckoutPage() {
                     price: item.price,
                     quantity: item.quantity,
                     image: item.image,
+                    size: item.size,
+                    color: item.color,
                 })),
                 shippingAddress: {
                     fullName: formData.fullName,
@@ -258,7 +260,17 @@ export default function CheckoutPage() {
 
 
     return (
-        <div className="min-h-screen bg-white py-8 pb-28 lg:py-20 lg:pb-20">
+        <>
+            {/* Full-screen Loading Overlay */}
+            {loading && (
+                <div className="fixed inset-0 z-100 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center animate-in fade-in duration-300">
+                    <Loader2 className="w-16 h-16 text-black animate-spin mb-4" />
+                    <h2 className="text-2xl font-black italic tracking-tighter uppercase text-black">Processing Order</h2>
+                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] mt-2">Please do not close this window</p>
+                </div>
+            )}
+
+            <div className="min-h-screen bg-white py-8 pb-28 lg:py-20 lg:pb-20">
             <div className="container mx-auto px-4 sm:px-6">
                 <form id="checkout-form" onSubmit={handleSubmit} className="grid gap-6 lg:gap-8 lg:grid-cols-3">
 
@@ -557,7 +569,11 @@ export default function CheckoutPage() {
                                         disabled={loading}
                                         type="submit"
                                     >
-                                        {loading ? 'Processing...' : `Confirm Order ৳${total.toFixed(0)}`}
+                                        {loading ? (
+                                            <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Processing...</>
+                                        ) : (
+                                            `Confirm Order ৳${total.toFixed(0)}`
+                                        )}
                                     </Button>
                                 </div>
 
@@ -584,10 +600,15 @@ export default function CheckoutPage() {
                         className="bg-black text-white hover:bg-gray-900 font-black uppercase tracking-widest px-8 h-12 rounded-xl transition-all active:scale-95 shadow-md shrink-0"
                         disabled={loading}
                     >
-                        {loading ? 'Processing...' : 'Place Order'}
+                        {loading ? (
+                            <><Loader2 className="mr-2 h-4 w-4 animate-spin inline" /> Processing...</>
+                        ) : (
+                            'Place Order'
+                        )}
                     </Button>
                 </div>
             </div>
         </div>
+        </>
     );
 }

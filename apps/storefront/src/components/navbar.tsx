@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ShoppingCart, User, Menu, Loader2, LogOut } from 'lucide-react';
+import { ShoppingCart, User, Menu, Loader2, LogOut, X, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCartStore } from '@/store/cart';
 import { useAuthStore } from '@/store/auth';
@@ -142,41 +142,89 @@ export function Navbar() {
 
             {/* Mobile Menu Drawer */}
             {isMenuOpen && (
-                <div className="fixed inset-0 z-50 md:hidden">
-                    <div className="fixed inset-0 bg-black/50" onClick={() => setIsMenuOpen(false)} />
-                    <div className="fixed inset-y-0 right-0 w-64 bg-white p-6 shadow-xl transition-transform">
-                        <div className="flex flex-col gap-6">
-                            <div className="flex justify-between items-center border-b pb-4">
-                                <span className="font-bold">Menu</span>
-                                <button onClick={() => setIsMenuOpen(false)} className="text-2xl">&times;</button>
-                            </div>
-                            <nav className="flex flex-col gap-4">
-                                <Link href="/shop" className="text-lg font-bold uppercase tracking-widest italic" onClick={() => setIsMenuOpen(false)}>Shop All</Link>
+                <div className="fixed inset-0 z-100 md:hidden">
+                    {/* Backdrop */}
+                    <div 
+                        className="fixed inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300" 
+                        onClick={() => setIsMenuOpen(false)} 
+                    />
+                    
+                    {/* Drawer Panel */}
+                    <div className="fixed inset-y-0 right-0 w-[85vw] max-w-sm bg-white border-l-4 border-black shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
+                        
+                        {/* Drawer Header */}
+                        <div className="flex justify-between items-center p-4 border-b-4 border-black bg-black text-white">
+                            <span className="text-2xl font-black italic tracking-tighter uppercase leading-none">{settings?.title || 'JeansLoop'}</span>
+                            <button 
+                                onClick={() => setIsMenuOpen(false)} 
+                                className="p-2 hover:bg-white/20 rounded-none transition-colors"
+                            >
+                                <X className="w-6 h-6" />
+                            </button>
+                        </div>
+
+                        {/* Navigation Links */}
+                        <div className="flex-1 overflow-y-auto p-4 scrollbar-thin">
+                            <div className="space-y-2 mb-6">
+                                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 mb-3 pb-2 border-b border-gray-100">Shop Navigation</p>
+                                
+                                <Link 
+                                    href="/shop" 
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className="flex items-center justify-between group p-3 border-2 border-transparent hover:border-black hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all bg-gray-50 hover:bg-white"
+                                >
+                                    <span className="text-base font-black uppercase italic tracking-widest text-black">Shop All</span>
+                                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-black transition-transform group-hover:translate-x-1" />
+                                </Link>
+
                                 {categories?.map((category: any) => (
                                     <Link
                                         key={category._id}
                                         href={`/shop?category=${category.slug}`}
-                                        className="text-lg font-bold uppercase tracking-widest italic"
                                         onClick={() => setIsMenuOpen(false)}
+                                        className="flex items-center justify-between group p-3 border-2 border-transparent hover:border-black hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all bg-gray-50 hover:bg-white"
                                     >
-                                        {category.name}
+                                        <span className="text-base font-black uppercase italic tracking-widest text-black">{category.name}</span>
+                                        <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-black transition-transform group-hover:translate-x-1" />
                                     </Link>
                                 ))}
-                                <hr />
-                                {isAuthenticated ? (
-                                    <>
-                                        <Link href="/account" className="text-lg font-medium" onClick={() => setIsMenuOpen(false)}>My Account</Link>
-                                        <button
-                                            className="text-left text-lg font-medium text-red-600"
-                                            onClick={() => { logout(); setIsMenuOpen(false); }}
-                                        >
-                                            Logout
-                                        </button>
-                                    </>
-                                ) : (
-                                    <Link href="/auth/login" className="text-lg font-medium" onClick={() => setIsMenuOpen(false)}>Sign In</Link>
-                                )}
-                            </nav>
+                            </div>
+                        </div>
+
+                        {/* Drawer Footer (Auth) */}
+                        <div className="p-4 border-t-4 border-black bg-gray-50 space-y-2">
+                            {isAuthenticated ? (
+                                <>
+                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 truncate text-center mb-3">
+                                        Signed In • {user?.email}
+                                    </p>
+                                    <Link href="/account" onClick={() => setIsMenuOpen(false)}>
+                                        <Button className="w-full h-12 bg-black text-white hover:bg-gray-900 rounded-none font-black uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all">
+                                            <User className="w-4 h-4 mr-2" /> My Account
+                                        </Button>
+                                    </Link>
+                                    <Button
+                                        onClick={() => { logout(); setIsMenuOpen(false); }}
+                                        variant="outline"
+                                        className="w-full h-12 border-2 border-red-500 text-red-600 hover:bg-red-500 hover:text-white rounded-none font-black uppercase tracking-widest transition-all mt-2"
+                                    >
+                                        <LogOut className="w-4 h-4 mr-2" /> Logout
+                                    </Button>
+                                </>
+                            ) : (
+                                <>
+                                    <Link href="/auth/login" onClick={() => setIsMenuOpen(false)}>
+                                        <Button className="w-full h-12 bg-black text-white hover:bg-gray-900 rounded-none font-black uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all">
+                                            Sign In / Register
+                                        </Button>
+                                    </Link>
+                                    <div className="text-center mt-4">
+                                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                                            Guest browsing session
+                                        </p>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>

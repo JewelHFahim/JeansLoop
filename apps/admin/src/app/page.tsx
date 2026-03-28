@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,6 +12,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -40,19 +42,17 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-white border-8 border-black p-4">
-      <div className="w-full max-w-md">
-        <div className="border-4 border-black p-8 md:p-12 bg-white shadow-[20px_20px_0px_0px_rgba(0,0,0,1)] relative overflow-hidden">
+      <div className="w-full max-w-sm">
+        <div className="border-4 border-black p-6 md:p-8 bg-white shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] relative overflow-hidden">
           {/* Decorative Corner */}
-          <div className="absolute top-0 right-0 w-16 h-16 bg-black translate-x-8 -translate-y-8 rotate-45" />
+          <div className="absolute top-0 right-0 w-12 h-12 bg-black translate-x-6 -translate-y-6 rotate-45" />
 
-          <div className="border-b-4 border-black pb-8 mb-10">
-            <h1 className="text-5xl font-black tracking-tighter uppercase italic leading-none text-black mb-4">
-              Admin / <br />
-              <span className="text-2xl not-italic">Terminal</span>
+          <div className="border-b-4 border-black pb-6 mb-8">
+            <h1 className="text-4xl font-black tracking-tighter uppercase italic leading-none text-black mb-3">
+              Admin /
+              <span className="text-xl not-italic"> Terminal </span>
             </h1>
-            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">
-              Authorization Required / Identity Protocol
-            </p>
+
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-8">
@@ -70,8 +70,8 @@ export default function LoginPage() {
               <Input
                 id="email"
                 type="email"
-                placeholder="ADMIN@FIRECUTTER.COM"
-                className="rounded-none border-2 border-black h-12 text-xs font-bold focus-visible:ring-0 focus-visible:border-black uppercase bg-white placeholder:text-gray-200"
+                placeholder="admin@firecutter.com"
+                className="rounded-none border-2 border-black h-12 text-xs font-bold focus-visible:ring-0 focus-visible:border-black bg-white placeholder:text-gray-300"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -83,15 +83,24 @@ export default function LoginPage() {
                 <span>Access Credential</span>
                 <span className="text-gray-300">SECURE</span>
               </label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                className="rounded-none border-2 border-black h-12 text-xs font-bold focus-visible:ring-0 focus-visible:border-black bg-white"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  className="rounded-none border-2 border-black h-12 pr-10 text-xs font-bold focus-visible:ring-0 focus-visible:border-black bg-white"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors"
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
             </div>
 
             <Button

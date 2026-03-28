@@ -43,10 +43,10 @@ export default function RegisterPage() {
 
     return (
         <div className="bg-white min-h-screen py-12 lg:py-24 flex items-center">
-            <div className="container mx-auto px-4 max-w-lg">
-                <div className="border-2 border-black p-8 md:p-12 bg-white shadow-[20px_20px_0px_0px_rgba(0,0,0,1)]">
-                    <div className="border-b-2 border-black pb-8 mb-10 text-center">
-                        <h1 className="text-4xl font-black tracking-tighter uppercase italic leading-none text-black mb-4">
+            <div className="container mx-auto px-4 max-w-md">
+                <div className="border-2 border-black p-6 md:p-8 bg-white shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
+                    <div className="border-b-2 border-black pb-6 mb-8 text-center">
+                        <h1 className="text-3xl font-black tracking-tighter uppercase italic leading-none text-black mb-3">
                             Create Account
                         </h1>
                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">
@@ -54,7 +54,7 @@ export default function RegisterPage() {
                         </p>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-8">
+                    <form onSubmit={handleSubmit} className="space-y-6">
                         {error && (
                             <div className="border-l-4 border-red-500 bg-red-50 p-4 text-[11px] font-black uppercase tracking-widest text-red-500 animate-pulse">
                                 Error: {error}
@@ -70,7 +70,7 @@ export default function RegisterPage() {
                                     value={formData.name}
                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, name: e.target.value })}
                                     required
-                                    className="h-14 rounded-none border-gray-200 border-2 focus:border-black transition-all font-bold placeholder:text-gray-300"
+                                    className="h-12 rounded-none border-gray-200 border-2 focus:border-black transition-all font-bold placeholder:text-gray-300"
                                 />
                             </div>
 
@@ -83,7 +83,7 @@ export default function RegisterPage() {
                                     value={formData.email}
                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, email: e.target.value })}
                                     required
-                                    className="h-14 rounded-none border-gray-200 border-2 focus:border-black transition-all font-bold placeholder:text-gray-300"
+                                    className="h-12 rounded-none border-gray-200 border-2 focus:border-black transition-all font-bold placeholder:text-gray-300"
                                 />
                             </div>
 
@@ -97,7 +97,7 @@ export default function RegisterPage() {
                                         value={formData.password}
                                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, password: e.target.value })}
                                         required
-                                        className="h-14 rounded-none border-gray-200 border-2 focus:border-black transition-all font-bold placeholder:text-gray-300"
+                                        className="h-12 rounded-none border-gray-200 border-2 focus:border-black transition-all font-bold placeholder:text-gray-300"
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -109,7 +109,7 @@ export default function RegisterPage() {
                                         value={formData.confirmPassword}
                                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, confirmPassword: e.target.value })}
                                         required
-                                        className="h-14 rounded-none border-gray-200 border-2 focus:border-black transition-all font-bold placeholder:text-gray-300"
+                                        className="h-12 rounded-none border-gray-200 border-2 focus:border-black transition-all font-bold placeholder:text-gray-300"
                                     />
                                 </div>
                             </div>
@@ -117,7 +117,7 @@ export default function RegisterPage() {
 
                         <Button
                             type="submit"
-                            className="w-full h-16 rounded-none bg-black text-white font-black uppercase tracking-[0.2em] text-xs hover:scale-[1.02] active:scale-95 transition-all shadow-xl group"
+                            className="w-full h-14 rounded-none bg-black text-white font-black uppercase tracking-[0.2em] text-xs hover:scale-[1.02] active:scale-95 transition-all shadow-xl group"
                             disabled={isLoading}
                         >
                             {isLoading ? 'Creating...' : 'Register Now'}
@@ -125,7 +125,7 @@ export default function RegisterPage() {
                         </Button>
                     </form>
 
-                    <div className="mt-12 pt-8 border-t border-gray-100 text-center">
+                    <div className="mt-8 pt-6 border-t border-gray-100 text-center">
                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
                             Already a member?{' '}
                             <Link href="/auth/login" className="text-black hover:underline underline-offset-4">

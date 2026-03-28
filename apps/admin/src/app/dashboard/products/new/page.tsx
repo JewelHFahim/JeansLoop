@@ -137,7 +137,7 @@ export default function NewProductPage() {
 
         const submitVariants = form.variants.map(v => ({
             ...v,
-            sku: form.masterSku,
+            sku: `${form.masterSku}-${v.size.replace(/\s+/g, '').toUpperCase()}`,
             color: form.masterColor,
             price: form.price
         }));
