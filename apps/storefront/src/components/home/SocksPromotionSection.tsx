@@ -119,7 +119,9 @@ export function SocksPromotionSection({
                                             <h4 className="text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1 truncate w-full">{sock.name}</h4>
                                             <div className="flex items-center gap-3">
                                                 <span className="text-base font-black text-black">৳{sock.price?.toFixed(0) || '0'}</span>
-                                                <span className="text-xs font-bold text-gray-300 line-through">৳{(sock.price * 1.4).toFixed(0)}</span>
+                                                {sock.comparePrice && sock.comparePrice > sock.price && (
+                                                    <span className="text-xs font-bold text-gray-300 line-through">৳{sock.comparePrice.toFixed(0)}</span>
+                                                )}
                                             </div>
                                         </div>
                                     </CardContent>

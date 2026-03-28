@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ShoppingCart, User, Menu, Loader2, LogOut, X, ChevronRight } from 'lucide-react';
+import { ShoppingCart, User, Menu, LogOut, X, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCartStore } from '@/store/cart';
 import { useAuthStore } from '@/store/auth';
 import { useQuery } from '@tanstack/react-query';
-import { categoriesApi, settingsApi } from '@/lib/api';
+import { settingsApi } from '@/lib/api';
 
 export function Navbar() {
     const [mounted, setMounted] = useState(false);
@@ -19,13 +19,7 @@ export function Navbar() {
         setMounted(true);
     }, []);
 
-    const { data: categories, isLoading: categoriesLoading } = useQuery({
-        queryKey: ['categories'],
-        queryFn: async () => {
-            const response = await categoriesApi.getAll();
-            return response.data;
-        },
-    });
+
 
     const { data: settings } = useQuery({
         queryKey: ['site-settings'],
@@ -57,19 +51,18 @@ export function Navbar() {
 
                 <div className="hidden items-center gap-6 md:flex">
 
-                    {categoriesLoading ? (
-                        <Loader2 className="h-3 w-3 animate-spin text-gray-400" />
-                    ) : (
-                        categories?.slice(0, 5).map((category: any) => (
-                            <Link
-                                key={category._id}
-                                href={`/shop?category=${category.slug}`}
-                                className="text-black font-bold uppercase tracking-widest text-[12px] hover:text-gray-600 transition-colors"
-                            >
-                                {category.name}
-                            </Link>
-                        ))
-                    )}
+                    <Link href="/shop?category=jeans" className="text-black font-bold uppercase tracking-widest text-[12px] hover:text-gray-600 transition-colors">
+                        JEANS
+                    </Link>
+                    <Link href="/shop?category=twill" className="text-black font-bold uppercase tracking-widest text-[12px] hover:text-gray-600 transition-colors">
+                        twill
+                    </Link>
+                    <Link href="/shop?category=trouser" className="text-black font-bold uppercase tracking-widest text-[12px] hover:text-gray-600 transition-colors">
+                        TROUSER
+                    </Link>
+                    <Link href="/shop?category=denim" className="text-black font-bold uppercase tracking-widest text-[12px] hover:text-gray-600 transition-colors">
+                        Denim
+                    </Link>
 
                     <Link href="/shop" className="text-black font-bold uppercase tracking-widest text-[12px] hover:text-gray-600 transition-colors">
                         Shop All
@@ -177,17 +170,41 @@ export function Navbar() {
                                     <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-black transition-transform group-hover:translate-x-1" />
                                 </Link>
 
-                                {categories?.map((category: any) => (
-                                    <Link
-                                        key={category._id}
-                                        href={`/shop?category=${category.slug}`}
-                                        onClick={() => setIsMenuOpen(false)}
-                                        className="flex items-center justify-between group p-3 border-2 border-transparent hover:border-black hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all bg-gray-50 hover:bg-white"
-                                    >
-                                        <span className="text-base font-black uppercase italic tracking-widest text-black">{category.name}</span>
-                                        <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-black transition-transform group-hover:translate-x-1" />
-                                    </Link>
-                                ))}
+                                <Link 
+                                    href="/shop?category=jeans" 
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className="flex items-center justify-between group p-3 border-2 border-transparent hover:border-black hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all bg-gray-50 hover:bg-white"
+                                >
+                                    <span className="text-base font-black uppercase italic tracking-widest text-black">JEANS</span>
+                                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-black transition-transform group-hover:translate-x-1" />
+                                </Link>
+
+                                <Link 
+                                    href="/shop?category=twill" 
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className="flex items-center justify-between group p-3 border-2 border-transparent hover:border-black hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all bg-gray-50 hover:bg-white"
+                                >
+                                    <span className="text-base font-black uppercase italic tracking-widest text-black">twill</span>
+                                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-black transition-transform group-hover:translate-x-1" />
+                                </Link>
+
+                                <Link 
+                                    href="/shop?category=trouser" 
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className="flex items-center justify-between group p-3 border-2 border-transparent hover:border-black hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all bg-gray-50 hover:bg-white"
+                                >
+                                    <span className="text-base font-black uppercase italic tracking-widest text-black">TROUSER</span>
+                                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-black transition-transform group-hover:translate-x-1" />
+                                </Link>
+
+                                <Link 
+                                    href="/shop?category=denim" 
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className="flex items-center justify-between group p-3 border-2 border-transparent hover:border-black hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all bg-gray-50 hover:bg-white"
+                                >
+                                    <span className="text-base font-black uppercase italic tracking-widest text-black">Denim</span>
+                                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-black transition-transform group-hover:translate-x-1" />
+                                </Link>
                             </div>
                         </div>
 

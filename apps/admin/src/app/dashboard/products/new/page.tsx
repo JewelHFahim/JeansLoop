@@ -28,6 +28,7 @@ export default function NewProductPage() {
         description: '',
         highlights: [] as string[],
         price: 0,
+        comparePrice: 0,
         masterSku: '',
         masterColor: '',
         category: '',
@@ -455,13 +456,21 @@ export default function NewProductPage() {
                         <div className="bg-gray-50 border-b-4 border-black p-4">
                             <h2 className="text-xs font-black uppercase tracking-[0.2em] italic">Configuration / Value</h2>
                         </div>
-                        <div className="p-6 space-y-6">
-                            <div className="space-y-2">
-                                 <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Base Price (BDT)</label>
+                             <div className="space-y-2">
+                                 <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Current Selling Price (BDT)</label>
                                  <Input
                                      type="number"
                                      value={form.price}
                                      onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
+                                     className="rounded-none border-2 border-black font-black text-lg h-12 bg-white"
+                                 />
+                             </div>
+                             <div className="space-y-2">
+                                 <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Regular Price / Compare At (BDT)</label>
+                                 <Input
+                                     type="number"
+                                     value={form.comparePrice}
+                                     onChange={(e) => setForm({ ...form, comparePrice: Number(e.target.value) })}
                                      className="rounded-none border-2 border-black font-black text-lg h-12 bg-white"
                                  />
                              </div>

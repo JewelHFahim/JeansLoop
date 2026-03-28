@@ -111,7 +111,9 @@ export function CategoryPromoSection({
                                             <h4 className="text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1 truncate w-full">{product.name}</h4>
                                             <div className="flex items-center gap-3">
                                                 <span className="text-base font-black text-black">৳{product.price?.toFixed(0) || '0'}</span>
-                                                <span className="text-xs font-bold text-gray-300 line-through">৳{(product.price * 1.4).toFixed(0)}</span>
+                                                {product.comparePrice && product.comparePrice > product.price && (
+                                                    <span className="text-xs font-bold text-gray-300 line-through">৳{product.comparePrice.toFixed(0)}</span>
+                                                )}
                                             </div>
                                         </div>
                                     </CardContent>

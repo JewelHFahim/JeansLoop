@@ -145,18 +145,21 @@ export const updateProduct = async (req: Request, res: Response) => {
         const product = await Product.findById(req.params.id);
 
         if (product) {
-            const parsed = ProductSchema.parse(req.body);
+            const parsed = ProductSchema.parse(req.body) as any;
 
-            product.name = parsed.name;
-            product.slug = parsed.slug;
-            product.description = parsed.description;
-            product.highlights = parsed.highlights;
-            product.price = parsed.price;
-            product.category = parsed.category;
-            product.images = parsed.images;
-            product.variants = parsed.variants;
-            product.sizeChart = parsed.sizeChart;
-            product.isDraft = parsed.isDraft;
+            Object.assign(product, {
+                name: parsed.name,
+                slug: parsed.slug,
+                description: parsed.description,
+                highlights: parsed.highlights,
+                price: parsed.price,
+                comparePrice: parsed.comparePrice,
+                category: parsed.category,
+                images: parsed.images,
+                variants: parsed.variants,
+                sizeChart: parsed.sizeChart,
+                isDraft: parsed.isDraft,
+            });
 
             const updatedProduct = await product.save();
             res.json(updatedProduct);

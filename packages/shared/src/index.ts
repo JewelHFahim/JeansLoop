@@ -39,6 +39,7 @@ export const ProductSchema = z.object({
     description: z.string(),
     highlights: z.array(z.string()).default([]),
     price: z.number().nonnegative(),
+    comparePrice: z.number().nonnegative().optional(),
     category: z.string(),
     images: z.array(z.string()),
     variants: z.array(ProductVariantSchema),
