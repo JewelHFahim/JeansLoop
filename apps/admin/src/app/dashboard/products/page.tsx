@@ -89,7 +89,6 @@ export default function ProductsPage() {
                                 <th className="p-4 text-left border-b-2 border-gray-100">Price</th>
                                 <th className="p-4 text-left border-b-2 border-gray-100 italic">Sizes</th>
                                 <th className="p-4 text-left border-b-2 border-gray-100">Stock Units</th>
-                                <th className="p-4 text-left border-b-2 border-gray-100">Status</th>
                                 <th className="p-4 text-right border-b-2 border-gray-100">Operations</th>
                             </tr>
                         </thead>
@@ -149,11 +148,25 @@ export default function ProductsPage() {
                                             <td className="p-4 border-b border-gray-100 font-black text-sm text-emerald-600">৳{product.price?.toLocaleString()}</td>
                                             <td className="p-4 border-b border-gray-100">
                                                 <div className="flex flex-wrap gap-1">
-                                                    {[...new Set(product.variants?.map((v: any) => v.size))].map((s: any) => (
-                                                        <span key={s} className="bg-gray-100 text-black text-[9px] font-black px-1.5 py-0.5 border border-black/10">
-                                                            {s}
-                                                        </span>
-                                                    ))}
+                                                    {(() => {
+                                                        const sizes = [...new Set(product.variants?.map((v: any) => v.size))] as string[];
+                                                        const visible = sizes.slice(0, 3);
+                                                        const remaining = sizes.length - 3;
+                                                        return (
+                                                            <>
+                                                                {visible.map((s) => (
+                                                                    <span key={s} className="bg-gray-100 text-black text-[9px] font-black px-1.5 py-0.5 border border-black/10">
+                                                                        {s}
+                                                                    </span>
+                                                                ))}
+                                                                {remaining > 0 && (
+                                                                    <span className="bg-black text-white text-[9px] font-black px-1.5 py-0.5">
+                                                                        +{remaining}
+                                                                    </span>
+                                                                )}
+                                                            </>
+                                                        );
+                                                    })()}
                                                 </div>
                                             </td>
                                             <td className="p-4 border-b border-gray-100">
@@ -162,17 +175,7 @@ export default function ProductsPage() {
                                                     {product.variants?.reduce((acc: number, v: any) => acc + (v.stock || 0), 0) || 0} UNITS
                                                 </span>
                                             </td>
-                                            <td className="p-4 border-b border-gray-100">
-                                                {product.isDraft ? (
-                                                    <span className="inline-block bg-amber-400 text-black px-3 py-1 text-[9px] font-black tracking-[0.2em] italic rounded-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]">
-                                                        DRAFTED
-                                                    </span>
-                                                ) : (
-                                                    <span className="inline-block bg-green-500 text-white px-3 py-1 text-[9px] font-black tracking-[0.2em] italic rounded-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]">
-                                                        PUBLISHED
-                                                    </span>
-                                                )}
-                                            </td>
+
                                             <td className="p-4 border-b border-gray-100 text-right">
                                                 <div className="flex justify-end gap-3 opacity-60 group-hover:opacity-100 transition-opacity">
                                                     <a
