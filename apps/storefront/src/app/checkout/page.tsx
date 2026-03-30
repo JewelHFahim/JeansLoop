@@ -17,14 +17,14 @@ import { toast } from 'sonner';
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
 
 const BANGLADESH_DISTRICTS = [
-    "Bagerhat", "Bandarban", "Barguna", "Barishal", "Bhola", "Bogura", "Brahmanbaria", "Chandpur", 
-    "Chapai Nawabganj", "Chattogram", "Chuadanga", "Cox's Bazar", "Cumilla", "Dhaka", "Dinajpur", 
-    "Faridpur", "Feni", "Gaibandha", "Gazipur", "Gopalganj", "Habiganj", "Jamalpur", "Jashore", 
-    "Jhalokati", "Jhenaidah", "Joypurhat", "Khagrachhari", "Khulna", "Kishoreganj", "Kurigram", 
-    "Kushtia", "Lakshmipur", "Lalmonirhat", "Madaripur", "Magura", "Manikganj", "Meherpur", 
-    "Moulvibazar", "Munshiganj", "Mymensingh", "Naogaon", "Narail", "Narayanganj", "Narsingdi", 
-    "Natore", "Netrokona", "Nilphamari", "Noakhali", "Pabna", "Panchagarh", "Patuakhali", "Pirojpur", 
-    "Rajbari", "Rajshahi", "Rangamati", "Rangpur", "Satkhira", "Shariatpur", "Sherpur", "Sirajganj", 
+    "Bagerhat", "Bandarban", "Barguna", "Barishal", "Bhola", "Bogura", "Brahmanbaria", "Chandpur",
+    "Chapai Nawabganj", "Chattogram", "Chuadanga", "Cox's Bazar", "Cumilla", "Dhaka", "Dinajpur",
+    "Faridpur", "Feni", "Gaibandha", "Gazipur", "Gopalganj", "Habiganj", "Jamalpur", "Jashore",
+    "Jhalokati", "Jhenaidah", "Joypurhat", "Khagrachhari", "Khulna", "Kishoreganj", "Kurigram",
+    "Kushtia", "Lakshmipur", "Lalmonirhat", "Madaripur", "Magura", "Manikganj", "Meherpur",
+    "Moulvibazar", "Munshiganj", "Mymensingh", "Naogaon", "Narail", "Narayanganj", "Narsingdi",
+    "Natore", "Netrokona", "Nilphamari", "Noakhali", "Pabna", "Panchagarh", "Patuakhali", "Pirojpur",
+    "Rajbari", "Rajshahi", "Rangamati", "Rangpur", "Satkhira", "Shariatpur", "Sherpur", "Sirajganj",
     "Sunamganj", "Sylhet", "Tangail", "Thakurgaon"
 ].sort();
 
@@ -271,344 +271,375 @@ export default function CheckoutPage() {
             )}
 
             <div className="min-h-screen bg-white py-8 pb-28 lg:py-20 lg:pb-20">
-            <div className="container mx-auto px-4 sm:px-6">
-                <form id="checkout-form" onSubmit={handleSubmit} className="grid gap-6 lg:gap-8 lg:grid-cols-3">
+                <div className="container mx-auto px-4 sm:px-6">
+                    <form id="checkout-form" onSubmit={handleSubmit} className="grid gap-6 lg:gap-8 lg:grid-cols-3">
 
-                    {/* Left Column: Forms */}
-                    <div className="lg:col-span-2 space-y-6">
-                        {/* Contact Information */}
-                        <Card className="border-none shadow-sm bg-white">
-                            <CardHeader className="pb-4">
-                                <CardTitle className="text-lg font-bold flex items-center gap-2 text-gray-900">
-                                    <span className="h-5 w-5 bg-gray-200 rounded-full flex items-center justify-center text-xs">👤</span>
-                                    Contact Information
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div>
-                                    <label className="text-sm font-medium mb-1 block text-gray-900">Full Name <span className="text-red-500">*</span></label>
-                                    <Input className="bg-white text-gray-900"
-                                        placeholder="Enter your full name"
-                                        required
-                                        value={formData.fullName}
-                                        onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                                    />
-                                </div>
-                                <div className="grid md:grid-cols-2 gap-4">
+                        {/* Left Column: Forms */}
+                        <div className="lg:col-span-2 space-y-6">
+                            {/* Contact Information */}
+                            <Card className="border-none shadow-sm bg-white">
+                                <CardHeader className="pb-4">
+                                    <CardTitle className="text-lg font-bold flex items-center gap-2 text-gray-900">
+                                        <span className="h-5 w-5 bg-gray-200 rounded-full flex items-center justify-center text-xs">👤</span>
+                                        Contact Information
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
                                     <div>
-                                        <label className="text-sm font-medium mb-1 block text-gray-900">Email</label>
-                                        <Input
-                                            type="email"
-                                            placeholder="your@email.com"
-                                            value={formData.email}
-                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                            readOnly={isAuthenticated}
-                                            className={isAuthenticated ? 'bg-gray-100 text-gray-900' : 'bg-white'}
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="text-sm font-medium mb-1 block text-gray-900">Phone Number <span className="text-red-500">*</span></label>
-                                        <Input className="bg-white"
-                                            placeholder="01XXXXXXXXX"
+                                        <label className="text-sm font-medium mb-1 block text-gray-900">Full Name <span className="text-red-500">*</span></label>
+                                        <Input className="bg-white text-gray-900"
+                                            placeholder="Enter your full name"
                                             required
-                                            value={formData.phone}
-                                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                            value={formData.fullName}
+                                            onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                                         />
                                     </div>
-                                </div>
-                                {!isAuthenticated && (
-                                    <div>
-                                        <label className="text-sm font-medium mb-1 block text-gray-900">Create Password <span className="text-red-500">*</span></label>
-                                        <Input className="bg-white"
-                                            type="password"
-                                            placeholder="Create a password for your account"
-                                            required
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                        />
-                                        <p className="text-xs text-gray-500 mt-1">Must be at least 8 characters</p>
-                                    </div>
-                                )}
-                            </CardContent>
-                        </Card>
-
-                        {/* Shipping Address */}
-                        <Card className="border-none shadow-sm bg-white">
-                            <CardHeader className="pb-4">
-                                <CardTitle className="text-lg font-bold flex items-center gap-2 text-gray-900">
-                                    <span className="h-5 w-5 bg-gray-200 rounded-full flex items-center justify-center text-xs">📍</span>
-                                    Shipping Address
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div>
-                                    <label className="text-sm font-medium mb-1 block text-gray-900">Detailed Address <span className="text-red-500">*</span></label>
-                                    <Input className="bg-white"
-                                        placeholder="House, Road, Area"
-                                        required
-                                        value={formData.street}
-                                        onChange={(e) => setFormData({ ...formData, street: e.target.value })}
-                                    />
-                                </div>
-                                <div className="grid md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="text-sm font-medium mb-1 block text-gray-900">City / District <span className="text-red-500">*</span></label>
-                                        <Select
-                                            value={formData.city}
-                                            onValueChange={(val) => setFormData({ ...formData, city: val })}
-                                        >
-                                            <SelectTrigger className="bg-white">
-                                                <SelectValue placeholder="Select City" />
-                                            </SelectTrigger>
-                                            <SelectContent className="max-h-80 overflow-y-auto">
-                                                {BANGLADESH_DISTRICTS.map((district) => (
-                                                    <SelectItem key={district} value={district}>
-                                                        {district}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                        {!formData.city && <input tabIndex={-1} autoComplete="off" style={{ opacity: 0, height: 0 }} required={!formData.city} />}
-                                    </div>
-                                    <div>
-                                        <label className="text-sm font-medium mb-1 block text-gray-900">Alt. Phone</label>
-                                        <Input className="bg-white"
-                                            placeholder="01XXXXXXXXX (optional)"
-                                            value={formData.altPhone}
-                                            onChange={(e) => setFormData({ ...formData, altPhone: e.target.value })}
-                                        />
-                                    </div>
-                                </div>
-                                <div>
-                                    <label className="text-sm font-medium mb-1 block text-gray-900">Note for Delivery</label>
-                                    <Input className="bg-white"
-                                        placeholder="Special instructions (optional)"
-                                        value={formData.note}
-                                        onChange={(e) => setFormData({ ...formData, note: e.target.value })}
-                                    />
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </div>
-
-                    {/* Right Column: Summary & Payment */}
-                    <div className="lg:col-span-1 space-y-6">
-                        <Card className="border-none shadow-sm h-fit">
-                            <CardHeader className="flex flex-row items-center justify-between pb-4">
-                                <CardTitle className="text-lg font-bold text-gray-900">Order Summary</CardTitle>
-                                <Button variant="link" size="sm" className="h-auto p-0 text-gray-500" onClick={() => router.push('/cart')}>Modify</Button>
-                            </CardHeader>
-                            <CardContent className="space-y-6">
-                                {/* Items */}
-                                <div className="space-y-4 max-h-60 overflow-y-auto pr-2 scrollbar-thin">
-                                    {items.map((item) => (
-                                        <div key={item.variantSku} className="flex gap-3">
-                                            <div className="h-12 w-12 shrink-0 overflow-hidden rounded border bg-gray-100">
-                                                {item.image ? (
-                                                    <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
-                                                ) : (
-                                                    <div className="h-full w-full bg-gray-200" />
-                                                )}
-                                            </div>
-                                            <div className="shrink-0">
-                                                <p className="text-sm font-medium truncate text-gray-900">{item.name}</p>
-                                                <p className="text-xs text-gray-500">Size: {item.size} • Qty: {item.quantity}</p>
-                                            </div>
-                                            <p className="text-sm font-bold text-gray-900">৳{(item.price * item.quantity).toFixed(0)}</p>
+                                    <div className="grid md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="text-sm font-medium mb-1 block text-gray-900">Email</label>
+                                            <Input
+                                                type="email"
+                                                placeholder="your@email.com"
+                                                value={formData.email}
+                                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                                readOnly={isAuthenticated}
+                                                className={isAuthenticated ? 'bg-gray-100 text-gray-900' : 'bg-white'}
+                                            />
                                         </div>
-                                    ))}
-                                </div>
-
-                                {/* Totals */}
-                                <div className="space-y-2 border-t pt-4 text-sm">
-                                    <div className="flex justify-between">
-                                        <span className="text-gray-600">Subtotal</span>
-                                        <span className="font-bold text-gray-900">৳{subtotal.toFixed(0)}</span>
+                                        <div>
+                                            <label className="text-sm font-medium mb-1 block text-gray-900">Phone Number <span className="text-red-500">*</span></label>
+                                            <Input className="bg-white"
+                                                placeholder="01XXXXXXXXX"
+                                                required
+                                                value={formData.phone}
+                                                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                            />
+                                        </div>
                                     </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-gray-600">Shipping ({formData.city || 'Select City'})</span>
-                                        <span className="font-bold text-gray-900">৳{shipping}</span>
-                                    </div>
-                                    {appliedCoupon && (
-                                        <div className="flex justify-between text-green-600 font-bold">
-                                            <span>Discount ({appliedCoupon.code})</span>
-                                            <span>-৳{appliedCoupon.discountAmount}</span>
+                                    {!isAuthenticated && (
+                                        <div>
+                                            <label className="text-sm font-medium mb-1 block text-gray-900">Create Password <span className="text-red-500">*</span></label>
+                                            <Input className="bg-white"
+                                                type="password"
+                                                placeholder="Create a password for your account"
+                                                required
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)}
+                                            />
+                                            <p className="text-xs text-gray-500 mt-1">Must be at least 8 characters</p>
                                         </div>
                                     )}
-                                </div>
-                                <div className="flex justify-between border-t pt-4 text-xl font-bold text-gray-900">
-                                    <span>Total</span>
-                                    <span>৳{total.toFixed(0)}</span>
-                                </div>
+                                </CardContent>
+                            </Card>
 
-                                {/* Delivery Alert */}
-                                <div className="flex items-center gap-2 rounded-md bg-green-50 p-3 text-xs text-green-700">
-                                    <Truck className="h-4 w-4" />
-                                    <span>Delivery within 2-3 Days after confirmation</span>
-                                </div>
-
-                                {/* Coupon */}
-                                <div className="space-y-2">
-                                    <div className="flex gap-2">
-                                        <Input
-                                            placeholder="Enter coupon code"
-                                            className="bg-white uppercase"
-                                            value={couponCode}
-                                            onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                            {/* Shipping Address */}
+                            <Card className="border-none shadow-sm bg-white">
+                                <CardHeader className="pb-4">
+                                    <CardTitle className="text-lg font-bold flex items-center gap-2 text-gray-900">
+                                        <span className="h-5 w-5 bg-gray-200 rounded-full flex items-center justify-center text-xs">📍</span>
+                                        Shipping Address
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <div>
+                                        <label className="text-sm font-medium mb-1 block text-gray-900">Detailed Address <span className="text-red-500">*</span></label>
+                                        <Input className="bg-white"
+                                            placeholder="House, Road, Area"
+                                            required
+                                            value={formData.street}
+                                            onChange={(e) => setFormData({ ...formData, street: e.target.value })}
                                         />
-                                        <Button
-                                            type="button"
-                                            variant="default"
-                                            className="bg-black hover:bg-gray-800 text-white transition-all duration-200 hover:shadow-md px-6"
-                                            onClick={handleApplyCoupon}
-                                            disabled={isCouponLoading || !couponCode}
-                                        >
-                                            {isCouponLoading ? '...' : 'Apply'}
-                                        </Button>
                                     </div>
-                                    {couponError && <p className="text-xs text-red-500">{couponError}</p>}
-                                    {appliedCoupon && (
-                                        <div className="flex items-center justify-between bg-green-50 p-2 rounded border border-green-200">
-                                            <span className="text-xs font-bold text-green-700 uppercase">Coupon {appliedCoupon.code} Applied!</span>
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                className="h-auto p-0 text-red-500 hover:text-red-700 hover:bg-transparent"
-                                                onClick={() => setAppliedCoupon(null)}
+                                    <div className="grid md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="text-sm font-medium mb-1 block text-gray-900">City / District <span className="text-red-500">*</span></label>
+                                            <Select
+                                                value={formData.city}
+                                                onValueChange={(val) => setFormData({ ...formData, city: val })}
                                             >
-                                                Remove
+                                                <SelectTrigger className="bg-white">
+                                                    <SelectValue placeholder="Select City" />
+                                                </SelectTrigger>
+                                                <SelectContent className="max-h-80 overflow-y-auto">
+                                                    {BANGLADESH_DISTRICTS.map((district) => (
+                                                        <SelectItem key={district} value={district}>
+                                                            {district}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                            {!formData.city && <input tabIndex={-1} autoComplete="off" style={{ opacity: 0, height: 0 }} required={!formData.city} />}
+                                            {calculateShipping(formData.city) === 140 && (
+                                                <div className="mt-3 bg-orange-50 border-l-4 border-orange-500 p-4 animate-in slide-in-from-top-2 duration-300">
+                                                    <div className="flex items-start gap-3">
+                                                        <Truck className="h-5 w-5 text-orange-600 mt-0.5 shrink-0" />
+                                                        <div>
+                                                            <p className="text-[10px] font-bold uppercase tracking-widest text-orange-600 mb-1">ঢাকার বাইরে ডেলিভারি প্রযোজ্য।</p>
+                                                            <p className="text-xs font-bold text-gray-900 leading-relaxed">
+                                                                ডেলিভারি চার্জ <span className="text-orange-600 underline font-black">৳১৪০।</span><br />
+                                                                অর্ডারটি কনফার্ম করতে অনুগ্রহ করে বিকাশ বা নগদের <span 
+                                                                    className="font-black italic text-orange-700 underline cursor-pointer hover:text-orange-900 transition-all active:scale-95"
+                                                                    onClick={() => {
+                                                                        navigator.clipboard.writeText('01911209322');
+                                                                        toast.success('Number copied to clipboard!');
+                                                                    }}
+                                                                    title="Click to copy"
+                                                                >(01911209322)</span> মাধ্যমে ডেলিভারি চার্জ প্রদান করুন।
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <label className="text-sm font-medium mb-1 block text-gray-900">Alt. Phone</label>
+                                            <Input className="bg-white"
+                                                placeholder="01XXXXXXXXX (optional)"
+                                                value={formData.altPhone}
+                                                onChange={(e) => setFormData({ ...formData, altPhone: e.target.value })}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="text-sm font-medium mb-1 block text-gray-900">Note for Delivery</label>
+                                        <Input className="bg-white"
+                                            placeholder="Special instructions (optional)"
+                                            value={formData.note}
+                                            onChange={(e) => setFormData({ ...formData, note: e.target.value })}
+                                        />
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+
+                        {/* Right Column: Summary & Payment */}
+                        <div className="lg:col-span-1 space-y-6">
+                            <Card className="border-none shadow-sm h-fit">
+                                <CardHeader className="flex flex-row items-center justify-between pb-4">
+                                    <CardTitle className="text-lg font-bold text-gray-900">Order Summary</CardTitle>
+                                    <Button variant="link" size="sm" className="h-auto p-0 text-gray-500" onClick={() => router.push('/cart')}>Modify</Button>
+                                </CardHeader>
+                                <CardContent className="space-y-6">
+                                    {/* Items */}
+                                    <div className="space-y-4 max-h-60 overflow-y-auto pr-2 scrollbar-thin">
+                                        {items.map((item) => (
+                                            <div key={item.variantSku} className="flex gap-3">
+                                                <div className="h-12 w-12 shrink-0 overflow-hidden rounded border bg-gray-100">
+                                                    {item.image ? (
+                                                        <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
+                                                    ) : (
+                                                        <div className="h-full w-full bg-gray-200" />
+                                                    )}
+                                                </div>
+                                                <div className="shrink-0">
+                                                    <p className="text-sm font-medium truncate text-gray-900">{item.name}</p>
+                                                    <p className="text-xs text-gray-500">Size: {item.size} • Qty: {item.quantity}</p>
+                                                </div>
+                                                <p className="text-sm font-bold text-gray-900">৳{(item.price * item.quantity).toFixed(0)}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {/* Totals */}
+                                    <div className="space-y-2 border-t pt-4 text-sm">
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-600">Subtotal</span>
+                                            <span className="font-bold text-gray-900">৳{subtotal.toFixed(0)}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-600">Shipping ({formData.city || 'Select City'})</span>
+                                            <span className="font-bold text-gray-900">৳{shipping}</span>
+                                        </div>
+                                        {appliedCoupon && (
+                                            <div className="flex justify-between text-green-600 font-bold">
+                                                <span>Discount ({appliedCoupon.code})</span>
+                                                <span>-৳{appliedCoupon.discountAmount}</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="flex justify-between border-t pt-4 text-xl font-bold text-gray-900">
+                                        <span>Total</span>
+                                        <span>৳{total.toFixed(0)}</span>
+                                    </div>
+
+                                    {/* Delivery Alert */}
+                                    <div className="flex items-center gap-2 rounded-md bg-green-50 p-3 text-xs text-green-700">
+                                        <Truck className="h-4 w-4" />
+                                        <span>Delivery within 2-3 Days after confirmation</span>
+                                    </div>
+
+                                    {/* Coupon */}
+                                    <div className="space-y-2">
+                                        <div className="flex gap-2">
+                                            <Input
+                                                placeholder="Enter coupon code"
+                                                className="bg-white uppercase"
+                                                value={couponCode}
+                                                onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                                            />
+                                            <Button
+                                                type="button"
+                                                variant="default"
+                                                className="bg-black hover:bg-gray-800 text-white transition-all duration-200 hover:shadow-md px-6"
+                                                onClick={handleApplyCoupon}
+                                                disabled={isCouponLoading || !couponCode}
+                                            >
+                                                {isCouponLoading ? '...' : 'Apply'}
                                             </Button>
                                         </div>
-                                    )}
-                                </div>
-
-                                {/* Payment Method */}
-                                <div>
-                                    <h3 className="font-bold mb-3 text-gray-900">Payment Method</h3>
-                                    <div className="space-y-3">
-                                        <label className={`flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-colors ${paymentMethod === 'cod' ? 'border-orange-500 bg-orange-50/50' : 'hover:bg-gray-50'}`}>
-                                            <div className="flex h-5 items-center">
-                                                <input type="radio" name="payment" checked={paymentMethod === 'cod'} onChange={() => setPaymentMethod('cod')} className="h-4 w-4 accent-orange-500" />
-                                            </div>
-                                            <div className="flex-1">
-                                                <div className="flex items-center gap-2">
-                                                    <Banknote className="h-4 w-4 text-orange-600" />
-                                                    <span className="font-semibold">Cash on Delivery</span>
-                                                    <span className="rounded bg-gray-200 px-1.5 py-0.5 text-[10px] font-bold text-gray-600">POPULAR</span>
-                                                </div>
-                                                <p className="text-xs text-gray-500 mt-1">Pay when you receive your order</p>
-                                            </div>
-                                        </label>
-
-                                        <label className={`flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-colors ${paymentMethod === 'bkash' ? 'border-pink-500 bg-pink-50/50' : 'hover:bg-gray-50'}`}>
-                                            <div className="flex h-5 items-center">
-                                                <input type="radio" name="payment" checked={paymentMethod === 'bkash'} onChange={() => setPaymentMethod('bkash')} className="h-4 w-4 accent-pink-500" />
-                                            </div>
-                                            <div className="flex-1">
-                                                <div className="flex items-center gap-2">
-                                                    <span className="font-semibold text-pink-600">bKash</span>
-                                                </div>
-                                                <p className="text-xs text-gray-500 mt-1">Pay with bKash mobile wallet</p>
-                                            </div>
-                                        </label>
-
-                                        {/* bKash Payment Details */}
-                                        {paymentMethod === 'bkash' && (
-                                            <div className="md:ml-7 mt-3 space-y-3 rounded-lg border border-pink-200 bg-pink-50/30 p-4">
-                                                <div className="rounded-md bg-white p-3 border border-pink-300">
-                                                    <p className="text-xs text-gray-600 mb-1">Send money to this number:</p>
-                                                    <p className="text-lg font-bold text-pink-600">{BKASH_MERCHANT_NUMBER}</p>
-                                                    <p className="text-xs text-gray-500 mt-1">Amount: ৳{total.toFixed(0)}</p>
-                                                </div>
-
-                                                <div>
-                                                    <label className="text-sm font-medium mb-1 block text-gray-900">
-                                                        Your bKash Number <span className="text-red-500">*</span>
-                                                    </label>
-                                                    <Input
-                                                        className="bg-white"
-                                                        placeholder="01XXXXXXXXX"
-                                                        value={bkashSenderNumber}
-                                                        onChange={(e) => setBkashSenderNumber(e.target.value)}
-                                                        required={paymentMethod === 'bkash'}
-                                                    />
-                                                </div>
-
-                                                <div>
-                                                    <label className="text-sm font-medium mb-1 block text-gray-900">
-                                                        Transaction ID <span className="text-red-500">*</span>
-                                                    </label>
-                                                    <Input
-                                                        className="bg-white"
-                                                        placeholder="Enter bKash transaction ID"
-                                                        value={bkashTransactionId}
-                                                        onChange={(e) => setBkashTransactionId(e.target.value)}
-                                                        required={paymentMethod === 'bkash'}
-                                                    />
-                                                    <p className="text-xs text-gray-500 mt-1">
-                                                        You'll receive this after completing the payment
-                                                    </p>
-                                                </div>
+                                        {couponError && <p className="text-xs text-red-500">{couponError}</p>}
+                                        {appliedCoupon && (
+                                            <div className="flex items-center justify-between bg-green-50 p-2 rounded border border-green-200">
+                                                <span className="text-xs font-bold text-green-700 uppercase">Coupon {appliedCoupon.code} Applied!</span>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="h-auto p-0 text-red-500 hover:text-red-700 hover:bg-transparent"
+                                                    onClick={() => setAppliedCoupon(null)}
+                                                >
+                                                    Remove
+                                                </Button>
                                             </div>
                                         )}
                                     </div>
-                                </div>
 
-                                {/* Terms */}
-                                <div className="flex items-start gap-2">
-                                    <Checkbox id="terms" checked={termsAccepted} onCheckedChange={(checked) => setTermsAccepted(checked as boolean)} />
-                                    <label htmlFor="terms" className="text-xs text-gray-600 leading-tight cursor-pointer">
-                                        I agree to the <a href="#" className="underline">Terms & Conditions</a>, <a href="#" className="underline">Refund Policy</a> and <a href="#" className="underline">Privacy Policy</a>
-                                    </label>
-                                </div>
+                                    {/* Payment Method */}
+                                    <div>
+                                        <h3 className="font-bold mb-3 text-gray-900">Payment Method</h3>
+                                        <div className="space-y-3">
+                                            <label className={`flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-colors ${paymentMethod === 'cod' ? 'border-orange-500 bg-orange-50/50' : 'hover:bg-gray-50'}`}>
+                                                <div className="flex h-5 items-center">
+                                                    <input type="radio" name="payment" checked={paymentMethod === 'cod'} onChange={() => setPaymentMethod('cod')} className="h-4 w-4 accent-orange-500" />
+                                                </div>
+                                                <div className="flex-1">
+                                                    <div className="flex items-center gap-2">
+                                                        <Banknote className="h-4 w-4 text-orange-600" />
+                                                        <span className="font-semibold">Cash on Delivery</span>
+                                                        <span className="rounded bg-gray-200 px-1.5 py-0.5 text-[10px] font-bold text-gray-600">POPULAR</span>
+                                                    </div>
+                                                    <p className="text-xs text-gray-500 mt-1">Pay when you receive your order</p>
+                                                </div>
+                                            </label>
 
-                                {/* Confirm Button */}
-                                <div className="hidden lg:block">
-                                    <Button
-                                        className="w-full bg-black hover:bg-gray-900 h-14 text-xl font-bold text-white transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-xl rounded-xl"
-                                        disabled={loading}
-                                        type="submit"
-                                    >
-                                        {loading ? (
-                                            <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Processing...</>
-                                        ) : (
-                                            `Confirm Order ৳${total.toFixed(0)}`
-                                        )}
-                                    </Button>
-                                </div>
+                                            <label className={`flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-colors ${paymentMethod === 'bkash' ? 'border-pink-500 bg-pink-50/50' : 'hover:bg-gray-50'}`}>
+                                                <div className="flex h-5 items-center">
+                                                    <input type="radio" name="payment" checked={paymentMethod === 'bkash'} onChange={() => setPaymentMethod('bkash')} className="h-4 w-4 accent-pink-500" />
+                                                </div>
+                                                <div className="flex-1">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="font-semibold text-pink-600">bKash</span>
+                                                    </div>
+                                                    <p className="text-xs text-gray-500 mt-1">Pay with bKash mobile wallet</p>
+                                                </div>
+                                            </label>
 
-                                {/* Badges */}
-                                <div className="flex justify-between text-[10px] text-gray-500 pt-2">
-                                    <div className="flex items-center gap-1"><ShieldCheck className="h-3 w-3 text-green-600" /> Secure Payment</div>
-                                    <div className="flex items-center gap-1"><RefreshCw className="h-3 w-3 text-green-600" /> Easy Returns</div>
-                                    <div className="flex items-center gap-1"><Truck className="h-3 w-3 text-green-600" /> Fast Delivery</div>
-                                </div>
-                            </CardContent>
-                        </Card>
+                                            {/* bKash Payment Details */}
+                                            {paymentMethod === 'bkash' && (
+                                                <div className="md:ml-7 mt-3 space-y-3 rounded-lg border border-pink-200 bg-pink-50/30 p-4">
+                                                    <div className="rounded-md bg-white p-3 border border-pink-300">
+                                                        <p className="text-xs text-gray-600 mb-1 leading-relaxed">
+                                                            <span className="font-bold text-gray-900">Send Money</span> to this number:
+                                                        </p>
+                                                        <p 
+                                                            className="text-lg font-bold text-pink-600 cursor-pointer hover:text-pink-700 transition-all active:scale-95 flex items-center justify-center gap-2 group"
+                                                            onClick={() => {
+                                                                navigator.clipboard.writeText(BKASH_MERCHANT_NUMBER);
+                                                                toast.success('Number copied to clipboard!');
+                                                            }}
+                                                            title="Click to copy"
+                                                        >
+                                                            {BKASH_MERCHANT_NUMBER}
+                                                        </p>
+                                                    </div>
+
+                                                    <div>
+                                                        <label className="text-sm font-medium mb-1 block text-gray-900">
+                                                            Your bKash Number <span className="text-red-500">*</span>
+                                                        </label>
+                                                        <Input
+                                                            className="bg-white"
+                                                            placeholder="01XXXXXXXXX"
+                                                            value={bkashSenderNumber}
+                                                            onChange={(e) => setBkashSenderNumber(e.target.value)}
+                                                            required={paymentMethod === 'bkash'}
+                                                        />
+                                                    </div>
+
+                                                    <div>
+                                                        <label className="text-sm font-medium mb-1 block text-gray-900">
+                                                            Transaction ID <span className="text-red-500">*</span>
+                                                        </label>
+                                                        <Input
+                                                            className="bg-white"
+                                                            placeholder="Enter bKash transaction ID"
+                                                            value={bkashTransactionId}
+                                                            onChange={(e) => setBkashTransactionId(e.target.value)}
+                                                            required={paymentMethod === 'bkash'}
+                                                        />
+                                                        <p className="text-xs text-gray-500 mt-1">
+                                                            You'll receive this after completing the payment
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Terms */}
+                                    <div className="flex items-start gap-2">
+                                        <Checkbox id="terms" checked={termsAccepted} onCheckedChange={(checked) => setTermsAccepted(checked as boolean)} />
+                                        <label htmlFor="terms" className="text-xs text-gray-600 leading-tight cursor-pointer">
+                                            I agree to the <a href="#" className="underline">Terms & Conditions</a>, <a href="#" className="underline">Refund Policy</a> and <a href="#" className="underline">Privacy Policy</a>
+                                        </label>
+                                    </div>
+
+                                    {/* Confirm Button */}
+                                    <div className="hidden lg:block">
+                                        <Button
+                                            className="w-full bg-black hover:bg-gray-900 h-14 text-xl font-bold text-white transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-xl rounded-xl"
+                                            disabled={loading}
+                                            type="submit"
+                                        >
+                                            {loading ? (
+                                                <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Processing...</>
+                                            ) : (
+                                                'Confirm Order'
+                                            )}
+                                        </Button>
+                                    </div>
+
+                                    {/* Badges */}
+                                    <div className="flex justify-between text-[10px] text-gray-500 pt-2">
+                                        <div className="flex items-center gap-1"><ShieldCheck className="h-3 w-3 text-green-600" /> Secure Payment</div>
+                                        <div className="flex items-center gap-1"><RefreshCw className="h-3 w-3 text-green-600" /> Easy Returns</div>
+                                        <div className="flex items-center gap-1"><Truck className="h-3 w-3 text-green-600" /> Fast Delivery</div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+                    </form>
+
+                    {/* Mobile Sticky Bar */}
+                    <div className="fixed bottom-0 left-0 right-0 p-4 px-6 bg-white border-t border-gray-200 shadow-[0_-10px_30px_-10px_rgba(0,0,0,0.1)] lg:hidden z-50 flex items-center justify-between">
+                        <div className="flex flex-col">
+                            <span className="text-[10px] text-gray-500 font-bold tracking-widest uppercase">Total Payment</span>
+                            <span className="font-black text-xl text-black leading-none mt-1">৳{total.toFixed(0)}</span>
+                        </div>
+                        <Button
+                            form="checkout-form"
+                            type="submit"
+                            className="bg-black text-white hover:bg-gray-900 font-black uppercase tracking-widest px-8 h-12 rounded-xl transition-all active:scale-95 shadow-md shrink-0"
+                            disabled={loading}
+                        >
+                            {loading ? (
+                                <><Loader2 className="mr-2 h-4 w-4 animate-spin inline" /> Processing...</>
+                            ) : (
+                                'Place Order'
+                            )}
+                        </Button>
                     </div>
-                </form>
-
-                {/* Mobile Sticky Bar */}
-                <div className="fixed bottom-0 left-0 right-0 p-4 px-6 bg-white border-t border-gray-200 shadow-[0_-10px_30px_-10px_rgba(0,0,0,0.1)] lg:hidden z-50 flex items-center justify-between">
-                    <div className="flex flex-col">
-                        <span className="text-[10px] text-gray-500 font-bold tracking-widest uppercase">Total Payment</span>
-                        <span className="font-black text-xl text-black leading-none mt-1">৳{total.toFixed(0)}</span>
-                    </div>
-                    <Button
-                        form="checkout-form"
-                        type="submit"
-                        className="bg-black text-white hover:bg-gray-900 font-black uppercase tracking-widest px-8 h-12 rounded-xl transition-all active:scale-95 shadow-md shrink-0"
-                        disabled={loading}
-                    >
-                        {loading ? (
-                            <><Loader2 className="mr-2 h-4 w-4 animate-spin inline" /> Processing...</>
-                        ) : (
-                            'Place Order'
-                        )}
-                    </Button>
                 </div>
             </div>
-        </div>
         </>
     );
 }

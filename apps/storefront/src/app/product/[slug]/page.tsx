@@ -8,7 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from 'sonner';
 import { productsApi } from '@/lib/api';
 import { useCartStore } from '@/store/cart';
-import { ShoppingCart } from 'lucide-react';
+import { ShoppingCart, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Loader } from '@/components/ui/loader';
 
 import { use } from 'react';
 
@@ -33,6 +34,20 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
         }
     }, [product]);
 
+    const nextImage = () => {
+        if (!product?.images?.length) return;
+        const currentIndex = product.images.indexOf(activeImage!);
+        const nextIndex = (currentIndex + 1) % product.images.length;
+        setActiveImage(product.images[nextIndex]);
+    };
+
+    const prevImage = () => {
+        if (!product?.images?.length) return;
+        const currentIndex = product.images.indexOf(activeImage!);
+        const prevIndex = (currentIndex - 1 + product.images.length) % product.images.length;
+        setActiveImage(product.images[prevIndex]);
+    };
+
     const handleAddToCart = () => {
         if (product.variants.length > 0 && !selectedVariant) { // Modified condition to use selectedVariant
             toast.error('Please select a size');
@@ -53,7 +68,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
         toast.success('Added to cart!');
     };
 
-    if (isLoading) return <div className="container mx-auto px-4 py-8">Loading...</div>;
+    if (isLoading) return <Loader variant="page" text="DECRYPTING_ASSET_PROTOCOLS" />;
 
     if (!product) return <div className="container mx-auto px-4 py-8">Product not found</div>;
 
@@ -63,12 +78,36 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 <div className="grid gap-16 lg:grid-cols-2">
                     {/* Product Images */}
                     <div className="space-y-4">
-                        <div className="aspect-4/5 overflow-hidden bg-gray-50 border border-gray-100 group">
+                        <div className="relative aspect-4/5 overflow-hidden bg-gray-50 border border-gray-100 group cursor-crosshair">
+                            {/* Technical Counter */}
+                            <div className="absolute top-6 left-6 z-10 bg-black text-white px-4 py-1.5 font-black text-[10px] uppercase tracking-[0.3em] flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 rounded-full bg-white animate-elegant-pulse" />
+                                PHOTO_ID / {(product.images?.indexOf(activeImage!) ?? 0) + 1} / {product.images?.length || 0}
+                            </div>
+
+                            {/* Nav Arrows */}
+                            {product.images?.length > 1 && (
+                                <div className="absolute inset-0 z-20 flex items-center justify-between pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    <button
+                                        onClick={prevImage}
+                                        className="w-12 h-12 bg-white/40 backdrop-blur-md border-2 border-black flex items-center justify-center hover:bg-black hover:text-white transition-all ml-6 pointer-events-auto transform hover:scale-110 active:scale-95"
+                                    >
+                                        <ChevronLeft className="h-6 w-6" />
+                                    </button>
+                                    <button
+                                        onClick={nextImage}
+                                        className="w-12 h-12 bg-white/40 backdrop-blur-md border-2 border-black flex items-center justify-center hover:bg-black hover:text-white transition-all mr-6 pointer-events-auto transform hover:scale-110 active:scale-95"
+                                    >
+                                        <ChevronRight className="h-6 w-6" />
+                                    </button>
+                                </div>
+                            )}
+
                             {activeImage ? (
                                 <img
                                     src={activeImage}
                                     alt={product.name}
-                                    className="h-full w-full object-contain transition-transform duration-700 group-hover:scale-110"
+                                    className="h-full w-full object-contain transition-transform duration-1000 group-hover:scale-105"
                                 />
                             ) : (
                                 <div className="flex h-full w-full items-center justify-center text-gray-300 font-black uppercase tracking-widest text-xs">
@@ -240,7 +279,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                         <div className="mt-12 grid grid-cols-3 gap-4 pt-8 border-t border-gray-100">
                             {[
                                 { label: 'Secure Payment', sub: 'Verified' },
-                                { label: 'Free Shipping', sub: 'Over ৳2000' },
+                                { label: 'Free Shipping', sub: 'Over ৳2500' },
                                 { label: 'Authentic Gear', sub: '100% Genuine' }
                             ].map((badge, i) => (
                                 <div key={i} className="text-center">

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { productsApi, uploadApi, categoriesApi } from '@/lib/api';
 import { ChevronLeft, Plus, Trash2, Upload, Save, X } from 'lucide-react';
+import { Loader } from '@/components/ui/loader';
 import Link from 'next/link';
 
 export default function NewProductPage() {
@@ -46,6 +47,11 @@ export default function NewProductPage() {
             queryClient.invalidateQueries({ queryKey: ['products'] });
             router.push('/dashboard/products');
         },
+        onError: (error: any) => {
+            console.error('Core Registry Failure:', error);
+            const message = error.response?.data?.message || 'Unknown Protocol Error';
+            alert(`SYSTEM ALERT: Product Creation Inhibited\nReason: ${message}`);
+        }
     });
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,9 +70,10 @@ export default function NewProductPage() {
             if (imageUrl) {
                 setForm({ ...form, images: [...form.images, imageUrl] });
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error('Upload failed', error);
-            alert('Security Breach: Image Upload Protocols Failed');
+            const message = error.response?.data?.message || 'Asset Injection Protocols Failed';
+            alert(`SECURITY BREACH: ${message}`);
         } finally {
             setIsLoading(false);
         }
@@ -426,7 +433,7 @@ export default function NewProductPage() {
                                     disabled={isLoading}
                                 />
                                 {isLoading ? (
-                                    <div className="text-[10px] font-black uppercase animate-pulse">Uploading...</div>
+                                    <Loader variant="inline" text="INJECTING_ASSET" />
                                 ) : (
                                     <>
                                         <Upload className="w-8 h-8 mb-2 group-hover:scale-110 transition-transform" />

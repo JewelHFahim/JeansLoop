@@ -5,7 +5,8 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { productsApi } from '@/lib/api';
-import { Plus, Edit, Trash2, Search, Loader2 } from 'lucide-react';
+import { Plus, Edit, Trash2, Search } from 'lucide-react';
+import { Loader } from '@/components/ui/loader';
 import Link from 'next/link';
 
 export default function ProductsPage() {
@@ -71,7 +72,9 @@ export default function ProductsPage() {
                             />
                             <div className="absolute left-3 top-1/2 -translate-y-1/2">
                                 {isFetching ? (
-                                    <Loader2 className="w-3.5 h-3.5 animate-spin text-black" />
+                                    <div className="w-3.5 h-3.5 border border-black animate-spin flex items-center justify-center">
+                                        <div className="w-full h-px bg-black rotate-45" />
+                                    </div>
                                 ) : (
                                     <Search className="w-3.5 h-3.5 text-black" />
                                 )}

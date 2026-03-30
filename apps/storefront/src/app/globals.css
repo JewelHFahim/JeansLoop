@@ -29,3 +29,21 @@ body {
   -webkit-font-smoothing: initial;
   -moz-osx-font-smoothing: initial;
 }
+
+@keyframes elegant-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.95); }
+}
+
+@keyframes rotate-diamond {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-elegant-pulse {
+  animation: elegant-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-rotate-diamond {
+  animation: rotate-diamond 3s linear infinite;
+}

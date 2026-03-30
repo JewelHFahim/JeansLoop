@@ -69,8 +69,8 @@ app.set('trust proxy', 1); // Trust first proxy (e.g. Vercel, Heroku, Nginx)
 app.use(compression()); // Compress all responses
 app.use(globalLimiter); // Apply global rate limiting (mostly GETs)
 app.use(mutationLimiter); // Apply stricter limit to POST/PUT/DELETE
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '20mb' }));
+app.use(express.urlencoded({ limit: '20mb', extended: true }));
 app.use(cookieParser());
 app.use(helmet({ crossOriginResourcePolicy: false })); // Allow loading images
 

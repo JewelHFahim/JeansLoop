@@ -50,20 +50,15 @@ export function Navbar() {
                 </Link>
 
                 <div className="hidden items-center gap-6 md:flex">
-
                     <Link href="/shop?category=jeans" className="text-black font-bold uppercase tracking-widest text-[12px] hover:text-gray-600 transition-colors">
-                        JEANS
+                        Jeans
                     </Link>
                     <Link href="/shop?category=twill" className="text-black font-bold uppercase tracking-widest text-[12px] hover:text-gray-600 transition-colors">
-                        twill
+                        Twill
                     </Link>
                     <Link href="/shop?category=trouser" className="text-black font-bold uppercase tracking-widest text-[12px] hover:text-gray-600 transition-colors">
-                        TROUSER
+                        Trouser
                     </Link>
-                    <Link href="/shop?category=denim" className="text-black font-bold uppercase tracking-widest text-[12px] hover:text-gray-600 transition-colors">
-                        Denim
-                    </Link>
-
                     <Link href="/shop" className="text-black font-bold uppercase tracking-widest text-[12px] hover:text-gray-600 transition-colors">
                         Shop All
                     </Link>
@@ -79,11 +74,11 @@ export function Navbar() {
                                             <User className="h-5 w-5 sm:h-5 sm:w-5" />
                                         </Button>
                                     </Link>
-                                    <Button 
-                                        variant="ghost" 
-                                        size="icon" 
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
                                         title="Logout"
-                                        onClick={logout} 
+                                        onClick={logout}
                                         className="hidden sm:flex text-black hover:bg-red-50 hover:text-red-600 rounded-full transition-all hover:scale-110"
                                     >
                                         <LogOut className="h-5 w-5" />
@@ -137,19 +132,19 @@ export function Navbar() {
             {isMenuOpen && (
                 <div className="fixed inset-0 z-100 md:hidden">
                     {/* Backdrop */}
-                    <div 
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300" 
-                        onClick={() => setIsMenuOpen(false)} 
+                    <div
+                        className="fixed inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300"
+                        onClick={() => setIsMenuOpen(false)}
                     />
-                    
+
                     {/* Drawer Panel */}
                     <div className="fixed inset-y-0 right-0 w-[85vw] max-w-sm bg-white border-l-4 border-black shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
-                        
+
                         {/* Drawer Header */}
                         <div className="flex justify-between items-center p-4 border-b-4 border-black bg-black text-white">
                             <span className="text-2xl font-black italic tracking-tighter uppercase leading-none">{settings?.title || 'Fire Cutter'}</span>
-                            <button 
-                                onClick={() => setIsMenuOpen(false)} 
+                            <button
+                                onClick={() => setIsMenuOpen(false)}
                                 className="p-2 hover:bg-white/20 rounded-none transition-colors"
                             >
                                 <X className="w-6 h-6" />
@@ -160,9 +155,9 @@ export function Navbar() {
                         <div className="flex-1 overflow-y-auto p-4 scrollbar-thin">
                             <div className="space-y-2 mb-6">
                                 <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 mb-3 pb-2 border-b border-gray-100">Shop Navigation</p>
-                                
-                                <Link 
-                                    href="/shop" 
+
+                                <Link
+                                    href="/shop"
                                     onClick={() => setIsMenuOpen(false)}
                                     className="flex items-center justify-between group p-3 border-2 border-transparent hover:border-black hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all bg-gray-50 hover:bg-white"
                                 >
@@ -170,8 +165,8 @@ export function Navbar() {
                                     <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-black transition-transform group-hover:translate-x-1" />
                                 </Link>
 
-                                <Link 
-                                    href="/shop?category=jeans" 
+                                <Link
+                                    href="/shop?category=jeans"
                                     onClick={() => setIsMenuOpen(false)}
                                     className="flex items-center justify-between group p-3 border-2 border-transparent hover:border-black hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all bg-gray-50 hover:bg-white"
                                 >
@@ -179,8 +174,8 @@ export function Navbar() {
                                     <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-black transition-transform group-hover:translate-x-1" />
                                 </Link>
 
-                                <Link 
-                                    href="/shop?category=twill" 
+                                <Link
+                                    href="/shop?category=twill"
                                     onClick={() => setIsMenuOpen(false)}
                                     className="flex items-center justify-between group p-3 border-2 border-transparent hover:border-black hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all bg-gray-50 hover:bg-white"
                                 >
@@ -188,8 +183,8 @@ export function Navbar() {
                                     <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-black transition-transform group-hover:translate-x-1" />
                                 </Link>
 
-                                <Link 
-                                    href="/shop?category=trouser" 
+                                <Link
+                                    href="/shop?category=trouser"
                                     onClick={() => setIsMenuOpen(false)}
                                     className="flex items-center justify-between group p-3 border-2 border-transparent hover:border-black hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all bg-gray-50 hover:bg-white"
                                 >
@@ -197,8 +192,8 @@ export function Navbar() {
                                     <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-black transition-transform group-hover:translate-x-1" />
                                 </Link>
 
-                                <Link 
-                                    href="/shop?category=denim" 
+                                <Link
+                                    href="/shop?category=denim"
                                     onClick={() => setIsMenuOpen(false)}
                                     className="flex items-center justify-between group p-3 border-2 border-transparent hover:border-black hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all bg-gray-50 hover:bg-white"
                                 >
