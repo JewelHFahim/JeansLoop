@@ -42,12 +42,12 @@ export default function UsersPage() {
         <div className="space-y-4">
             <div className="flex flex-col md:flex-row md:items-end justify-between border-b-4 border-black pb-6 gap-4">
                 <div>
-                    <h1 className="text-3xl font-black tracking-tighter uppercase italic leading-none">Console / Users</h1>
+                    <h1 className="text-xl md:text-3xl font-black tracking-tighter uppercase italic leading-none">Console / Users</h1>
                     <p className="text-[10px] font-black text-black uppercase tracking-[0.2em] mt-1.5">Identity Management / Security</p>
                 </div>
             </div>
 
-            <div className={`border-4 border-black bg-white shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] flex flex-col pt-0 transition-opacity ${isLoading && !isPlaceholderData ? 'opacity-50' : 'opacity-100'}`}>
+            <div className={`border-4 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] md:shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] flex flex-col pt-0 transition-opacity ${isLoading && !isPlaceholderData ? 'opacity-50' : 'opacity-100'}`}>
                 <div className="bg-gray-50 border-b-4 border-black p-4 flex flex-col md:flex-row justify-between items-center gap-4">
                     <h2 className="text-xs font-black uppercase tracking-[0.2em] text-black italic">Active Personnel Directory</h2>
                     <div className="relative w-full md:w-64">

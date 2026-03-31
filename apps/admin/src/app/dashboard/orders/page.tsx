@@ -64,16 +64,16 @@ export default function OrdersPage() {
         <div className="space-y-4">
             <div className="flex flex-col md:flex-row md:items-end justify-between border-b-4 border-black pb-6 gap-4">
                 <div>
-                    <h1 className="text-3xl font-black tracking-tighter uppercase italic leading-none">Console / Orders</h1>
+                    <h1 className="text-xl md:text-3xl font-black tracking-tighter uppercase italic leading-none">Console / Orders</h1>
                     <p className="text-[10px] font-black text-black uppercase tracking-[0.2em] mt-1.5">Transaction Registry / Core</p>
                 </div>
             </div>
 
-            <div className={`border-4 border-black bg-white shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] flex flex-col pt-0 transition-opacity ${isLoading && !isPlaceholderData ? 'opacity-50' : 'opacity-100'}`}>
+            <div className={`border-4 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] md:shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] flex flex-col pt-0 transition-opacity ${isLoading && !isPlaceholderData ? 'opacity-50' : 'opacity-100'}`}>
                 <div className="bg-gray-50 border-b-4 border-black p-4 flex flex-col md:flex-row justify-between items-center gap-4">
                     <h2 className="text-xs font-black uppercase tracking-[0.2em] text-black italic">Active Transaction Registry</h2>
-                    <div className="flex items-center gap-4 w-full md:w-auto">
-                        <div className="relative flex-1 md:w-64">
+                    <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
+                        <div className="relative w-full sm:flex-1 md:w-64">
                             <input
                                 type="text"
                                 placeholder="SEARCH TRANSACTIONS..."
@@ -92,20 +92,22 @@ export default function OrdersPage() {
                                 )}
                             </div>
                         </div>
-                        <div className="flex items-center gap-3">
-                            <span className="text-[9px] font-black uppercase tracking-widest text-gray-500">Rows / View:</span>
-                            <select
-                                value={limit}
-                                onChange={(e) => {
-                                    setLimit(Number(e.target.value));
-                                    setPage(1);
-                                }}
-                                className="bg-white border-2 border-black rounded-none text-[10px] font-black px-2 py-1 outline-none focus:bg-black focus:text-white transition-all cursor-pointer"
-                            >
-                                {[10, 20, 50, 100].map(val => (
-                                    <option key={val} value={val}>{val}</option>
-                                ))}
-                            </select>
+                        <div className="flex items-center justify-between sm:justify-start gap-4 w-full sm:w-auto mt-2 sm:mt-0">
+                            <div className="flex items-center gap-3">
+                                <span className="text-[9px] font-black uppercase tracking-widest text-gray-500">Rows / View:</span>
+                                <select
+                                    value={limit}
+                                    onChange={(e) => {
+                                        setLimit(Number(e.target.value));
+                                        setPage(1);
+                                    }}
+                                    className="bg-white border-2 border-black rounded-none text-[10px] font-black px-2 py-1 outline-none focus:bg-black focus:text-white transition-all cursor-pointer"
+                                >
+                                    {[10, 20, 50, 100].map(val => (
+                                        <option key={val} value={val}>{val}</option>
+                                    ))}
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>

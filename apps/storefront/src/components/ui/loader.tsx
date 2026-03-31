@@ -18,8 +18,8 @@ export const Loader = ({ variant = 'inline', text, className }: LoaderProps) => 
                 className
             )}>
                 <div className="relative w-12 h-12">
-                    <div className="absolute inset-0 border-2 border-black animate-rotate-diamond" />
-                    <div className="absolute inset-2 border border-black/20 animate-[rotate-diamond_4s_linear_infinite_reverse]" />
+                    <div className="absolute inset-0 border-2 border-black border-t-transparent rounded-full animate-rotate-diamond" />
+                    <div className="absolute inset-2 border border-black/20 border-b-black/40 rounded-full animate-[rotate-diamond_4s_linear_infinite_reverse]" />
                 </div>
                 <div className="flex flex-col items-center gap-3">
                     <p className="text-[10px] font-black uppercase tracking-[0.5em] text-black animate-elegant-pulse">
@@ -41,7 +41,7 @@ export const Loader = ({ variant = 'inline', text, className }: LoaderProps) => 
 
     return (
         <div className={cn("flex items-center gap-3", className)}>
-            <div className="w-4 h-4 border border-black animate-rotate-diamond shrink-0" />
+            <div className="w-4 h-4 border border-black border-t-transparent rounded-full animate-rotate-diamond shrink-0" />
             <p className="text-[9px] font-black uppercase tracking-widest text-black animate-elegant-pulse italic">
                 {text || 'Processing'}
             </p>

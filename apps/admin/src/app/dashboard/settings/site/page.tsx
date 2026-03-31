@@ -125,7 +125,7 @@ export default function SiteSettingsPage() {
         <form onSubmit={handleSubmit} className="space-y-8 max-w-5xl mx-auto pb-20">
             <div className="flex flex-col md:flex-row md:items-end justify-between border-b-4 border-black pb-6 gap-4">
                 <div>
-                    <h1 className="text-4xl font-black tracking-tighter uppercase italic leading-none">Site Configuration</h1>
+                    <h1 className="text-2xl md:text-4xl font-black tracking-tighter uppercase italic leading-none">Site Configuration</h1>
                     <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mt-2">Global Identity & Connectivity Management</p>
                 </div>
                 <Button 
@@ -141,7 +141,7 @@ export default function SiteSettingsPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Visual Identity */}
                 <div className="lg:col-span-1 space-y-6">
-                    <div className="border-4 border-black bg-white shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] p-6">
+                    <div className="border-4 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,0.1)] md:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] p-6">
                         <div className="flex items-center gap-2 mb-6 border-b-2 border-black pb-2">
                             <ImageIcon className="w-4 h-4" />
                             <h2 className="text-xs font-black uppercase tracking-widest italic">Visual Branding</h2>
@@ -181,7 +181,7 @@ export default function SiteSettingsPage() {
                         </div>
                     </div>
 
-                    <div className="border-4 border-black bg-white shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] p-6">
+                    <div className="border-4 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,0.1)] md:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] p-6">
                         <div className="flex items-center gap-2 mb-6 border-b-2 border-black pb-2">
                             <Megaphone className="w-4 h-4" />
                             <h2 className="text-xs font-black uppercase tracking-widest italic">Announcements</h2>
@@ -204,7 +204,7 @@ export default function SiteSettingsPage() {
                 {/* Core Settings */}
                 <div className="lg:col-span-2 space-y-8">
                     {/* General Information */}
-                    <div className="border-4 border-black bg-white shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] p-8">
+                    <div className="border-4 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,0.1)] md:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] p-8">
                         <div className="flex items-center gap-2 mb-8 border-b-2 border-black pb-4">
                             <Globe className="w-5 h-5" />
                             <h2 className="text-sm font-black uppercase tracking-widest italic">General Identity</h2>
@@ -282,7 +282,7 @@ export default function SiteSettingsPage() {
                     </div>
 
                     {/* Social Connectivity */}
-                    <div className="border-4 border-black bg-white shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] p-8">
+                    <div className="border-4 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,0.1)] md:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] p-8">
                         <div className="flex items-center gap-2 mb-8 border-b-2 border-black pb-4">
                             <MessageCircle className="w-5 h-5" />
                             <h2 className="text-sm font-black uppercase tracking-widest italic">Social Connectivity</h2>

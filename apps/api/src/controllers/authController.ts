@@ -9,7 +9,7 @@ export const registerUser = async (req: Request, res: Response) => {
     try {
         // Validate request
         const parsed = UserSchema.parse(req.body);
-        const { name, email, password } = parsed;
+        const { name, email, phone, password } = parsed;
 
         const userExists = await User.findOne({ email });
 
@@ -20,6 +20,7 @@ export const registerUser = async (req: Request, res: Response) => {
         const user = await User.create({
             name,
             email,
+            phone,
             password, // Pre-save hook will hash it
         });
 
@@ -31,6 +32,7 @@ export const registerUser = async (req: Request, res: Response) => {
                 _id: user._id,
                 name: user.name,
                 email: user.email,
+                phone: user.phone,
                 role: user.role,
                 token: accessToken
             });

@@ -44,7 +44,7 @@ export default function ProductsPage() {
         <div className="space-y-4">
             <div className="flex flex-col md:flex-row md:items-end justify-between border-b-4 border-black pb-6 gap-4">
                 <div>
-                    <h1 className="text-3xl font-black tracking-tighter uppercase italic leading-none">Console / Products</h1>
+                    <h1 className="text-xl md:text-3xl font-black tracking-tighter uppercase italic leading-none">Console / Products</h1>
                     <p className="text-[10px] font-black text-black uppercase tracking-[0.3em] mt-1.5">Inventory Control / Nexus</p>
                 </div>
                 <Link href="/dashboard/products/new">
@@ -214,23 +214,23 @@ export default function ProductsPage() {
                 </div>
 
                 {data?.pages > 1 && (
-                    <div className="p-8 border-t-4 border-black bg-gray-50 flex justify-center items-center gap-6">
+                    <div className="p-4 md:p-8 border-t-4 border-black bg-gray-50 flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6">
                         <Button
                             variant="outline"
                             onClick={() => setPage((p) => Math.max(1, p - 1))}
                             disabled={page === 1}
-                            className="rounded-none border-2 border-black h-12 hover:bg-black hover:text-white font-black uppercase tracking-widest text-[10px] px-8 disabled:opacity-20 transition-all"
+                            className="w-full sm:w-auto rounded-none border-2 border-black h-10 md:h-12 hover:bg-black hover:text-white font-black uppercase tracking-widest text-[9px] md:text-[10px] px-8 disabled:opacity-20 transition-all"
                         >
                             Previous Sector
                         </Button>
-                        <span className="text-[10px] font-black uppercase tracking-[0.3em] flex items-center h-12 border-x-2 border-gray-200 px-8">
+                        <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] flex items-center h-10 md:h-12 border-y-2 sm:border-y-0 sm:border-x-2 border-gray-200 px-8 w-full sm:w-auto justify-center">
                             Sector {page} / {data.pages}
                         </span>
                         <Button
                             variant="outline"
                             onClick={() => setPage((p) => p + 1)}
                             disabled={page >= data.pages}
-                            className="rounded-none border-2 border-black h-12 hover:bg-black hover:text-white font-black uppercase tracking-widest text-[10px] px-8 disabled:opacity-20 transition-all"
+                            className="w-full sm:w-auto rounded-none border-2 border-black h-10 md:h-12 hover:bg-black hover:text-white font-black uppercase tracking-widest text-[9px] md:text-[10px] px-8 disabled:opacity-20 transition-all"
                         >
                             Next Sector
                         </Button>

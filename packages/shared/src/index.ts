@@ -7,9 +7,12 @@ export const UserSchema = z.object({
     id: z.string().optional(),
     name: z.string().min(2),
     email: z.string().email(),
-    phone: z.string().optional(),
+    phone: z.string().min(11, "Phone number must be at least 11 characters"),
     password: z.string().min(8).optional(), // Optional for updates/sanitized views
     role: UserRoleSchema.default("CUSTOMER"),
+    address: z.string().optional(),
+    gender: z.enum(["male", "female", "other"]).optional().default("male"),
+    birthDate: z.date().optional().or(z.string().transform((val) => new Date(val))).or(z.null()),
     createdAt: z.date().optional(),
     updatedAt: z.date().optional(),
 });

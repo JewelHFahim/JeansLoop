@@ -73,14 +73,14 @@ export default function DashboardPage() {
     return (
         <div className="space-y-10 pb-10 max-w-[1600px] mx-auto animate-in fade-in duration-700">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b-4 border-black pb-8">
-                <div>
-                    <h1 className="text-5xl font-black tracking-tighter uppercase italic leading-none">Command Center</h1>
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mt-4 flex items-center gap-2">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b-4 border-black pb-8">
+                <div className="space-y-4">
+                    <h1 className="text-xl md:text-5xl font-black tracking-tighter uppercase italic leading-none">Command Center</h1>
+                    <p className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] flex items-center gap-2">
                         <Clock className="h-3 w-3" /> Real-time Metrics & Insights
                     </p>
                 </div>
-                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-black text-white px-4 py-2 italic shadow-[4px_4px_0px_0px_rgba(156,163,175,1)]">
+                <div className="flex items-center gap-2 text-[9px] md:text-[10px] font-black uppercase tracking-widest bg-black text-white px-4 py-2 italic shadow-[4px_4px_0px_0px_rgba(156,163,175,1)] w-fit">
                     <TrendingUp className="h-3 w-3" /> System Status: Optimal
                 </div>
             </div>
@@ -200,32 +200,32 @@ export default function DashboardPage() {
             {/* Bottom Row */}
             <div className="grid gap-8 lg:grid-cols-2">
                 {/* Recent Orders */}
-                <Card className="rounded-none border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,0.1)]">
+                <Card className="rounded-none border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,0.1)] overflow-hidden">
                     <CardHeader className="border-b-2 border-gray-50 bg-gray-50/50">
                         <CardTitle className="text-[11px] font-black uppercase tracking-[0.3em]">Recent Transactions</CardTitle>
                     </CardHeader>
                     <CardContent className="p-0">
-                        <div className="overflow-x-auto">
-                            <table className="w-full">
+                        <div className="overflow-x-auto w-full">
+                            <table className="w-full" style={{ minWidth: '400px' }}>
                                 <thead>
                                     <tr className="border-b-2 border-black bg-black text-white">
-                                        <th className="px-6 py-3 text-left text-[10px] font-black uppercase tracking-widest">ID</th>
-                                        <th className="px-6 py-3 text-left text-[10px] font-black uppercase tracking-widest">Customer</th>
-                                        <th className="px-6 py-3 text-left text-[10px] font-black uppercase tracking-widest">Amount</th>
-                                        <th className="px-6 py-3 text-left text-[10px] font-black uppercase tracking-widest">Status</th>
+                                        <th className="px-3 md:px-6 py-3 text-left text-[9px] md:text-[10px] font-black uppercase tracking-widest">ID</th>
+                                        <th className="px-3 md:px-6 py-3 text-left text-[9px] md:text-[10px] font-black uppercase tracking-widest">Customer</th>
+                                        <th className="px-3 md:px-6 py-3 text-left text-[9px] md:text-[10px] font-black uppercase tracking-widest">Amount</th>
+                                        <th className="px-3 md:px-6 py-3 text-left text-[9px] md:text-[10px] font-black uppercase tracking-widest">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {stats?.recentOrders?.map((order: any) => (
                                         <tr key={order._id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                                            <td className="px-6 py-4 text-[10px] font-bold text-gray-400">#{order._id.slice(-6).toUpperCase()}</td>
-                                            <td className="px-6 py-4">
-                                                <div className="text-[10px] font-black uppercase">{order.userId?.name || 'Guest'}</div>
-                                                <div className="text-[8px] font-bold text-gray-400">{order.userId?.email}</div>
+                                            <td className="px-3 md:px-6 py-3 text-[9px] font-bold text-gray-400">#{order._id.slice(-6).toUpperCase()}</td>
+                                            <td className="px-3 md:px-6 py-3 max-w-[120px]">
+                                                <div className="text-[9px] font-black uppercase truncate">{order.userId?.name || 'Guest'}</div>
+                                                <div className="text-[8px] font-bold text-gray-400 truncate">{order.userId?.email}</div>
                                             </td>
-                                            <td className="px-6 py-4 text-[11px] font-black">৳{order.totalAmount}</td>
-                                            <td className="px-6 py-4">
-                                                <span className={`text-[8px] font-black border-2 px-2 py-0.5 uppercase tracking-widest ${order.status === 'DELIVERED' ? 'border-black bg-black text-white' : 'border-gray-200 text-gray-400'
+                                            <td className="px-3 md:px-6 py-3 text-[10px] font-black whitespace-nowrap">৳{order.totalAmount}</td>
+                                            <td className="px-3 md:px-6 py-3">
+                                                <span className={`text-[8px] font-black border-2 px-1.5 py-0.5 uppercase tracking-wide whitespace-nowrap ${order.status === 'DELIVERED' ? 'border-black bg-black text-white' : 'border-gray-200 text-gray-400'
                                                     }`}>
                                                     {order.status}
                                                 </span>
@@ -239,25 +239,25 @@ export default function DashboardPage() {
                 </Card>
 
                 {/* Top Products */}
-                <Card className="rounded-none border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,0.1)]">
+                <Card className="rounded-none border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,0.1)] overflow-hidden">
                     <CardHeader className="border-b-2 border-gray-50 bg-gray-50/50">
                         <CardTitle className="text-[11px] font-black uppercase tracking-[0.3em]">Best Sellers</CardTitle>
                     </CardHeader>
-                    <CardContent className="p-6 space-y-6">
+                    <CardContent className="p-4 md:p-6 space-y-4 md:space-y-6">
                         {stats?.topProducts?.map((item: any, idx: number) => (
-                            <div key={item._id} className="flex items-center justify-between group">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 bg-black text-white flex items-center justify-center font-black italic text-xl">
+                            <div key={item._id} className="flex items-center justify-between gap-3 group">
+                                <div className="flex items-center gap-3 min-w-0">
+                                    <div className="w-8 h-8 md:w-10 md:h-10 bg-black text-white flex items-center justify-center font-black italic text-lg md:text-xl shrink-0">
                                         {idx + 1}
                                     </div>
-                                    <div>
-                                        <h4 className="text-xs font-black uppercase italic tracking-tighter group-hover:text-gray-600 transition-colors">{item.name}</h4>
-                                        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">{item.quantity} Units Sold</p>
+                                    <div className="min-w-0">
+                                        <h4 className="text-[10px] md:text-xs font-black uppercase italic tracking-tighter group-hover:text-gray-600 transition-colors truncate">{item.name}</h4>
+                                        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">{item.quantity} Units Sold</p>
                                     </div>
                                 </div>
-                                <div className="text-right">
-                                    <p className="text-xs font-black italic tracking-tighter">৳{item.revenue.toLocaleString()}</p>
-                                    <div className="mt-1 h-1 w-24 bg-gray-100">
+                                <div className="text-right shrink-0">
+                                    <p className="text-[10px] md:text-xs font-black italic tracking-tighter whitespace-nowrap">৳{item.revenue.toLocaleString()}</p>
+                                    <div className="mt-1 h-1 w-16 md:w-24 bg-gray-100">
                                         <div
                                             className="h-full bg-black"
                                             style={{ width: `${(item.quantity / (stats.topProducts[0].quantity || 1)) * 100}%` }}

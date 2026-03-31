@@ -3,6 +3,9 @@ import bcrypt from 'bcryptjs';
 import { User as IUser, UserRoleSchema } from '@repo/shared';
 
 export interface IUserDocument extends Omit<IUser, 'id'>, Document {
+    address?: string;
+    gender?: string;
+    birthDate?: Date;
     comparePassword(password: string): Promise<boolean>;
 }
 
@@ -12,6 +15,9 @@ const UserSchema = new Schema({
     phone: { type: String },
     password: { type: String, required: true, select: false },
     role: { type: String, enum: UserRoleSchema.options, default: 'CUSTOMER' },
+    address: { type: String },
+    gender: { type: String, enum: ['male', 'female', 'other'], default: 'male' },
+    birthDate: { type: Date },
 }, { timestamps: true });
 
 UserSchema.pre('save', async function (next) {

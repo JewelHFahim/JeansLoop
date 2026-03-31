@@ -13,6 +13,9 @@ export const getUserProfile = async (req: Request, res: Response) => {
             name: user.name,
             email: user.email,
             phone: user.phone,
+            address: user.address,
+            gender: user.gender,
+            birthDate: user.birthDate,
             role: user.role,
         });
     } else {
@@ -38,6 +41,9 @@ export const updateUserProfile = async (req: Request, res: Response) => {
 
     user.name = req.body.name || user.name;
     user.phone = req.body.phone || user.phone;
+    user.address = req.body.address !== undefined ? req.body.address : user.address;
+    user.gender = req.body.gender || user.gender;
+    user.birthDate = req.body.birthDate !== undefined ? req.body.birthDate : user.birthDate;
 
     if (req.body.password) {
         if (!req.body.currentPassword) {
@@ -57,6 +63,9 @@ export const updateUserProfile = async (req: Request, res: Response) => {
         name: updatedUser.name,
         email: updatedUser.email,
         phone: updatedUser.phone,
+        address: updatedUser.address,
+        gender: updatedUser.gender,
+        birthDate: updatedUser.birthDate,
         role: updatedUser.role,
     });
 };
@@ -82,13 +91,13 @@ export const getUsers = async (_req: Request, res: Response) => {
             }
         },
         {
+            $sort: { createdAt: -1 }
+        },
+        {
             $project: {
                 password: 0,
                 orders: 0
             }
-        },
-        {
-            $sort: { createdAt: -1 }
         }
     ]);
     res.json(users);

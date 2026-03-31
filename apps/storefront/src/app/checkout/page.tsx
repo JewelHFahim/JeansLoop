@@ -11,7 +11,7 @@ import { useCartStore } from '@/store/cart';
 import { useAuthStore } from '@/store/auth';
 import { ordersApi, authApi, couponsApi } from '@/lib/api';
 import { loadStripe } from '@stripe/stripe-js';
-import { ShieldCheck, RefreshCw, Truck, Banknote, ShoppingBag, Loader2 } from 'lucide-react';
+import { ShieldCheck, RefreshCw, Truck, Banknote, ShoppingBag, Loader2, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
@@ -73,6 +73,7 @@ export default function CheckoutPage() {
 
     // For password if registering
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
     const [paymentMethod, setPaymentMethod] = useState<'cod' | 'bkash' | 'card'>('cod');
     const [termsAccepted, setTermsAccepted] = useState(false);
@@ -141,7 +142,7 @@ export default function CheckoutPage() {
                 }
 
                 try {
-                    const { data } = await authApi.register(formData.fullName, formData.email, password);
+                    const { data } = await authApi.register(formData.fullName, formData.email, formData.phone, password);
                     if (data.token) {
                         const userData = {
                             _id: data._id,
@@ -319,13 +320,22 @@ export default function CheckoutPage() {
                                     {!isAuthenticated && (
                                         <div>
                                             <label className="text-sm font-medium mb-1 block text-gray-900">Create Password <span className="text-red-500">*</span></label>
-                                            <Input className="bg-white"
-                                                type="password"
-                                                placeholder="Create a password for your account"
-                                                required
-                                                value={password}
-                                                onChange={(e) => setPassword(e.target.value)}
-                                            />
+                                            <div className="relative">
+                                                <Input className="bg-white pr-10"
+                                                    type={showPassword ? "text" : "password"}
+                                                    placeholder="Create a password for your account"
+                                                    required
+                                                    value={password}
+                                                    onChange={(e) => setPassword(e.target.value)}
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowPassword(!showPassword)}
+                                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors"
+                                                >
+                                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                                </button>
+                                            </div>
                                             <p className="text-xs text-gray-500 mt-1">Must be at least 8 characters</p>
                                         </div>
                                     )}
@@ -369,7 +379,7 @@ export default function CheckoutPage() {
                                                 </SelectContent>
                                             </Select>
                                             {!formData.city && <input tabIndex={-1} autoComplete="off" style={{ opacity: 0, height: 0 }} required={!formData.city} />}
-                                            {calculateShipping(formData.city) === 140 && (
+                                            {formData.city && calculateShipping(formData.city) === 140 && (
                                                 <div className="mt-3 bg-orange-50 border-l-4 border-orange-500 p-4 animate-in slide-in-from-top-2 duration-300">
                                                     <div className="flex items-start gap-3">
                                                         <Truck className="h-5 w-5 text-orange-600 mt-0.5 shrink-0" />

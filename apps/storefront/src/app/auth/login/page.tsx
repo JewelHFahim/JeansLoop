@@ -8,12 +8,14 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { authApi } from '@/lib/api';
 import { useAuthStore } from '@/store/auth';
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function LoginPage() {
     const router = useRouter();
     const login = useAuthStore((state) => state.login);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -86,15 +88,24 @@ export default function LoginPage() {
                                     <label htmlFor="password" className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">Password</label>
                                     <Link href="#" className="text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-black transition-colors">Forgot?</Link>
                                 </div>
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    placeholder="••••••••"
-                                    value={formData.password}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, password: e.target.value })}
-                                    required
-                                    className="h-12 rounded-none border-gray-200 border-2 focus:border-black transition-all font-bold placeholder:text-gray-300"
-                                />
+                                <div className="relative">
+                                    <Input
+                                        id="password"
+                                        type={showPassword ? "text" : "password"}
+                                        placeholder="••••••••"
+                                        value={formData.password}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, password: e.target.value })}
+                                        required
+                                        className="h-12 rounded-none border-gray-200 border-2 focus:border-black transition-all font-bold placeholder:text-gray-300 pr-10"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors"
+                                    >
+                                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
