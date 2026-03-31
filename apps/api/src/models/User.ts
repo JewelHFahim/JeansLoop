@@ -3,9 +3,6 @@ import bcrypt from 'bcryptjs';
 import { User as IUser, UserRoleSchema } from '@repo/shared';
 
 export interface IUserDocument extends Omit<IUser, 'id'>, Document {
-    address?: string;
-    gender?: string;
-    birthDate?: Date;
     comparePassword(password: string): Promise<boolean>;
 }
 
