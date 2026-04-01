@@ -29,8 +29,20 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     });
 
     useEffect(() => {
-        if (product?.images?.length > 0) {
-            setActiveImage(product.images[0]);
+        if (product) {
+            if (product.images?.length > 0) {
+                setActiveImage(product.images[0]);
+            }
+            if (typeof window !== 'undefined' && (window as any).fbq) {
+                (window as any).fbq('track', 'ViewContent', {
+                    content_name: product.name,
+                    content_ids: [product._id],
+                    content_type: 'product',
+                    content_category: product.category,
+                    value: product.price,
+                    currency: 'BDT',
+                });
+            }
         }
     }, [product]);
 
@@ -65,6 +77,18 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             color: selectedVariant.color,
         };
         addItem(item);
+
+        if (typeof window !== 'undefined' && (window as any).fbq) {
+            (window as any).fbq('track', 'AddToCart', {
+                content_name: item.name,
+                content_ids: [item.productId],
+                content_type: 'product',
+                value: item.price * item.quantity,
+                currency: 'BDT',
+                contents: [{ id: item.productId, quantity: item.quantity }]
+            });
+        }
+
         toast.success('Added to cart!');
     };
 

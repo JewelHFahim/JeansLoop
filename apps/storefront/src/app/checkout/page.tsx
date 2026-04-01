@@ -44,7 +44,13 @@ export default function CheckoutPage() {
 
     useEffect(() => {
         setMounted(true);
-    }, []);
+        if (typeof window !== 'undefined' && (window as any).fbq) {
+            (window as any).fbq('track', 'InitiateCheckout', {
+                value: getTotalPrice(),
+                currency: 'BDT'
+            });
+        }
+    }, [getTotalPrice]);
 
     // Initial state matching the new requirement
     const [formData, setFormData] = useState({
@@ -218,6 +224,9 @@ export default function CheckoutPage() {
                 if (error) {
                     toast.error(error.message);
                 } else {
+                    if (typeof window !== 'undefined' && (window as any).fbq) {
+                        (window as any).fbq('track', 'Purchase', { value: total, currency: 'BDT' });
+                    }
                     setIsSuccess(true);
                     toast.success('Order placed successfully!', {
                         description: 'Redirecting to your account...',
@@ -225,6 +234,9 @@ export default function CheckoutPage() {
                     clearCart();
                 }
             } else {
+                if (typeof window !== 'undefined' && (window as any).fbq) {
+                    (window as any).fbq('track', 'Purchase', { value: total, currency: 'BDT' });
+                }
                 setIsSuccess(true);
                 toast.success('Order placed successfully!', {
                     description: 'Thank you for shopping with us.',
