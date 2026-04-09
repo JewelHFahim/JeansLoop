@@ -86,26 +86,35 @@ export function SocksPromotionSection({
                 {/* Product Grid - Right Side (3 cols) */}
                 <div className="w-full lg:w-3/4">
                     <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
-                        {products.slice(0, 8).map((sock, index) => (
-                            <Link href={`/product/${sock.slug}`} key={sock._id} className="group relative">
+                        {products.slice(0, 8).map((sock, index) => {
+                            const isLastItem = index === products.slice(0, 8).length - 1;
+                            const showViewMore = isLastItem && products.length >= 8;
+                            const href = showViewMore ? `/shop?category=${category}` : `/product/${sock.slug}`;
+
+                            return (
+                            <Link href={href} key={sock._id} className="group relative">
                                 <Card className="h-full overflow-hidden rounded-none transition-all duration-500 hover:shadow-2xl bg-white border border-gray-200">
                                     <div className="relative aspect-square overflow-hidden bg-white p-2">
                                         {/* Badge */}
-                                        <div className="absolute top-0 left-0 z-10">
-                                            <span className="bg-black text-white text-[9px] font-black px-4 py-2 uppercase tracking-[0.2em]">
-                                                {index % 2 === 0 ? 'NEW' : 'LTD ED.'}
-                                            </span>
-                                        </div>
+                                        {!showViewMore && (
+                                            <div className="absolute top-0 left-0 z-10">
+                                                <span className="bg-black text-white text-[9px] font-black px-4 py-2 uppercase tracking-[0.2em]">
+                                                    {index % 2 === 0 ? 'NEW' : 'LTD ED.'}
+                                                </span>
+                                            </div>
+                                        )}
 
                                         <img
                                             src={sock.images?.[0]}
                                             alt={sock.name}
                                             className="h-full w-full object-contain transition-transform duration-700 group-hover:scale-110"
+                                            loading="lazy"
+                                            decoding="async"
                                         />
 
                                         {/* Last item 'View More' overlay */}
-                                        {index === products.slice(0, 8).length - 1 && (
-                                            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/50 text-white transition-opacity duration-500 hover:bg-black/60">
+                                        {showViewMore && (
+                                            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/80 text-white transition-opacity duration-500 hover:bg-black/95">
                                                 <span className="text-lg font-black uppercase tracking-tighter">View</span>
                                                 <span className="text-lg font-black uppercase tracking-tighter">More</span>
                                                 <div className="mt-4 h-px w-12 bg-white/30"></div>
@@ -127,7 +136,8 @@ export function SocksPromotionSection({
                                     </CardContent>
                                 </Card>
                             </Link>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
             </div>

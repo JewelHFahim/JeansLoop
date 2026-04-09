@@ -16,6 +16,7 @@ export function ShopClient() {
 
     // URL-based state
     const category = searchParams.get('category') || '';
+    const discount = searchParams.get('discount') || '';
     const sort = searchParams.get('sort') || 'newest';
     const minPrice = searchParams.get('minPrice') || '';
     const maxPrice = searchParams.get('maxPrice') || '';
@@ -38,12 +39,13 @@ export function ShopClient() {
     }, [minPrice, maxPrice]);
 
     const { data, isLoading } = useQuery({
-        queryKey: ['products', category, sort, minPrice, maxPrice, page, size],
+        queryKey: ['products', category, discount, sort, minPrice, maxPrice, page, size],
         queryFn: async () => {
             const response = await productsApi.getAll({
                 page,
                 limit: 12,
                 category: category || undefined,
+                hasDiscount: discount === 'true' ? true : undefined,
                 sort,
                 minPrice: minPrice || undefined,
                 maxPrice: maxPrice || undefined,
@@ -93,6 +95,10 @@ export function ShopClient() {
         router.push(pathname);
     };
 
+    // Heading label for current filter state
+    const pageTitle = discount === 'true' ? 'On Sale' : (category || 'All Products');
+    const pageSubtitle = discount === 'true' ? 'Discounted Items' : (category || 'Storewide');
+
     return (
         <div className="min-h-screen bg-white py-12 lg:py-20">
             <div className="container mx-auto px-4">
@@ -101,10 +107,10 @@ export function ShopClient() {
                 <div className="flex flex-col md:flex-row md:items-end justify-between border-b-2 border-black pb-8 mb-12 gap-6">
                     <div>
                         <h1 className="text-3xl font-black tracking-tighter uppercase italic leading-none">
-                            {category || 'All Products'}
+                            {pageTitle}
                         </h1>
                         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-3">
-                            Discover Supreme Quality / {category || 'Storewide'}
+                            Discover Supreme Quality / {pageSubtitle}
                         </p>
                     </div>
 
@@ -171,11 +177,24 @@ export function ShopClient() {
                                 <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 border-b border-gray-100 pb-2 w-full">01 / Category</h3>
                                 <div className="grid grid-cols-2 gap-3">
                                     <button
-                                        onClick={() => { updateFilters({ category: '' }); setIsSidebarOpen(false); }}
-                                        className={`text-[9px] font-black uppercase tracking-[0.2em] px-4 py-3 transition-all text-center border-2 ${!category ? 'bg-black text-white border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]' : 'bg-white text-black border-gray-100 hover:border-black hover:bg-gray-50'}`}
+                                        onClick={() => { updateFilters({ category: '', discount: '' }); setIsSidebarOpen(false); }}
+                                        className={`text-[9px] font-black uppercase tracking-[0.2em] px-4 py-3 transition-all text-center border-2 ${!category && !discount ? 'bg-black text-white border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]' : 'bg-white text-black border-gray-100 hover:border-black hover:bg-gray-50'}`}
                                     >
                                         All Assets
                                     </button>
+
+                                    {/* On Sale - hardcoded, not a real DB category */}
+                                    <button
+                                        onClick={() => { updateFilters({ category: '', discount: 'true' }); setIsSidebarOpen(false); }}
+                                        className={`text-[9px] font-black uppercase tracking-[0.2em] px-4 py-3 transition-all text-center border-2 ${
+                                            discount === 'true'
+                                                ? 'bg-amber-400 text-black border-amber-400 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]'
+                                                : 'bg-white text-black border-amber-200 hover:border-amber-400 hover:bg-amber-50'
+                                        }`}
+                                    >
+                                        🏷 On Sale
+                                    </button>
+
                                     {!mounted || isCategoriesLoading ? (
                                         <div className="flex items-center justify-center p-2">
                                             <Loader2 className="h-4 w-4 animate-spin text-gray-300" />
@@ -184,7 +203,7 @@ export function ShopClient() {
                                         categories.map((cat: any) => (
                                             <button
                                                 key={cat._id}
-                                                onClick={() => { updateFilters({ category: cat.slug }); setIsSidebarOpen(false); }}
+                                                onClick={() => { updateFilters({ category: cat.slug, discount: '' }); setIsSidebarOpen(false); }}
                                                 className={`text-[9px] font-black uppercase tracking-[0.2em] px-4 py-3 transition-all text-center border-2 ${category?.toUpperCase() === cat.slug?.toUpperCase() ? 'bg-black text-white border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]' : 'bg-white text-black border-gray-100 hover:border-black hover:bg-gray-50'}`}
                                             >
                                                 {cat.name}
@@ -251,7 +270,7 @@ export function ShopClient() {
 
                         {/* Footer - Fixed at bottom */}
                         <div className="p-6 border-t-2 border-black bg-gray-50 flex flex-col gap-3">
-                            {(category || minPrice || maxPrice || size) ? (
+                            {(category || discount || minPrice || maxPrice || size) ? (
                                 <Button
                                     variant="outline"
                                     className="w-full border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white rounded-none h-12 text-[9px] font-black uppercase tracking-[0.3em] transition-all shadow-[3px_3px_0px_0px_rgba(220,38,38,0.1)]"

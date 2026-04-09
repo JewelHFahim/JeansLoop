@@ -86,6 +86,9 @@ export function HeroSlider() {
                     src={slide.image}
                     alt={slide.title?.replace('\\n', ' ')}
                     className={`h-full w-full object-cover transition-transform duration-10000 ease-out origin-center ${selectedIndex === index ? 'scale-110 opacity-100' : 'scale-100 opacity-0'}`}
+                    fetchPriority={index === 0 ? "high" : "auto"}
+                    loading={index === 0 ? "eager" : "lazy"}
+                    decoding="async"
                   />
                   {/* Creative Gradient Overlay */}
                   <div className="absolute inset-0 bg-linear-to-r from-black/90 via-black/50 to-transparent" />

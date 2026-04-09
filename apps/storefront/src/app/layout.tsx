@@ -8,8 +8,9 @@ import { Footer } from "@/components/layout/Footer";
 
 const inter = Inter({
   subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  weight: ["400", "700", "900"],
   display: 'swap',
+  preload: true,
 });
 
 export const metadata: Metadata = {
@@ -71,6 +72,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link rel="dns-prefetch" href="https://api.thefirecutter.store" />
+        <link rel="preconnect" href="https://api.thefirecutter.store" />
+        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+        <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
         <Script id="meta-pixel" strategy="afterInteractive">
           {`
             !function(f,b,e,v,n,t,s)

@@ -238,13 +238,8 @@ export default function CheckoutPage() {
                     (window as any).fbq('track', 'Purchase', { value: total, currency: 'BDT' });
                 }
                 setIsSuccess(true);
-                toast.success('Order placed successfully!', {
-                    description: 'Thank you for shopping with us.',
-                    icon: <ShoppingBag className="h-5 w-5 text-green-600" />,
-                    duration: 5000,
-                });
                 clearCart();
-                router.push('/account');
+                router.push('/order-success');
             }
         } catch (error: any) {
             console.error(error);
@@ -611,7 +606,7 @@ export default function CheckoutPage() {
                                     <div className="flex items-start gap-2">
                                         <Checkbox id="terms" checked={termsAccepted} onCheckedChange={(checked) => setTermsAccepted(checked as boolean)} />
                                         <label htmlFor="terms" className="text-xs text-gray-600 leading-tight cursor-pointer">
-                                            I agree to the <a href="#" className="underline">Terms & Conditions</a>, <a href="#" className="underline">Refund Policy</a> and <a href="#" className="underline">Privacy Policy</a>
+                                            I agree to the <a href="/returns" className="underline hover:text-black">Refund Policy</a>, <a href="/shipping" className="underline hover:text-black">Shipping Policy</a> and <a href="/privacy" className="underline hover:text-black">Privacy Policy</a>
                                         </label>
                                     </div>
 

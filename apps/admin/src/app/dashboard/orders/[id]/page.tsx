@@ -169,7 +169,7 @@ export default function OrderDetailsPage() {
                                     <span className="text-[11px] font-black uppercase text-gray-500">Payment:</span>
                                     {order.isPaid ? (
                                         <span className="flex items-center gap-2 text-green-600 font-black text-[11px] italic">
-                                            <CheckCircle className="w-4 h-4" /> PAID ({new Date(order.paidAt).toLocaleDateString()})
+                                            <CheckCircle className="w-4 h-4" /> PAID ({new Date(order.paidAt).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' })})
                                         </span>
                                     ) : (
                                         <span className="text-amber-500 font-black text-[11px] italic underline decoration-2">PENDING PAYMENT</span>

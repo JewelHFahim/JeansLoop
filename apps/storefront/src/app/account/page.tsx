@@ -197,7 +197,7 @@ function DashboardView({ user, orders, setActiveTab, router }: any) {
                                             </div>
                                             <div>
                                                 <p className="font-black text-sm uppercase tracking-tight">Order Initiated</p>
-                                                <p className="text-[10px] font-medium text-gray-500">{new Date(order.createdAt).toLocaleDateString()} at {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                                                <p className="text-[10px] font-medium text-gray-500">{new Date(order.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' })} at {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                                             </div>
                                         </div>
                                         <div className="text-right">
@@ -311,7 +311,7 @@ function OrdersView({ orders, isLoading, router }: any) {
                                         <div className="min-w-0">
                                             <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Order Detail</p>
                                             <p className="font-black text-sm text-black truncate tracking-tighter">#{order._id.slice(-6).toUpperCase()}</p>
-                                            <p className="text-[9px] font-bold text-gray-500 uppercase tracking-widest">{new Date(order.createdAt).toLocaleDateString()}</p>
+                                            <p className="text-[9px] font-bold text-gray-500 uppercase tracking-widest">{new Date(order.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' })}</p>
                                         </div>
                                     </div>
                                     <div className="md:col-span-1">

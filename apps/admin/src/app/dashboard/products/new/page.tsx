@@ -30,6 +30,8 @@ export default function NewProductPage() {
         highlights: [] as string[],
         price: 0,
         comparePrice: 0,
+        discountAmount: 0,
+        discountPercentage: 0,
         masterSku: '',
         masterColor: '',
         category: '',
@@ -481,6 +483,34 @@ export default function NewProductPage() {
                                      onChange={(e) => setForm({ ...form, comparePrice: Number(e.target.value) })}
                                      className="rounded-none border-2 border-black font-black text-lg h-12 bg-white"
                                  />
+                             </div>
+                             <div className="grid grid-cols-2 gap-4 border-2 border-dashed border-gray-300 p-4 bg-gray-50">
+                                 <div className="space-y-2">
+                                     <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Discount Amount (BDT)</label>
+                                     <Input
+                                         type="number"
+                                         value={form.discountAmount === 0 ? '' : form.discountAmount}
+                                         onChange={(e) => setForm({ ...form, discountAmount: Number(e.target.value), discountPercentage: 0 })}
+                                         placeholder="0"
+                                         className="rounded-none border-2 border-black font-black bg-white"
+                                     />
+                                 </div>
+                                 <div className="space-y-2">
+                                     <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Discount Percentage (%)</label>
+                                     <Input
+                                         type="number"
+                                         max="100"
+                                         value={form.discountPercentage === 0 ? '' : form.discountPercentage}
+                                         onChange={(e) => setForm({ ...form, discountPercentage: Number(e.target.value), discountAmount: 0 })}
+                                         placeholder="0"
+                                         className="rounded-none border-2 border-black font-black bg-white"
+                                     />
+                                 </div>
+                                 {(form.discountAmount > 0 || form.discountPercentage > 0) && (
+                                     <div className="col-span-2 text-xs font-bold text-green-600 mt-2">
+                                         Final Price will be calculated automatically on save.
+                                     </div>
+                                 )}
                              </div>
                              <div className="space-y-2">
                                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Master SKU</label>

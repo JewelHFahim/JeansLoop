@@ -91,7 +91,7 @@ export default function InvoicePage() {
                         <h2 className="text-2xl font-black uppercase italic leading-none mb-2">Invoice</h2>
                         <div className="space-y-1">
                             <p className="text-[10px] font-black uppercase tracking-widest"><span className="text-gray-400">ID:</span> #{order._id?.slice(-12).toUpperCase()}</p>
-                            <p className="text-[10px] font-black uppercase tracking-widest"><span className="text-gray-400">DATE:</span> {new Date(order.createdAt).toLocaleDateString()}</p>
+                            <p className="text-[10px] font-black uppercase tracking-widest"><span className="text-gray-400">DATE:</span> {new Date(order.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' })}</p>
                             <p className="text-[10px] font-black uppercase tracking-widest"><span className="text-gray-400">STATUS:</span> {order.status}</p>
                         </div>
                     </div>

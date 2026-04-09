@@ -60,7 +60,7 @@ export default function DashboardPage() {
     ];
 
     const salesData = stats?.salesHistory?.map((item: any) => ({
-        name: new Date(item._id).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        name: new Date(item._id).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' }),
         sales: item.totalSales,
         orders: item.orderCount
     })) || [];

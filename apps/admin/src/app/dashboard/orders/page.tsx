@@ -147,7 +147,7 @@ export default function OrdersPage() {
                                             <div className="flex flex-col">
                                                 <span className="text-sm font-black italic text-black">#{order._id?.slice(-8).toUpperCase()}</span>
                                                 <span className="text-[9px] text-gray-500 font-mono mt-1 uppercase">
-                                                    {new Date(order.createdAt).toLocaleDateString()}
+                                                    {new Date(order.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' })}
                                                 </span>
                                             </div>
                                         </td>

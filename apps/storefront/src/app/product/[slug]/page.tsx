@@ -3,8 +3,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from 'sonner';
 import { productsApi } from '@/lib/api';
 import { useCartStore } from '@/store/cart';
@@ -70,7 +68,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             productId: product._id,
             variantSku: selectedVariant.sku,
             name: product.name,
-            price: selectedVariant.price || product.price,
+            price: product.discountedPrice > 0 ? product.discountedPrice : (selectedVariant.price || product.price),
             quantity,
             image: product.images?.[0],
             size: selectedVariant.size,
@@ -169,11 +167,11 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                             )}
                             <div className="flex items-center gap-4">
                                 <p className="text-2xl font-black text-black">
-                                    ৳{(selectedVariant?.price || product.price).toFixed(0)}
+                                    ৳{(product.discountedPrice > 0 ? product.discountedPrice : (selectedVariant?.price || product.price)).toFixed(0)}
                                 </p>
-                                {product.comparePrice && (
+                                {(product.discountedPrice > 0 || product.comparePrice > 0) && (
                                     <p className="text-lg text-gray-400 line-through font-bold">
-                                        ৳{product.comparePrice.toFixed(0)}
+                                        ৳{(product.discountedPrice > 0 ? product.price : product.comparePrice).toFixed(0)}
                                     </p>
                                 )}
                             </div>
@@ -278,12 +276,24 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                                             {quantity}
                                         </span>
                                         <button
-                                            onClick={() => setQuantity((q) => q + 1)}
+                                            onClick={() => {
+                                                const maxStock = selectedVariant?.stock ?? 99;
+                                                if (quantity >= maxStock) {
+                                                    toast.error(`Only ${maxStock} in stock`);
+                                                    return;
+                                                }
+                                                setQuantity((q) => q + 1);
+                                            }}
                                             className="w-12 h-14 sm:h-12 flex items-center justify-center font-black text-xl hover:bg-gray-100 transition-colors text-black"
                                         >
                                             +
                                         </button>
                                     </div>
+                                    {selectedVariant && (
+                                        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">
+                                            {selectedVariant.stock} available
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div className="flex-1 sm:pt-9">

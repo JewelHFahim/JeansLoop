@@ -123,7 +123,7 @@ export default function CouponsPage() {
                                         <td className="p-4 border-b border-gray-100">
                                             <div className="flex items-center gap-1.5 font-black text-[10px] text-gray-500 italic">
                                                 <Calendar className="w-3 h-3" />
-                                                {new Date(coupon.expiryDate).toLocaleDateString()}
+                                                {new Date(coupon.expiryDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' })}
                                             </div>
                                         </td>
                                         <td className="p-4 border-b border-gray-100 font-black text-[10px] text-gray-500">

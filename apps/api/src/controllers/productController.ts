@@ -39,6 +39,13 @@ export const getProducts = async (req: Request, res: Response) => {
             query['sizeChart.waist'] = waist;
         }
 
+        if (req.query.hasDiscount === 'true') {
+            query.$or = [
+                { discountAmount: { $gt: 0 } },
+                { discountPercentage: { $gt: 0 } }
+            ];
+        }
+
         if (!isNaN(minPrice) || !isNaN(maxPrice)) {
             query.price = {};
             if (!isNaN(minPrice)) query.price.$gte = minPrice;
@@ -154,6 +161,9 @@ export const updateProduct = async (req: Request, res: Response) => {
                 highlights: parsed.highlights,
                 price: parsed.price,
                 comparePrice: parsed.comparePrice,
+                discountAmount: parsed.discountAmount || 0,
+                discountPercentage: parsed.discountPercentage || 0,
+                discountedPrice: parsed.discountedPrice || 0,
                 category: parsed.category,
                 images: parsed.images,
                 variants: parsed.variants,
@@ -197,3 +207,4 @@ export const deleteProduct = async (req: Request, res: Response) => {
         res.status(500).json({ message: error.message });
     }
 };
+// Trigger restart

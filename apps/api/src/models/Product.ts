@@ -23,12 +23,30 @@ const ProductSchema = new Schema({
     highlights: [{ type: String }],
     price: { type: Number, required: true },
     comparePrice: { type: Number, default: undefined },
+    discountAmount: { type: Number, default: 0 },
+    discountPercentage: { type: Number, default: 0 },
+    discountedPrice: { type: Number, default: 0 },
     category: { type: String, required: true },
     images: [{ type: String }],
     variants: [ProductVariantSchema],
     sizeChart: [SizeChartRowSchema],
     isDraft: { type: Boolean, default: false },
 }, { timestamps: true });
+
+ProductSchema.pre('save', function (next) {
+    let finalPrice = this.price;
+
+    if (this.discountAmount && this.discountAmount > 0) {
+        finalPrice = this.price - this.discountAmount;
+    } else if (this.discountPercentage && this.discountPercentage > 0) {
+        finalPrice = this.price - (this.price * (this.discountPercentage / 100));
+    }
+
+    // Ensure final price is not negative
+    this.discountedPrice = Math.max(0, finalPrice);
+
+    next();
+});
 
 ProductSchema.index({ name: 'text', description: 'text' });
 

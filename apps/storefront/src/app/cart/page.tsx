@@ -1,7 +1,6 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { useCartStore } from '@/store/cart';
 import { Trash2 } from 'lucide-react';
 import Link from 'next/link';
@@ -143,8 +142,9 @@ export default function CartPage() {
                                 </div>
                                 <div className="flex justify-between items-center gap-2 text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-gray-500">
                                     <span className="truncate">Shipping</span>
-                                    <span className="text-black text-sm whitespace-nowrap">৳100</span>
+                                    <span className="text-black text-sm whitespace-nowrap">৳70–৳140</span>
                                 </div>
+                                <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Exact shipping at checkout (by district)</p>
                                 <div className="flex justify-between items-center gap-2 text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-gray-500">
                                     <span className="truncate">Vat (Inclusive)</span>
                                     <span className="text-black text-sm whitespace-nowrap">৳0</span>
@@ -153,9 +153,9 @@ export default function CartPage() {
                                 <div className="border-t-2 border-black pt-5 sm:pt-6 mt-5 sm:mt-6">
                                     <div className="flex justify-between items-end gap-2">
                                         <div className="min-w-0">
-                                            <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-gray-400 truncate">Total Amount</p>
+                                            <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-gray-400 truncate">Subtotal</p>
                                             <p className="text-2xl sm:text-3xl font-black tracking-tighter text-black leading-none mt-1 truncate">
-                                                ৳{(getTotalPrice() + 100).toFixed(0)}
+                                                ৳{getTotalPrice().toFixed(0)}
                                             </p>
                                         </div>
                                         <div className="text-[9px] sm:text-[10px] font-black uppercase bg-black text-white px-2 py-1 whitespace-nowrap">
