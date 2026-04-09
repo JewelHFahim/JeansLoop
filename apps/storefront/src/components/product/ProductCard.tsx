@@ -19,7 +19,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-    const hasDiscount = (product.discountedPrice && product.discountedPrice > 0 && product.discountedPrice < product.price);
+    const hasDiscount = Boolean(product.discountedPrice && product.discountedPrice > 0 && product.discountedPrice < product.price);
     const displayPrice = hasDiscount ? product.discountedPrice! : product.price;
 
     let badgeText = '';
