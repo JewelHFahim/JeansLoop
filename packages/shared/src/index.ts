@@ -100,6 +100,9 @@ export const OrderSchema = z.object({
     id: z.string().optional(),
     userId: z.string(),
     items: z.array(OrderItemSchema),
+    itemsPrice: z.number().default(0),
+    shippingPrice: z.number().default(0),
+    taxPrice: z.number().default(0),
     totalAmount: z.number(),
     status: OrderStatusSchema.default("PENDING"),
     shippingAddress: z.object({
@@ -124,6 +127,12 @@ export const OrderSchema = z.object({
     isDelivered: z.boolean().default(false),
     deliveredAt: z.date().optional(),
     stockStatus: z.enum(['PENDING', 'ADJUSTED', 'RESTORED']).default('PENDING'),
+    auditLogs: z.array(z.object({
+        action: z.string(),
+        adminId: z.string(),
+        date: z.date().optional().or(z.string().transform((val) => new Date(val))),
+        details: z.string().optional()
+    })).default([]),
     createdAt: z.date().optional(),
     updatedAt: z.date().optional(),
 });

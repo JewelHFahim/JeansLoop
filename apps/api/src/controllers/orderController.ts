@@ -1,3 +1,4 @@
+import { Request, Response } from 'express';
 import { Order } from '../models/Order';
 import { Product } from '../models/Product';
 import { Coupon } from '../models/Coupon';
@@ -11,12 +12,10 @@ export const addOrderItems = asyncHandler(async (req: Request, res: Response) =>
         orderItems,
         shippingAddress,
         paymentMethod,
-        itemsPrice: clientItemsPrice,
         taxPrice,
         shippingPrice,
         totalPrice: clientTotalPrice,
         couponCode,
-        discountAmount: clientDiscountAmount,
     } = req.body;
 
     if (orderItems && orderItems.length === 0) {
