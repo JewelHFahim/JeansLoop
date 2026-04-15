@@ -1,10 +1,11 @@
 import { Request, Response } from 'express';
 import { User } from '../models/User';
+import { asyncHandler } from '../utils/asyncHandler';
 
 // @desc    Get user profile
 // @route   GET /api/v1/users/profile
 // @access  Private
-export const getUserProfile = async (req: Request, res: Response) => {
+export const getUserProfile = asyncHandler(async (req: Request, res: Response) => {
     const user = await User.findById((req as any).user.userId);
 
     if (user) {
@@ -22,12 +23,12 @@ export const getUserProfile = async (req: Request, res: Response) => {
         res.status(404);
         throw new Error('User not found');
     }
-};
+});
 
 // @desc    Update user profile
 // @route   PUT /api/v1/users/profile
 // @access  Private
-export const updateUserProfile = async (req: Request, res: Response) => {
+export const updateUserProfile = asyncHandler(async (req: Request, res: Response) => {
     // If updating password, explicitly select the password field (it's select: false)
     const userQuery = req.body.password
         ? User.findById((req as any).user.userId).select('+password')
@@ -36,7 +37,8 @@ export const updateUserProfile = async (req: Request, res: Response) => {
     const user = await userQuery;
 
     if (!user) {
-        return res.status(404).json({ message: 'User not found' });
+        res.status(404);
+        throw new Error('User not found');
     }
 
     user.name = req.body.name || user.name;
@@ -47,18 +49,20 @@ export const updateUserProfile = async (req: Request, res: Response) => {
 
     if (req.body.password) {
         if (!req.body.currentPassword) {
-            return res.status(400).json({ message: 'Current password is required to set a new password.' });
+            res.status(400);
+            throw new Error('Current password is required to set a new password.');
         }
         const isMatch = await user.comparePassword(req.body.currentPassword);
         if (!isMatch) {
-            return res.status(400).json({ message: 'Current password is incorrect.' });
+            res.status(400);
+            throw new Error('Current password is incorrect.');
         }
         user.password = req.body.password;
     }
 
     const updatedUser = await user.save();
 
-    return res.json({
+    res.json({
         _id: updatedUser._id,
         name: updatedUser.name,
         email: updatedUser.email,
@@ -68,12 +72,12 @@ export const updateUserProfile = async (req: Request, res: Response) => {
         birthDate: updatedUser.birthDate,
         role: updatedUser.role,
     });
-};
+});
 
 // @desc    Get all users with order stats
 // @route   GET /api/v1/users
 // @access  Private/Admin
-export const getUsers = async (_req: Request, res: Response) => {
+export const getUsers = asyncHandler(async (_req: Request, res: Response) => {
     const users = await User.aggregate([
         {
             $lookup: {
@@ -101,12 +105,12 @@ export const getUsers = async (_req: Request, res: Response) => {
         }
     ]);
     res.json(users);
-};
+});
 
 // @desc    Delete user
 // @route   DELETE /api/v1/users/:id
 // @access  Private/Admin
-export const deleteUser = async (req: Request, res: Response) => {
+export const deleteUser = asyncHandler(async (req: Request, res: Response) => {
     const user = await User.findById(req.params.id);
 
     if (user) {
@@ -116,4 +120,4 @@ export const deleteUser = async (req: Request, res: Response) => {
         res.status(404);
         throw new Error('User not found');
     }
-};
+});

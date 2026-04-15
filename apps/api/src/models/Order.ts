@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { Order as IOrder, OrderStatusSchema } from '@repo/shared';
+import { Order as IOrder } from '@repo/shared';
 
 const OrderItemSchemaMongoose = new Schema({
     productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
@@ -20,7 +20,7 @@ const OrderSchema = new Schema({
     taxPrice: { type: Number, required: true, default: 0 },
     totalAmount: { type: Number, required: true },
     paymentMethod: { type: String, required: true, default: 'cod' },
-    status: { type: String, enum: OrderStatusSchema.options, default: 'PENDING' },
+    status: { type: String, enum: ["PENDING", "ACCEPTED", "COURIERED", "DELIVERED", "CANCELLED", "RETURNED", "EXCHANGE"], default: 'PENDING' },
     shippingAddress: {
         fullName: { type: String, required: true },
         phone: { type: String, required: true },
@@ -42,6 +42,13 @@ const OrderSchema = new Schema({
     isDelivered: { type: Boolean, default: false },
     deliveredAt: { type: Date },
     stockStatus: { type: String, enum: ['PENDING', 'ADJUSTED', 'RESTORED'], default: 'PENDING' },
+    exchangeAmount: { type: Number, default: 0 },
+    auditLogs: [{
+        action: { type: String },
+        adminId: { type: Schema.Types.ObjectId, ref: 'User' },
+        date: { type: Date, default: Date.now },
+        details: { type: String }
+    }],
 }, { timestamps: true });
 
 export const Order = mongoose.model<IOrder & Document>('Order', OrderSchema);

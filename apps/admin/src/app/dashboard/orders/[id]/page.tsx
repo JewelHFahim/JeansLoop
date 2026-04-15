@@ -1,10 +1,12 @@
 'use client';
 
+import { useState } from 'react';
+
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ordersApi } from '@/lib/api';
-import { ChevronLeft, Package, User, MapPin, CreditCard, Clock, CheckCircle, Truck, FileText, Trash2 } from 'lucide-react';
+import { ChevronLeft, Package, User, MapPin, CreditCard, Clock, CheckCircle, Truck, FileText, Trash2, Edit2, X, Save } from 'lucide-react';
 import Link from 'next/link';
 
 export default function OrderDetailsPage() {
@@ -45,6 +47,51 @@ export default function OrderDetailsPage() {
         }
     });
 
+    const detailsMutation = useMutation({
+        mutationFn: (data: any) => ordersApi.updateDetails(id as string, data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['order', id] });
+            setIsEditing(false);
+        },
+        onError: (error: any) => {
+            alert('Failed to update details: ' + (error.response?.data?.message || error.message));
+        }
+    });
+
+    const [isEditing, setIsEditing] = useState(false);
+    const [editForm, setEditForm] = useState<any>({
+        shippingAddress: {},
+        totalAmount: 0,
+        exchangeAmount: 0,
+        bkashNumber: '',
+        bkashTxnId: '',
+    });
+
+    const handleEditStart = () => {
+        if (order) {
+            setEditForm({
+                shippingAddress: { ...order.shippingAddress },
+                totalAmount: order.totalAmount,
+                exchangeAmount: order.exchangeAmount || 0,
+                bkashNumber: order.bkashNumber || '',
+                bkashTxnId: order.bkashTxnId || '',
+            });
+            setIsEditing(true);
+        }
+    };
+
+    const handleSaveDetails = () => {
+        if(window.confirm('Are you sure you want to save these administrative changes? This action will be logged.')) {
+           detailsMutation.mutate({
+               shippingAddress: editForm.shippingAddress,
+               totalAmount: Number(editForm.totalAmount),
+               exchangeAmount: Number(editForm.exchangeAmount),
+               bkashNumber: editForm.bkashNumber,
+               bkashTxnId: editForm.bkashTxnId,
+           });
+        }
+    };
+
     const handleDelete = () => {
         if (window.confirm('CRITICAL: Are you sure you want to permanently delete this order record? This action cannot be undone.')) {
             deleteMutation.mutate();
@@ -64,6 +111,7 @@ export default function OrderDetailsPage() {
         { value: 'DELIVERED', label: 'Delivered' },
         { value: 'CANCELLED', label: 'Cancelled' },
         { value: 'RETURNED', label: 'Return' },
+        { value: 'EXCHANGE', label: 'Exchange' },
     ];
 
     return (
@@ -86,11 +134,17 @@ export default function OrderDetailsPage() {
                     <select
                         value={order.status}
                         onChange={(e) => statusMutation.mutate(e.target.value)}
-                        disabled={statusMutation.isPending}
+                        disabled={statusMutation.isPending || order.status === 'CANCELLED'}
                         className="rounded-none border-2 border-black h-11 px-6 font-black uppercase tracking-widest text-[11px] bg-white transition-all shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] focus:translate-x-[2px] focus:translate-y-[2px] focus:shadow-none outline-none cursor-pointer disabled:opacity-50"
                     >
                         {statuses.map((s) => (
-                            <option key={s.value} value={s.value}>{s.label}</option>
+                            <option 
+                                key={s.value} 
+                                value={s.value}
+                                disabled={order.status === 'DELIVERED' && s.value !== 'EXCHANGE' && s.value !== 'DELIVERED'}
+                            >
+                                {s.label}
+                            </option>
                         ))}
                     </select>
                 </div>
@@ -179,8 +233,9 @@ export default function OrderDetailsPage() {
                                     <span className="text-[11px] font-black uppercase text-gray-500">Current Phase:</span>
                                     <span className={`font-black text-[11px] italic uppercase ${order.status === 'DELIVERED' ? 'text-green-600' :
                                             order.status === 'CANCELLED' || order.status === 'RETURNED' ? 'text-red-600' :
-                                                order.status === 'ACCEPTED' || order.status === 'COURIERED' ? 'text-blue-600' :
-                                                    'text-amber-500'
+                                                order.status === 'EXCHANGE' ? 'text-purple-600' :
+                                                    order.status === 'ACCEPTED' || order.status === 'COURIERED' ? 'text-blue-600' :
+                                                        'text-amber-500'
                                         }`}>
                                         {statuses.find(s => s.value === order.status)?.label || order.status}
                                     </span>
@@ -219,6 +274,27 @@ export default function OrderDetailsPage() {
                                         <span className="text-[11px] font-mono text-black break-all">{order.paymentIntentId}</span>
                                     </div>
                                 )}
+                                {order.bkashNumber && (
+                                    <div className="flex flex-col gap-1 border-t border-gray-100 pt-2">
+                                        <span className="text-[11px] font-black uppercase text-gray-500 tracking-widest">bKash Number</span>
+                                        <span className="text-sm font-black text-pink-600 italic">{order.bkashNumber}</span>
+                                    </div>
+                                )}
+                                {order.bkashTxnId && (
+                                    <div className="flex flex-col gap-1">
+                                        <span className="text-[11px] font-black uppercase text-gray-500 tracking-widest">Transaction ID</span>
+                                        <span className="text-[11px] font-mono font-black text-black select-all bg-gray-50 p-1 border border-gray-100">{order.bkashTxnId}</span>
+                                    </div>
+                                )}
+                                {order.couponCode && (
+                                    <div className="flex flex-col gap-1 border-t border-gray-100 pt-2">
+                                        <span className="text-[11px] font-black uppercase text-gray-500 tracking-widest">Promotion</span>
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-[11px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 border border-blue-100 italic">{order.couponCode}</span>
+                                            <span className="text-[11px] font-black text-red-500">-৳{order.discountAmount?.toLocaleString()}</span>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -226,7 +302,66 @@ export default function OrderDetailsPage() {
 
                 {/* Right Column: Customer & Totals */}
                 <div className="space-y-6">
-                    <div className="border-4 border-black bg-white shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] flex flex-col pt-0">
+                    {isEditing ? (
+                        <div className="border-4 border-black bg-white shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] p-6 space-y-4">
+                            <div className="flex justify-between items-center border-b-2 border-black pb-2 mb-4">
+                                <h2 className="text-sm font-black uppercase italic">Administrative Edit</h2>
+                                <Button onClick={() => setIsEditing(false)} variant="ghost" className="h-8 w-8 p-0"><X className="w-4 h-4"/></Button>
+                            </div>
+                            
+                            <div className="space-y-3">
+                                <label className="text-[10px] font-black uppercase text-gray-500">Full Name</label>
+                                <input type="text" className="w-full border-2 border-black p-2 text-xs" value={editForm.shippingAddress.fullName || ''} onChange={e => setEditForm((prev: any) => ({...prev, shippingAddress: {...prev.shippingAddress, fullName: e.target.value}}))} />
+                                
+                                <label className="text-[10px] font-black uppercase text-gray-500">Phone</label>
+                                <input type="text" className="w-full border-2 border-black p-2 text-xs" value={editForm.shippingAddress.phone || ''} onChange={e => setEditForm((prev: any) => ({...prev, shippingAddress: {...prev.shippingAddress, phone: e.target.value}}))} />
+                                
+                                <label className="text-[10px] font-black uppercase text-gray-500">Street</label>
+                                <textarea className="w-full border-2 border-black p-2 text-xs" value={editForm.shippingAddress.street || ''} onChange={e => setEditForm((prev: any) => ({...prev, shippingAddress: {...prev.shippingAddress, street: e.target.value}}))} />
+
+                                <div className="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label className="text-[10px] font-black uppercase text-gray-500">City</label>
+                                        <input type="text" className="w-full border-2 border-black p-2 text-xs" value={editForm.shippingAddress.city || ''} onChange={e => setEditForm((prev: any) => ({...prev, shippingAddress: {...prev.shippingAddress, city: e.target.value}}))} />
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-black uppercase text-gray-500">ZIP</label>
+                                        <input type="text" className="w-full border-2 border-black p-2 text-xs" value={editForm.shippingAddress.zip || ''} onChange={e => setEditForm((prev: any) => ({...prev, shippingAddress: {...prev.shippingAddress, zip: e.target.value}}))} />
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div className="border-t-2 border-black pt-4 mt-4 space-y-3">
+                                <label className="text-[10px] font-black uppercase text-gray-500">Base Gross Total (৳)</label>
+                                <input type="number" className="w-full border-2 border-black p-2 text-xs" value={editForm.totalAmount} onChange={e => setEditForm((prev: any) => ({...prev, totalAmount: e.target.value}))} />
+                                
+                                {order?.status === 'EXCHANGE' && (
+                                    <>
+                                        <label className="text-[10px] font-black uppercase text-gray-500">Exchange Amount (৳) (+/-)</label>
+                                        <input type="number" className="w-full border-2 border-black p-2 text-xs bg-amber-50" value={editForm.exchangeAmount} onChange={e => setEditForm((prev: any) => ({...prev, exchangeAmount: e.target.value}))} />
+                                    </>
+                                )}
+
+                                <div className="border-t-2 border-gray-100 pt-4 mt-4 space-y-3">
+                                    <h3 className="text-[10px] font-black uppercase text-pink-600 italic">Financial Registry (bKash)</h3>
+                                    <label className="text-[10px] font-black uppercase text-gray-500">Service Number</label>
+                                    <input type="text" className="w-full border-2 border-black p-2 text-xs" value={editForm.bkashNumber} onChange={e => setEditForm((prev: any) => ({...prev, bkashNumber: e.target.value}))} />
+                                    
+                                    <label className="text-[10px] font-black uppercase text-gray-500">Transaction ID (TXID)</label>
+                                    <input type="text" className="w-full border-2 border-black p-2 text-xs" value={editForm.bkashTxnId} onChange={e => setEditForm((prev: any) => ({...prev, bkashTxnId: e.target.value}))} />
+                                </div>
+                            </div>
+                            
+                            <Button onClick={handleSaveDetails} disabled={detailsMutation.isPending} className="w-full rounded-none bg-black text-white hover:bg-gray-800 font-black uppercase text-[10px] tracking-widest mt-4">
+                                <Save className="w-4 h-4 mr-2" /> Save Changes
+                            </Button>
+                        </div>
+                    ) : (
+                        <>
+                    <div className="border-4 border-black bg-white shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] flex flex-col pt-0 relative mb-6">
+                        <Button onClick={handleEditStart} variant="ghost" className="absolute top-3 right-3 h-6 w-6 p-0 hover:bg-gray-200">
+                            <Edit2 className="w-3 h-3 text-black" />
+                        </Button>
                         <div className="bg-gray-50 border-b-4 border-black p-4 flex items-center gap-2">
                             <MapPin className="w-4 h-4" />
                             <h2 className="text-xs font-black uppercase tracking-[0.2em] text-black italic">Logistics Data</h2>
@@ -267,11 +402,30 @@ export default function OrderDetailsPage() {
                             <span>State Tax</span>
                             <span>৳{order.taxPrice?.toLocaleString() || '0'}</span>
                         </div>
-                        <div className="flex justify-between items-end pt-2">
-                            <span className="text-xs font-black uppercase italic leading-none">Gross Total</span>
-                            <span className="text-3xl font-black tracking-tighter italic leading-none">৳{order.totalAmount?.toLocaleString()}</span>
-                        </div>
+                        {order.exchangeAmount ? (
+                            <>
+                                <div className="flex justify-between items-center text-[11px] font-black uppercase tracking-widest border-b border-white/20 pb-2 text-amber-300">
+                                    <span>Exchange Adjustment</span>
+                                    <span>{order.exchangeAmount > 0 ? '+' : ''}৳{order.exchangeAmount.toLocaleString()}</span>
+                                </div>
+                                <div className="flex justify-between items-end pt-2">
+                                    <span className="text-xs font-black uppercase italic leading-none">Final Gross Total</span>
+                                    <span className="text-3xl font-black tracking-tighter italic leading-none text-amber-400">৳{(order.totalAmount + order.exchangeAmount).toLocaleString()}</span>
+                                </div>
+                                <div className="flex justify-between items-center mt-2 opacity-50">
+                                    <span className="text-[10px] font-black uppercase italic leading-none">Original Total</span>
+                                    <span className="text-xs font-black tracking-tighter italic leading-none">৳{order.totalAmount?.toLocaleString()}</span>
+                                </div>
+                            </>
+                        ) : (
+                            <div className="flex justify-between items-end pt-2">
+                                <span className="text-xs font-black uppercase italic leading-none">Gross Total</span>
+                                <span className="text-3xl font-black tracking-tighter italic leading-none">৳{order.totalAmount?.toLocaleString()}</span>
+                            </div>
+                        )}
                     </div>
+                        </>
+                    )}
                 </div>
             </div>
         </div>

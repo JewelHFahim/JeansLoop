@@ -1,11 +1,12 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
+import { asyncHandler } from '../utils/asyncHandler';
 
 export interface AuthRequest extends Request {
     user?: any;
 }
 
-export const protect = (req: AuthRequest, res: Response, next: NextFunction) => {
+export const protect = asyncHandler(async (req: AuthRequest, res: Response, next: NextFunction) => {
     let token;
 
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
@@ -24,7 +25,7 @@ export const protect = (req: AuthRequest, res: Response, next: NextFunction) => 
         res.status(401);
         throw new Error('Not authorized, no token');
     }
-};
+});
 
 export const admin = (req: AuthRequest, res: Response, next: NextFunction) => {
     if (req.user && (req.user.role === 'ADMIN' || req.user.role === 'SUPER_ADMIN')) {

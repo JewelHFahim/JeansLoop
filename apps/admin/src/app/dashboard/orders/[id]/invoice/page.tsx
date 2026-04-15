@@ -174,9 +174,15 @@ export default function InvoicePage() {
                                 <span className="text-sm">-৳{order.discountAmount.toLocaleString()}</span>
                             </div>
                         )}
+                        {order.exchangeAmount ? (
+                            <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-gray-800">
+                                <span>Exchange Adjustment</span>
+                                <span className="text-sm">{order.exchangeAmount > 0 ? '+' : ''}৳{order.exchangeAmount.toLocaleString()}</span>
+                            </div>
+                        ) : null}
                         <div className="flex justify-between items-end pt-3 border-t-2 border-black">
                             <span className="text-xs font-black uppercase italic leading-none text-black">Gross Total</span>
-                            <span className="text-2xl font-black italic leading-none text-black">৳{order.totalAmount?.toLocaleString()}</span>
+                            <span className="text-2xl font-black italic leading-none text-black">৳{(order.totalAmount + (order.exchangeAmount || 0)).toLocaleString()}</span>
                         </div>
                     </div>
                 </div>

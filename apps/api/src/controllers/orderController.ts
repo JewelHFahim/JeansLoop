@@ -1,51 +1,99 @@
-import { Request, Response } from 'express';
 import { Order } from '../models/Order';
 import { Product } from '../models/Product';
+import { Coupon } from '../models/Coupon';
+import { asyncHandler } from '../utils/asyncHandler';
 
 // @desc    Create new order
 // @route   POST /api/v1/orders
 // @access  Private
-export const addOrderItems = async (req: Request, res: Response) => {
+export const addOrderItems = asyncHandler(async (req: Request, res: Response) => {
     const {
         orderItems,
         shippingAddress,
         paymentMethod,
-        itemsPrice,
+        itemsPrice: clientItemsPrice,
         taxPrice,
         shippingPrice,
-        totalPrice,
+        totalPrice: clientTotalPrice,
         couponCode,
-        discountAmount,
+        discountAmount: clientDiscountAmount,
     } = req.body;
 
     if (orderItems && orderItems.length === 0) {
         res.status(400);
         throw new Error('No order items');
-    } else {
-        // Ideally verify prices from DB here
-        const order = new Order({
-            userId: (req as any).user.userId,
-            items: orderItems,
-            itemsPrice,
-            shippingPrice,
-            taxPrice,
-            totalAmount: totalPrice,
-            shippingAddress,
-            paymentMethod: paymentMethod || 'cod',
-            bkashNumber: req.body.bkashNumber,
-            bkashTxnId: req.body.bkashTxnId,
-            couponCode,
-            discountAmount,
-            paymentIntentId: '',
-        });
+    }
 
-        const createdOrder = await order.save();
+    // 1. Verify every item's price from DB
+    let calculatedItemsPrice = 0;
+    const verifiedOrderItems = [];
 
-        res.status(201).json({
-            order: createdOrder
+    for (const item of orderItems) {
+        const product = await Product.findById(item.productId);
+        if (!product) {
+            res.status(404);
+            throw new Error(`Product not found: ${item.name}`);
+        }
+
+        // Find the variant price if it exists, otherwise use base price
+        // Note: Our current model has base price on product. We should ensure it matches.
+        const dbPrice = product.price; 
+        
+        calculatedItemsPrice += dbPrice * item.quantity;
+        
+        verifiedOrderItems.push({
+            ...item,
+            price: dbPrice // Force DB price
         });
     }
-};
+
+    // 2. Verify Coupon and Discount if applicable
+    let calculatedDiscountAmount = 0;
+    if (couponCode) {
+        const coupon = await Coupon.findOne({ code: couponCode.toUpperCase(), isActive: true });
+        if (coupon && new Date() <= coupon.expiryDate && calculatedItemsPrice >= coupon.minAmount) {
+            if (coupon.type === 'percentage') {
+                calculatedDiscountAmount = (calculatedItemsPrice * coupon.value) / 100;
+            } else {
+                calculatedDiscountAmount = coupon.value;
+            }
+            calculatedDiscountAmount = Math.min(calculatedDiscountAmount, calculatedItemsPrice);
+        } else if (couponCode !== "") {
+            // If they sent a code but it's invalid
+            res.status(400);
+            throw new Error('Invalid or expired coupon code');
+        }
+    }
+
+    // 3. Final Total Verification
+    const calculatedTotal = calculatedItemsPrice + shippingPrice + taxPrice - calculatedDiscountAmount;
+
+    // We allow a small margin for rounding or legitimate reasons if needed, 
+    // but usually in local currency like BDT we expect exact match.
+    if (Math.abs(calculatedTotal - clientTotalPrice) > 1) {
+        res.status(400);
+        throw new Error(`Price mismatch detected. Server: ${calculatedTotal}, Client: ${clientTotalPrice}`);
+    }
+
+    const order = new Order({
+        userId: (req as any).user.userId,
+        items: verifiedOrderItems,
+        itemsPrice: calculatedItemsPrice,
+        shippingPrice,
+        taxPrice,
+        totalAmount: calculatedTotal,
+        shippingAddress,
+        paymentMethod: paymentMethod || 'cod',
+        bkashNumber: req.body.bkashNumber,
+        bkashTxnId: req.body.bkashTxnId,
+        couponCode,
+        discountAmount: calculatedDiscountAmount,
+        paymentIntentId: '',
+    });
+
+    const createdOrder = await order.save();
+    res.status(201).json({ order: createdOrder });
+});
 
 // @desc    Get order by ID
 // @route   GET /api/v1/orders/:id
@@ -140,57 +188,59 @@ export const updateOrderToPaid = async (req: Request, res: Response) => {
 // @desc    Update order status with stock management
 // @route   PUT /api/v1/orders/:id/status
 // @access  Private/Admin
-export const updateOrderStatus = async (req: Request, res: Response) => {
+export const updateOrderStatus = asyncHandler(async (req: Request, res: Response) => {
     const { status } = req.body;
     const order = await Order.findById(req.params.id);
 
     if (order) {
-        order.status = status;
-
-        // Custom logic for isPaid/isDelivered based on status
-        if (status === 'DELIVERED') {
-            order.isDelivered = true;
-            order.deliveredAt = new Date();
-            order.isPaid = true; // Assume paid if delivered (especially for COD)
+        if (order.status === 'CANCELLED') {
+            res.status(400).json({ message: 'Order is cancelled and cannot be modified in status' });
+            return;
         }
 
-        // --- Stock Management Logic ---
+        if (order.status === 'DELIVERED' && status !== 'EXCHANGE' && status !== 'DELIVERED') {
+            res.status(400).json({ message: 'Delivered orders can only be transitioned to EXCHANGE' });
+            return;
+        }
 
-        // 1. Deduct Stock: When status moves to ACCEPTED (and hasn't been adjusted yet)
+        // Handle Stock Management with Safety Checks
         if (status === 'ACCEPTED' && order.stockStatus === 'PENDING') {
+            // Deduct stock
             for (const item of order.items) {
-                await Product.updateOne(
+                const stockUpdate = await Product.updateOne(
                     { 
                         _id: item.productId, 
-                        variants: { $elemMatch: item.size ? { sku: item.variantSku, size: item.size } : { sku: item.variantSku } }
+                        'variants.size': item.size,
+                        'variants.stock': { $gte: item.quantity } // Loophole fix: Check stock sufficiency
                     },
                     { $inc: { 'variants.$.stock': -item.quantity } }
                 );
+
+                if (stockUpdate.modifiedCount === 0) {
+                    res.status(400);
+                    throw new Error(`Insufficient stock for ${item.name} (${item.size}) or product missing.`);
+                }
             }
             order.stockStatus = 'ADJUSTED';
-        }
-
-        // 2. Restore Stock: When status moves to CANCELLED or RETURNED (and was previously adjusted)
-        if ((status === 'CANCELLED' || status === 'RETURNED') && order.stockStatus === 'ADJUSTED') {
+        } else if (status === 'CANCELLED' && order.stockStatus === 'ADJUSTED') {
+            // Restore stock
             for (const item of order.items) {
                 await Product.updateOne(
-                    { 
-                        _id: item.productId, 
-                        variants: { $elemMatch: item.size ? { sku: item.variantSku, size: item.size } : { sku: item.variantSku } }
-                    },
+                    { _id: item.productId, 'variants.size': item.size },
                     { $inc: { 'variants.$.stock': item.quantity } }
                 );
             }
             order.stockStatus = 'RESTORED';
         }
 
+        order.status = status;
         const updatedOrder = await order.save();
         res.json(updatedOrder);
     } else {
         res.status(404);
         throw new Error('Order not found');
     }
-};
+});
 
 // @desc    Update order to delivered
 // @route   PUT /api/v1/orders/:id/deliver
@@ -235,6 +285,62 @@ export const deleteOrder = async (req: Request, res: Response) => {
     if (order) {
         await order.deleteOne();
         res.json({ message: 'Order removed' });
+    } else {
+        res.status(404);
+        throw new Error('Order not found');
+    }
+};
+
+// @desc    Update order details (address and amounts)
+// @route   PUT /api/v1/orders/:id/details
+// @access  Private/Admin
+export const updateOrderDetails = async (req: Request, res: Response) => {
+    const { shippingAddress, exchangeAmount, totalAmount, bkashNumber, bkashTxnId } = req.body;
+    const order = await Order.findById(req.params.id);
+
+    if (order) {
+        if (order.status === 'CANCELLED') {
+            res.status(400).json({ message: 'Order is cancelled and cannot be modified' });
+            return;
+        }
+        
+        let detailsChanged = [];
+
+        if (shippingAddress) {
+            order.shippingAddress = shippingAddress;
+            detailsChanged.push('shipping address');
+        }
+        
+        if (exchangeAmount !== undefined) {
+            order.exchangeAmount = exchangeAmount;
+            detailsChanged.push('exchange amount');
+        }
+
+        if (totalAmount !== undefined) {
+            order.totalAmount = totalAmount;
+            detailsChanged.push('total amount');
+        }
+
+        if (bkashNumber !== undefined) {
+            order.bkashNumber = bkashNumber;
+            detailsChanged.push('bkash number');
+        }
+
+        if (bkashTxnId !== undefined) {
+            order.bkashTxnId = bkashTxnId;
+            detailsChanged.push('bkash txn id');
+        }
+
+        if (detailsChanged.length > 0) {
+            order.auditLogs.push({
+                action: 'UPDATED_DETAILS',
+                adminId: (req as any).user.userId,
+                details: `Updated ` + detailsChanged.join(', ')
+            });
+        }
+
+        const updatedOrder = await order.save();
+        res.json(updatedOrder);
     } else {
         res.status(404);
         throw new Error('Order not found');

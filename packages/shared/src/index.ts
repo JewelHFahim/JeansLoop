@@ -93,7 +93,7 @@ export const OrderItemSchema = z.object({
 });
 export type OrderItem = z.infer<typeof OrderItemSchema>;
 
-export const OrderStatusSchema = z.enum(["PENDING", "ACCEPTED", "COURIERED", "DELIVERED", "CANCELLED", "RETURNED"]);
+export const OrderStatusSchema = z.enum(["PENDING", "ACCEPTED", "COURIERED", "DELIVERED", "CANCELLED", "RETURNED", "EXCHANGE"]);
 export type OrderStatus = z.infer<typeof OrderStatusSchema>;
 
 export const OrderSchema = z.object({
@@ -118,6 +118,7 @@ export const OrderSchema = z.object({
     bkashTxnId: z.string().optional(),
     couponCode: z.string().optional(),
     discountAmount: z.number().default(0),
+    exchangeAmount: z.number().default(0).optional(),
     isPaid: z.boolean().default(false),
     paidAt: z.date().optional(),
     isDelivered: z.boolean().default(false),

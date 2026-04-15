@@ -57,6 +57,7 @@ export const ordersApi = {
     markAsPaid: (id: string) => apiClient.put(`/orders/${id}/pay`),
     markAsDelivered: (id: string) => apiClient.put(`/orders/${id}/deliver`),
     updateStatus: (id: string, status: string) => apiClient.put(`/orders/${id}/status`, { status }),
+    updateDetails: (id: string, data: any) => apiClient.put(`/orders/${id}/details`, data),
     delete: (id: string) => apiClient.delete(`/orders/${id}`),
 };
 

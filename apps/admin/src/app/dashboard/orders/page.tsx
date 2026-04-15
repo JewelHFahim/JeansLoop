@@ -58,6 +58,7 @@ export default function OrdersPage() {
         { value: 'DELIVERED', label: 'Delivered' },
         { value: 'CANCELLED', label: 'Cancelled' },
         { value: 'RETURNED', label: 'Returned' },
+        { value: 'EXCHANGE', label: 'Exchange' },
     ];
 
     return (
@@ -195,12 +196,20 @@ export default function OrdersPage() {
                                                 disabled={statusMutation.isPending && statusMutation.variables?.id === order._id}
                                                 className={`text-[8px] font-black tracking-widest px-2 py-1 outline-none border-2 transition-all cursor-pointer rounded-none disabled:opacity-50 ${order.status === 'DELIVERED' ? 'bg-green-50 text-green-700 border-green-200' :
                                                     order.status === 'CANCELLED' || order.status === 'RETURNED' ? 'bg-red-50 text-red-700 border-red-200' :
-                                                        order.status === 'ACCEPTED' || order.status === 'COURIERED' ? 'bg-blue-50 text-blue-700 border-blue-200' :
-                                                            'bg-amber-50 text-amber-700 border-amber-200'
+                                                        order.status === 'EXCHANGE' ? 'bg-purple-50 text-purple-700 border-purple-200' :
+                                                            order.status === 'ACCEPTED' || order.status === 'COURIERED' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                                                                'bg-amber-50 text-amber-700 border-amber-200'
                                                     }`}
                                             >
                                                 {statuses.map((s) => (
-                                                    <option key={s.value} value={s.value} className="bg-white text-black font-black uppercase text-[10px]">{s.label}</option>
+                                                    <option 
+                                                        key={s.value} 
+                                                        value={s.value} 
+                                                        disabled={order.status === 'DELIVERED' && s.value !== 'EXCHANGE' && s.value !== 'DELIVERED'}
+                                                        className="bg-white text-black font-black uppercase text-[10px]"
+                                                    >
+                                                        {s.label}
+                                                    </option>
                                                 ))}
                                             </select>
                                         </td>
