@@ -59,20 +59,27 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     };
 
     const handleAddToCart = () => {
-        if (product.variants.length > 0 && !selectedVariant) { // Modified condition to use selectedVariant
+        const hasVariants = product.variants?.length > 0;
+
+        if (hasVariants && !selectedVariant) {
             toast.error('Please select a size');
             return;
         }
 
-        const item = { // Define item before passing to addItem
+        const linePrice =
+            product.discountedPrice > 0
+                ? product.discountedPrice
+                : (selectedVariant?.price ?? product.price);
+
+        const item = {
             productId: product._id,
-            variantSku: selectedVariant.sku,
+            variantSku: selectedVariant?.sku || `${product._id}-default`,
             name: product.name,
-            price: product.discountedPrice > 0 ? product.discountedPrice : (selectedVariant.price || product.price),
+            price: linePrice,
             quantity,
             image: product.images?.[0],
-            size: selectedVariant.size,
-            color: selectedVariant.color,
+            size: selectedVariant?.size || '',
+            color: selectedVariant?.color || '',
         };
         addItem(item);
 

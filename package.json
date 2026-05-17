@@ -18,6 +18,7 @@
     "test": "npm run test --workspaces --if-present"
   },
   "devDependencies": {
+    "@babel/core": "^7.29.0",
     "@types/node": "^20.11.5",
     "concurrently": "^8.2.2",
     "eslint": "^8.56.0",

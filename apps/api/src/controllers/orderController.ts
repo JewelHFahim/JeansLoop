@@ -3,6 +3,7 @@ import { Order } from '../models/Order';
 import { Product } from '../models/Product';
 import { Coupon } from '../models/Coupon';
 import { asyncHandler } from '../utils/asyncHandler';
+import { resolveLineItemPrice } from '../utils/pricing';
 
 // @desc    Create new order
 // @route   POST /api/v1/orders
@@ -34,10 +35,8 @@ export const addOrderItems = asyncHandler(async (req: Request, res: Response) =>
             throw new Error(`Product not found: ${item.name}`);
         }
 
-        // Find the variant price if it exists, otherwise use base price
-        // Note: Our current model has base price on product. We should ensure it matches.
-        const dbPrice = product.price; 
-        
+        const dbPrice = resolveLineItemPrice(product, item);
+
         calculatedItemsPrice += dbPrice * item.quantity;
         
         verifiedOrderItems.push({
@@ -206,26 +205,36 @@ export const updateOrderStatus = asyncHandler(async (req: Request, res: Response
         if (status === 'ACCEPTED' && order.stockStatus === 'PENDING') {
             // Deduct stock
             for (const item of order.items) {
+                const variantFilter = item.variantSku
+                    ? { 'variants.sku': item.variantSku }
+                    : { 'variants.size': item.size };
+
                 const stockUpdate = await Product.updateOne(
-                    { 
-                        _id: item.productId, 
-                        'variants.size': item.size,
-                        'variants.stock': { $gte: item.quantity } // Loophole fix: Check stock sufficiency
+                    {
+                        _id: item.productId,
+                        ...variantFilter,
+                        'variants.stock': { $gte: item.quantity },
                     },
                     { $inc: { 'variants.$.stock': -item.quantity } }
                 );
 
                 if (stockUpdate.modifiedCount === 0) {
                     res.status(400);
-                    throw new Error(`Insufficient stock for ${item.name} (${item.size}) or product missing.`);
+                    throw new Error(
+                        `Insufficient stock for ${item.name}${item.size ? ` (${item.size})` : ''} or product missing.`
+                    );
                 }
             }
             order.stockStatus = 'ADJUSTED';
         } else if (status === 'CANCELLED' && order.stockStatus === 'ADJUSTED') {
             // Restore stock
             for (const item of order.items) {
+                const variantFilter = item.variantSku
+                    ? { 'variants.sku': item.variantSku }
+                    : { 'variants.size': item.size };
+
                 await Product.updateOne(
-                    { _id: item.productId, 'variants.size': item.size },
+                    { _id: item.productId, ...variantFilter },
                     { $inc: { 'variants.$.stock': item.quantity } }
                 );
             }
@@ -256,10 +265,15 @@ export const updateOrderToDelivered = async (req: Request, res: Response) => {
         // Ensure stock is adjusted if it skipped ACCEPTED status
         if (order.stockStatus === 'PENDING') {
             for (const item of order.items) {
+                const variantFilter = item.variantSku
+                    ? { 'variants.sku': item.variantSku }
+                    : { 'variants.size': item.size };
+
                 await Product.updateOne(
-                    { 
-                        _id: item.productId, 
-                        variants: { $elemMatch: item.size ? { sku: item.variantSku, size: item.size } : { sku: item.variantSku } }
+                    {
+                        _id: item.productId,
+                        ...variantFilter,
+                        'variants.stock': { $gte: item.quantity },
                     },
                     { $inc: { 'variants.$.stock': -item.quantity } }
                 );
